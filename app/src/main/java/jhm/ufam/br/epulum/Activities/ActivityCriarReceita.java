@@ -12,18 +12,15 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
-import jhm.ufam.br.epulum.Classes.LeitorReceita;
+import jhm.ufam.br.epulum.Classes.SpeechWrapper;
 import jhm.ufam.br.epulum.R;
 import jhm.ufam.br.epulum.RVAdapter.RVIngredienteAdapter;
 import jhm.ufam.br.epulum.RVAdapter.RVPassosAdapter;
 import jhm.ufam.br.epulum.Classes.Receita;
-import jhm.ufam.br.epulum.Classes.SpeechHandler;
 
 /**
  * Created by Mateus on 21/06/2017.
@@ -34,7 +31,7 @@ public class ActivityCriarReceita extends AppCompatActivity
     private Receita receita;
     private RecyclerView rv_ingredientes;
     private RecyclerView rv_passos;
-    private SpeechHandler sh;
+    private SpeechWrapper sh;
     private TextView txtNomeBar;
     private TextView txtEmailBar;
     private String nome;
@@ -57,7 +54,7 @@ public class ActivityCriarReceita extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        sh=new SpeechHandler(getApplicationContext());
+        sh=new SpeechWrapper(getApplicationContext());
         receita = new Receita();
 
 

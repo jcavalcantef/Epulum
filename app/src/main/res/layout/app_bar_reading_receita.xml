@@ -28,10 +28,10 @@
             android:id="@+id/btn_reiniciar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="45dp"
+            android:layout_marginStart="45dp"
             android:layout_marginTop="117dp"
-            android:text="Ler Receita"
-            android:layout_marginLeft="30dp"
-            android:layout_marginStart="30dp"
+            android:text="Reiniciar"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
@@ -40,10 +40,10 @@
             android:id="@+id/btn_repetir"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fazer Receita"
             android:layout_above="@+id/scrollView2"
+            android:layout_toEndOf="@+id/btn_reiniciar"
             android:layout_toRightOf="@+id/btn_reiniciar"
-            android:layout_toEndOf="@+id/btn_reiniciar" />
+            android:text="Repetir" />
 
         <Button
             android:id="@+id/btn_parar_leitura"
@@ -65,12 +65,12 @@
             android:textSize="24sp" />
 
         <ScrollView
+            android:id="@+id/scrollView2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/btn_reiniciar"
-            android:id="@+id/scrollView2">
+            android:layout_below="@+id/btn_reiniciar">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -119,8 +119,6 @@
 
             </RelativeLayout>
         </ScrollView>
-
-
 
 
     </RelativeLayout>

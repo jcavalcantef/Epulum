@@ -28,7 +28,7 @@ import jhm.ufam.br.epulum.Classes.*;
  * Created by Mateus on 21/06/2017.
  */
 
-public class ActivityReceita extends AppCompatActivity
+public class ActivityReadingReceita extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private Receita receita;
     private RecyclerView rv_ingredientes;
@@ -45,7 +45,7 @@ public class ActivityReceita extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_exibe_receita);
+        setContentView(R.layout.activity_reading_receita);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -107,18 +107,7 @@ public class ActivityReceita extends AppCompatActivity
             }
         });
 
-        Button fazerReceita = (Button) findViewById(R.id.btn_repetir);
-        fazerReceita.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentMain = new Intent(ActivityReceita.this,
-                        ActivityReadingReceita.class);
-                intentMain.putExtra("receita", receita);
-                intentMain.putExtra("nome", nome);
-                intentMain.putExtra("email", email);
-                ActivityReceita.this.startActivity(intentMain);
-            }
-        });
+
 
 
         nome = in.getStringExtra("nome");
@@ -171,32 +160,32 @@ public class ActivityReceita extends AppCompatActivity
         if (id == R.id.nav_procurar_receita) {
             // Handle the camera action
             sh.Speak("Procurar receita");
-            Intent intentNewActivity = new Intent(ActivityReceita.this,
+            Intent intentNewActivity = new Intent(ActivityReadingReceita.this,
                     ActivityMain.class);
             intentNewActivity.putExtra("nome", nome);
             intentNewActivity.putExtra("email", email);
-            ActivityReceita.this.startActivity(intentNewActivity);
+            ActivityReadingReceita.this.startActivity(intentNewActivity);
         } else if (id == R.id.nav_criar_receita) {
             sh.Speak("Criar receita");
-            Intent intentNewActivity = new Intent(ActivityReceita.this,
+            Intent intentNewActivity = new Intent(ActivityReadingReceita.this,
                     ActivityCriarReceita.class);
             intentNewActivity.putExtra("nome", nome);
             intentNewActivity.putExtra("email", email);
-            ActivityReceita.this.startActivity(intentNewActivity);
+            ActivityReadingReceita.this.startActivity(intentNewActivity);
         } else if (id == R.id.nav_receitas_salvas) {
             sh.Speak("Receitas salvas");
-            Intent intentNewActivity = new Intent(ActivityReceita.this,
+            Intent intentNewActivity = new Intent(ActivityReadingReceita.this,
                     ActivityReceitasSalvas.class);
             intentNewActivity.putExtra("nome", nome);
             intentNewActivity.putExtra("email", email);
-            ActivityReceita.this.startActivity(intentNewActivity);
+            ActivityReadingReceita.this.startActivity(intentNewActivity);
         } else if (id == R.id.nav_perfil) {
             sh.Speak("Perfil");
-            Intent intentNewActivity = new Intent(ActivityReceita.this,
+            Intent intentNewActivity = new Intent(ActivityReadingReceita.this,
                     ActivityPerfil.class);
             intentNewActivity.putExtra("nome", nome);
             intentNewActivity.putExtra("email", email);
-            ActivityReceita.this.startActivity(intentNewActivity);
+            ActivityReadingReceita.this.startActivity(intentNewActivity);
 
         } else if (id == R.id.nav_site) {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://epulum.000webhostapp.com"));

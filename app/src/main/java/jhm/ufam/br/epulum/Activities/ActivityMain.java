@@ -1,7 +1,6 @@
 package jhm.ufam.br.epulum.Activities;
 
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,7 +26,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.ArrayList;
@@ -38,17 +36,17 @@ import jhm.ufam.br.epulum.Classes.DividerItemDecoration;
 import jhm.ufam.br.epulum.Classes.Ingrediente;
 import jhm.ufam.br.epulum.Classes.ItemClickSupport;
 import jhm.ufam.br.epulum.Classes.LeitorReceita;
+import jhm.ufam.br.epulum.Classes.SpeechWrapper;
 import jhm.ufam.br.epulum.R;
 import jhm.ufam.br.epulum.RVAdapter.RVAdapter;
 import jhm.ufam.br.epulum.Classes.Receita;
-import jhm.ufam.br.epulum.Classes.SpeechHandler;
 
 public class ActivityMain extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
 
     private List<Receita> receitas;
     private RecyclerView rv;
-    private SpeechHandler sh;
+    private SpeechWrapper sh;
     private GoogleApiClient mGoogleApiClient;
     private ImageLoader imageLoader;
     private int RC_SIGN_IN = 100;
@@ -66,7 +64,6 @@ public class ActivityMain extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -76,30 +73,30 @@ public class ActivityMain extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        rv=(RecyclerView)findViewById(R.id.rv);
+        rv = (RecyclerView) findViewById(R.id.rv);
 
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
         rv.setHasFixedSize(true);
-        imgvPerfil=(ImageView) findViewById(R.id.imgvPerfilPhoto);
-        txtEmailBar=(TextView)findViewById(R.id.txtBarEmail);
-        txtNomeBar=(TextView)findViewById(R.id.txtBarNome);
+        imgvPerfil = (ImageView) findViewById(R.id.imgvPerfilPhoto);
+        txtEmailBar = (TextView) findViewById(R.id.txtBarEmail);
+        txtNomeBar = (TextView) findViewById(R.id.txtBarNome);
 
 
-        sh=new SpeechHandler(getApplicationContext());
+        sh = new SpeechWrapper(getApplicationContext());
         rv.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         ItemClickSupport.addTo(rv).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 // do it
                 sh.Speak(receitas.get(position).getName());
-                Intent intentMain = new Intent(ActivityMain.this ,
+                Intent intentMain = new Intent(ActivityMain.this,
                         ActivityReceita.class);
-                intentMain.putExtra("receita",receitas.get(position));
-                intentMain.putExtra("nome",nome);
-                intentMain.putExtra("email",email);
+                intentMain.putExtra("receita", receitas.get(position));
+                intentMain.putExtra("nome", nome);
+                intentMain.putExtra("email", email);
                 ActivityMain.this.startActivity(intentMain);
-                Log.i("Content "," Main layout ");
+                Log.i("Content ", " Main layout ");
             }
         });
         initializeData();
@@ -110,7 +107,7 @@ public class ActivityMain extends AppCompatActivity
                 .build();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this , this )
+                .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
@@ -159,32 +156,32 @@ public class ActivityMain extends AppCompatActivity
         if (id == R.id.nav_procurar_receita) {
             // Handle the camera action
             sh.Speak("Procurar receita");
-            Intent intentNewActivity = new Intent(ActivityMain.this ,
+            Intent intentNewActivity = new Intent(ActivityMain.this,
                     ActivityMain.class);
             ActivityMain.this.startActivity(intentNewActivity);
         } else if (id == R.id.nav_criar_receita) {
             sh.Speak("Criar receita");
-            Intent intentNewActivity = new Intent(ActivityMain.this ,
+            Intent intentNewActivity = new Intent(ActivityMain.this,
                     ActivityCriarReceita.class);
-            intentNewActivity.putExtra("nome",nome);
-            intentNewActivity.putExtra("email",email);
+            intentNewActivity.putExtra("nome", nome);
+            intentNewActivity.putExtra("email", email);
             ActivityMain.this.startActivity(intentNewActivity);
         } else if (id == R.id.nav_receitas_salvas) {
             sh.Speak("Receitas salvas");
-            Intent intentNewActivity = new Intent(ActivityMain.this ,
+            Intent intentNewActivity = new Intent(ActivityMain.this,
                     ActivityReceitasSalvas.class);
-            intentNewActivity.putExtra("nome",nome);
-            intentNewActivity.putExtra("email",email);
+            intentNewActivity.putExtra("nome", nome);
+            intentNewActivity.putExtra("email", email);
             ActivityMain.this.startActivity(intentNewActivity);
-        }  else if (id == R.id.nav_perfil) {
+        } else if (id == R.id.nav_perfil) {
             sh.Speak("Perfil");
-            Intent intentNewActivity = new Intent(ActivityMain.this ,
+            Intent intentNewActivity = new Intent(ActivityMain.this,
                     ActivityPerfil.class);
-            intentNewActivity.putExtra("nome",nome);
-            intentNewActivity.putExtra("email",email);
+            intentNewActivity.putExtra("nome", nome);
+            intentNewActivity.putExtra("email", email);
             ActivityMain.this.startActivity(intentNewActivity);
 
-        } else if(id == R.id.nav_site){
+        } else if (id == R.id.nav_site) {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://epulum.000webhostapp.com"));
             startActivity(browserIntent);
         }
@@ -195,17 +192,17 @@ public class ActivityMain extends AppCompatActivity
         return true;
     }
 
-    private void initializeData(){
+    private void initializeData() {
         receitas = new ArrayList<>();
-        Receita torta=new Receita("Torta de Maçã", "Uma Torta de Maçã muito gostosa e simples.", R.drawable.torta_de_maca);
-        torta.addIngrediente(new Ingrediente(100, "gramas","de manteiga"));
-        torta.addIngrediente(new Ingrediente(2, "gemas",""));
-        torta.addIngrediente(new Ingrediente(4, "colheres","de açúcar refinado"));
-        torta.addIngrediente(new Ingrediente(200, "gramas","de farinha de trigo"));
-        torta.addIngrediente(new Ingrediente(500, "m l","de leite"));
-        torta.addIngrediente(new Ingrediente(1, "lata","de leite condensado"));
-        torta.addIngrediente(new Ingrediente(2, "colheres","de sopa de amido de milho"));
-        torta.addIngrediente(new Ingrediente(3, "maçãs",""));
+        Receita torta = new Receita("Torta de Maçã", "Uma Torta de Maçã muito gostosa e simples.", R.drawable.torta_de_maca);
+        torta.addIngrediente(new Ingrediente(100, "gramas", "de manteiga"));
+        torta.addIngrediente(new Ingrediente(2, "gemas", ""));
+        torta.addIngrediente(new Ingrediente(4, "colheres", "de açúcar refinado"));
+        torta.addIngrediente(new Ingrediente(200, "gramas", "de farinha de trigo"));
+        torta.addIngrediente(new Ingrediente(500, "m l", "de leite"));
+        torta.addIngrediente(new Ingrediente(1, "lata", "de leite condensado"));
+        torta.addIngrediente(new Ingrediente(2, "colheres", "de sopa de amido de milho"));
+        torta.addIngrediente(new Ingrediente(3, "maçãs", ""));
         torta.addPasso("misture a manteiga, as gemas e o açúcar");
         torta.addPasso("Junte a farinha aos poucos, até formar uma massa que não grude nas mãos.");
         torta.addPasso("Forre com a massa uma forma de torta redonda untada levemente com manteiga e fure toda a superfície com um garfo e leve ao forno pré-aquecido em temperatura média ou baixa para a massa dourar, aproximadamente 15 minutos");
@@ -213,9 +210,6 @@ public class ActivityMain extends AppCompatActivity
         torta.addPasso("Ao ferver, junte as fatias de maçãs para cozinhar levemente sem deixar desmanchar, apenas uns 2 minutos");
         torta.addPasso("Retire as maçãs com uma escumadeira e acrescente a gelatina à água que sobrou na panela, mexendo bem");
         torta.addPasso("Deixe esfriar e leve a geladeira por 10 minutos");
-
-        LeitorReceita lr= new LeitorReceita(torta,sh);
-        lr.LerReceita();
         receitas.add(torta);
         receitas.add(new Receita("Joelho de Porco", "Joelho de porco com a casca tostada e crocante.", R.drawable.joelho_de_porco));
         receitas.add(new Receita("Hambúrguer Vegano", "Hambúrguer sem carne para quem quer uma refeição saudável.", R.drawable.hamburguer_vegano));
@@ -227,7 +221,7 @@ public class ActivityMain extends AppCompatActivity
 
     }
 
-    private void initializeAdapter(){
+    private void initializeAdapter() {
         RVAdapter adapter = new RVAdapter(receitas);
         rv.setAdapter(adapter);
     }
@@ -265,10 +259,10 @@ public class ActivityMain extends AppCompatActivity
             GoogleSignInAccount acct = result.getSignInAccount();
 
             //Displaying name and email
-            nome=acct.getDisplayName();
-            email=acct.getEmail();
-            ((TextView)findViewById(R.id.txtBarEmail)).setText(nome);
-            ((TextView)findViewById(R.id.txtBarNome)).setText(email);
+            nome = acct.getDisplayName();
+            email = acct.getEmail();
+            ((TextView) findViewById(R.id.txtBarEmail)).setText(nome);
+            ((TextView) findViewById(R.id.txtBarNome)).setText(email);
 
             //Initializing image loader
             imageLoader = CustomVolleyRequest.getInstance(this.getApplicationContext())
@@ -282,7 +276,7 @@ public class ActivityMain extends AppCompatActivity
 
                 //Loading image
                 //imgvPerfil.setImageUrl(acct.getPhotoUrl().toString(), imageLoader);
-            }catch(NullPointerException e){
+            } catch (NullPointerException e) {
                 //imgvPerfil.setImageResource(R.drawable.profile_icon);
 
             }

@@ -48,7 +48,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/btn_ler_receita">
+                android:layout_below="@+id/btn_reiniciar">
 
                 <TextView
                     android:id="@+id/txt_ingrediente"

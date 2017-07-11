@@ -26,7 +26,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import jhm.ufam.br.epulum.R;
 import jhm.ufam.br.epulum.Classes.*;
-import jhm.ufam.br.epulum.Classes.SpeechHandler;
 
 /**
  * Created by Mateus on 21/06/2017.
@@ -37,7 +36,7 @@ public class ActivityPerfil extends AppCompatActivity
     private Receita receita;
     private RecyclerView rv_ingredientes;
     private RecyclerView rv_passos;
-    private SpeechHandler sh;
+    private SpeechWrapper sh;
     private TextView txtName;
     private TextView txtEmail;
     private NetworkImageView imgvPerfil;
@@ -72,7 +71,7 @@ public class ActivityPerfil extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        sh=new SpeechHandler(getApplicationContext());
+        sh=new SpeechWrapper(getApplicationContext());
 
 
 
@@ -86,8 +85,8 @@ public class ActivityPerfil extends AppCompatActivity
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        txtEmailBar=(TextView)findViewById(R.id.txtBarEmail);
-        txtNomeBar=(TextView)findViewById(R.id.txtBarNome);
+        //txtEmailBar=(TextView)findViewById(R.id.txtBarEmail);
+        //txtNomeBar=(TextView)findViewById(R.id.txtBarNome);
         signIn();
 
 
