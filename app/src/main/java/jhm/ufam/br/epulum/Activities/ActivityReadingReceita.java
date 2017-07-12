@@ -101,6 +101,9 @@ public class ActivityReadingReceita extends AppCompatActivity
         pararLeitura.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tfr.para=true;
+                sh.Stop();
+                fazReceita.interrupt();
                 if (leitorOn) {
                     lr.setCanRead(false);
                     leitorOn = false;
@@ -235,6 +238,9 @@ public class ActivityReadingReceita extends AppCompatActivity
                 break;
             }
 
+        }
+        if(fazReceita.isAlive()){
+            Log.v("result","thread is alive");
         }
     }
 

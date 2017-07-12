@@ -25,7 +25,8 @@ public class ThreadFazerReceita implements Runnable {
         I_P,
         P_,
         INGREDIENTES,
-        PASSOS
+        PASSOS,
+        PAROU
     }
 
     private final int REQ_CODE_SPEECH_INPUT = 100;
@@ -40,6 +41,7 @@ public class ThreadFazerReceita implements Runnable {
     private Context context;
     private String result;
     public boolean newResult;
+    public boolean para;
     private estados eAgora;
     private SpeechWrapper sw;
     private ActivityReadingReceita arr;
@@ -55,15 +57,16 @@ public class ThreadFazerReceita implements Runnable {
         eAgora = estados.INICIO;
         ingr = 0;
         pass = 0;
+        para=false;
 
     }
 
     @Override
     public void run() {
-        //sw.Speak("Vamos começar.");
+        //Speak("Vamos começar.");
         //waitSpeaking();
 
-        while (true) {
+        while (!para) {
             Log.v("result","while loop");
             switch (eAgora) {
                 case INICIO:
@@ -85,14 +88,16 @@ public class ThreadFazerReceita implements Runnable {
                         } else if (hasWord(NAO)) {
                             eAgora = estados.P_;
                             Log.v("result", "passou para passos");
-                        } else sw.Speak("Desculpe não entendi.");
+                        } else {
+
+                        }
                         Log.v("result", result);
                     } catch (IndexOutOfBoundsException e) {
 
                     }
                     break;
                 case P_:
-                    sw.Speak("Então, você quer os passos?");
+                    Speak("você quer fazer os passos?");
                     getSpeech();
                     while (!newResult) ;
                     try {
@@ -102,7 +107,9 @@ public class ThreadFazerReceita implements Runnable {
                         } else if (hasWord(NAO)) {
                             eAgora = estados.I_P;
                             Log.v("result", "passou para I_P");
-                        } else sw.Speak("Desculpe não entendi.");
+                        } else {
+
+                        }
                         Log.v("result", result);
                     } catch (IndexOutOfBoundsException e) {
 
@@ -111,13 +118,13 @@ public class ThreadFazerReceita implements Runnable {
                 case INGREDIENTES:
                     Log.v("result","ingredientes");
                     if (ingr < receita.getIngredientes().size()) {
-                        sw.Speak("Separe " + receita.getIngredientes().get(ingr));
-                        waitSpeaking();
+                        Speak("Separe " + receita.getIngredientes().get(ingr));
+
                         sleep(2000);
-                        sw.Speak("Próximo ingrediente?");
-                        waitSpeaking();
+                        Speak("Próximo ingrediente?");
+
                         getSpeech();
-                        doneSpeaking();
+
                         if (hasWord(SIM)) {
                             ingr++;
                             Log.v("result", "proximo ingrediente");
@@ -128,9 +135,37 @@ public class ThreadFazerReceita implements Runnable {
 
 
                     } else {
-                        sw.Speak("Agora passamos para os passos.");
-                        waitSpeaking();
+                        Speak("Agora vamos para os passos.");
+
+                        eAgora=estados.PASSOS;
                     }
+                    Log.v("result", "passei por ingrediente");
+                    break;
+
+                case PASSOS:
+                    Log.v("result","passos");
+                    if(pass< receita.getPassos().size()){
+                        Speak(receita.getPassos().get(pass));
+
+                        sleep(1000);
+                        Speak("Próximo passo?");
+
+                        getSpeech();
+
+                        if (hasWord(SIM)) {
+                            pass++;
+                            Log.v("result", "proximo passo");
+                        } else if (hasWord(ESPERA)) {
+                            sleep(3000);
+                            Log.v("result", "esta esperando");
+                        }
+                    }
+                    else {
+                        Speak("Este é o fim da receita.");
+                        eAgora=estados.PAROU;
+                    }
+                    break;
+                case PAROU:
                     break;
 
                 default:
@@ -162,16 +197,18 @@ public class ThreadFazerReceita implements Runnable {
         return result.contains(word);
     }
 
-    public void waitSpeaking() {
-        while (sw.isSpeaking()) ;
+    public void Speak(String pal) {
+        if(!para) {
+            sw.Speak(pal);
+            while (sw.isSpeaking() && !para) ;
+        }
     }
 
     public void getSpeech() {
-        arr.promptSpeechInput();
-    }
-
-    public void doneSpeaking() {
-        while (!newResult) ;
+        if(!para) {
+            arr.promptSpeechInput();
+            while (!newResult && !para) Log.v("result", "not done speaking");
+        }
     }
 
     public void sleep(int amount) {
