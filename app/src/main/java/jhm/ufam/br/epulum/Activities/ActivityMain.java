@@ -89,7 +89,6 @@ public class ActivityMain extends AppCompatActivity
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 // do it
-                sh.Speak(receitas.get(position).getName());
                 Intent intentMain = new Intent(ActivityMain.this,
                         ActivityReceita.class);
                 intentMain.putExtra("receita", receitas.get(position));

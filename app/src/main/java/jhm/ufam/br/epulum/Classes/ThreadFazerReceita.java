@@ -20,12 +20,22 @@ import jhm.ufam.br.epulum.R;
 
 public class ThreadFazerReceita implements Runnable {
 
-    private enum estados{
+    private enum estados {
         INICIO,
+        I_P,
+        P_,
         INGREDIENTES,
         PASSOS
     }
+
     private final int REQ_CODE_SPEECH_INPUT = 100;
+    private final String SIM = "sim";
+    private final String NAO = "não";
+    private final String PARA = "para";
+    private final String VOLTA = "volta";
+    private final String REPETE = "repete";
+    private final String ESPERA = "espera";
+
     private Receita receita;
     private Context context;
     private String result;
@@ -33,43 +43,98 @@ public class ThreadFazerReceita implements Runnable {
     private estados eAgora;
     private SpeechWrapper sw;
     private ActivityReadingReceita arr;
-
+    private int ingr;
+    private int pass;
 
 
     public ThreadFazerReceita(Receita receita, Context context, SpeechWrapper swr, ActivityReadingReceita arrr) {
         this.receita = receita;
         this.context = context;
         this.sw = swr;
-        this.arr=arrr;
-        eAgora=estados.INICIO;
+        this.arr = arrr;
+        eAgora = estados.INICIO;
+        ingr = 0;
+        pass = 0;
 
     }
 
     @Override
     public void run() {
-        sw.Speak("Vamos começar.");
-        while(sw.isSpeaking());
-        sw.Speak("Você quer separar os ingredientes?");
-        while(sw.isSpeaking());
-        Log.v("Fazer","parou de falar");
-        while(true){
-            switch (eAgora){
+        //sw.Speak("Vamos começar.");
+        //waitSpeaking();
+
+        while (true) {
+            Log.v("result","while loop");
+            switch (eAgora) {
                 case INICIO:
-                    //while(sw.isSpeaking());
-                    arr.promptSpeechInput();
-                    while(!newResult);
+
+                    //sw.Speak("Você quer separar os ingredientes?");
+                    //waitSpeaking();
+                    Log.v("Fazer", "parou de falar");
+                    getSpeech();
+                    eAgora = estados.I_P;
                     Log.v("result", "recebeu resultado");
+
+                    break;
+                case I_P:
+                    while (!newResult) ;
                     try {
-                        if (result.matches("sim")) {
+                        if (hasWord(SIM)) {
                             eAgora = estados.INGREDIENTES;
-                            Log.v("result","passou para ingredientes");
-                        }
-                        else if(result.matches("não"));
-                        else if (result == null) sw.Speak("Desculpe não entendi.");
+                            Log.v("result", "passou para ingredientes");
+                        } else if (hasWord(NAO)) {
+                            eAgora = estados.P_;
+                            Log.v("result", "passou para passos");
+                        } else sw.Speak("Desculpe não entendi.");
                         Log.v("result", result);
-                    }catch (IndexOutOfBoundsException e){
+                    } catch (IndexOutOfBoundsException e) {
 
                     }
+                    break;
+                case P_:
+                    sw.Speak("Então, você quer os passos?");
+                    getSpeech();
+                    while (!newResult) ;
+                    try {
+                        if (hasWord(SIM)) {
+                            eAgora = estados.PASSOS;
+                            Log.v("result", "passou para passos");
+                        } else if (hasWord(NAO)) {
+                            eAgora = estados.I_P;
+                            Log.v("result", "passou para I_P");
+                        } else sw.Speak("Desculpe não entendi.");
+                        Log.v("result", result);
+                    } catch (IndexOutOfBoundsException e) {
+
+                    }
+                    break;
+                case INGREDIENTES:
+                    Log.v("result","ingredientes");
+                    if (ingr < receita.getIngredientes().size()) {
+                        sw.Speak("Separe " + receita.getIngredientes().get(ingr));
+                        waitSpeaking();
+                        sleep(2000);
+                        sw.Speak("Próximo ingrediente?");
+                        waitSpeaking();
+                        getSpeech();
+                        doneSpeaking();
+                        if (hasWord(SIM)) {
+                            ingr++;
+                            Log.v("result", "proximo ingrediente");
+                        } else if (hasWord(ESPERA)) {
+                            sleep(3000);
+                            Log.v("result", "esta esperando");
+                        }
+
+
+                    } else {
+                        sw.Speak("Agora passamos para os passos.");
+                        waitSpeaking();
+                    }
+                    break;
+
+                default:
+
 
 
             }
@@ -91,5 +156,28 @@ public class ThreadFazerReceita implements Runnable {
 
     public void setResult(String result) {
         this.result = result;
+    }
+
+    public boolean hasWord(String word) {
+        return result.contains(word);
+    }
+
+    public void waitSpeaking() {
+        while (sw.isSpeaking()) ;
+    }
+
+    public void getSpeech() {
+        arr.promptSpeechInput();
+    }
+
+    public void doneSpeaking() {
+        while (!newResult) ;
+    }
+
+    public void sleep(int amount) {
+        try {
+            Thread.sleep(amount);
+        } catch (Exception e) {
+        }
     }
 }

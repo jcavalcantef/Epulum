@@ -51,7 +51,7 @@ public class SpeechWrapper implements TextToSpeech.OnUtteranceCompletedListener 
             @Override
             public void onInit(int status) {
                 mTts.setLanguage(new Locale("pt","br"));
-                mTts.setSpeechRate(0.6f);
+                mTts.setSpeechRate(0.7f);
 
             }
         });

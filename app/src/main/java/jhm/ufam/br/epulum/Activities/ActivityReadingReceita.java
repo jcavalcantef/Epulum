@@ -53,6 +53,7 @@ public class ActivityReadingReceita extends AppCompatActivity
     private final int REQ_CODE_SPEECH_INPUT = 100;
     private ThreadFazerReceita tfr;
     private ActivityReadingReceita acrr;
+    private Thread fazReceita;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +111,7 @@ public class ActivityReadingReceita extends AppCompatActivity
         lerReceita.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 tfr= new ThreadFazerReceita(receita, getApplicationContext(), sh, acrr);
-                Thread fazReceita= new Thread(tfr);
+                fazReceita= new Thread(tfr);
                 fazReceita.start();
             }
         });
@@ -197,14 +198,14 @@ public class ActivityReadingReceita extends AppCompatActivity
     }
 
     public void promptSpeechInput() {
+        tfr.newResult=false;
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         String languagePref = "pt-BR";//or, whatever iso code...
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, languagePref);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, languagePref);
         intent.putExtra(RecognizerIntent.EXTRA_ONLY_RETURN_LANGUAGE_PREFERENCE, languagePref);
+        intent.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE,true);
 
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
-                getString(R.string.speech_prompt));
         try {
             startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
         } catch (ActivityNotFoundException a) {
@@ -220,7 +221,6 @@ public class ActivityReadingReceita extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.v("result","entrou no activity result" );
 
         switch (requestCode) {
             case REQ_CODE_SPEECH_INPUT: {
@@ -230,7 +230,7 @@ public class ActivityReadingReceita extends AppCompatActivity
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     tfr.setResult(result.get(0));
                     tfr.newResult=true;
-                    Log.v("result","new result");
+                    Log.v("result","new result "+result.get(0));
                 }
                 break;
             }
