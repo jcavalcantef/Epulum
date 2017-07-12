@@ -1,8 +1,12 @@
 package jhm.ufam.br.epulum.Activities;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -10,13 +14,18 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.solovyev.android.views.llm.LinearLayoutManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import jhm.ufam.br.epulum.Classes.LeitorReceita;
 import jhm.ufam.br.epulum.R;
@@ -41,6 +50,9 @@ public class ActivityReadingReceita extends AppCompatActivity
     private LeitorReceita lr;
     private boolean leitorOn;
     private Thread leitor;
+    private final int REQ_CODE_SPEECH_INPUT = 100;
+    private ThreadFazerReceita tfr;
+    private ActivityReadingReceita acrr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +60,7 @@ public class ActivityReadingReceita extends AppCompatActivity
         setContentView(R.layout.activity_reading_receita);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        acrr=this;
 
         Intent in = getIntent();
         receita = (Receita) in.getSerializableExtra("receita");
@@ -96,28 +109,14 @@ public class ActivityReadingReceita extends AppCompatActivity
 
         lerReceita.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                lr.startedReading = false;
-                lr.setCanRead(true);
-
-                if (!leitorOn) {
-                    leitor = new Thread(lr);
-                    leitor.start();
-                    leitorOn = true;
-                }
+                tfr= new ThreadFazerReceita(receita, getApplicationContext(), sh, acrr);
+                Thread fazReceita= new Thread(tfr);
+                fazReceita.start();
             }
         });
 
 
 
-
-        nome = in.getStringExtra("nome");
-        email = in.getStringExtra("email");
-        txEmailBar = (TextView) findViewById(R.id.txtBarEmail);
-        txNomeBar = (TextView) findViewById(R.id.txtBarNome);
-
-
-        //((TextView)findViewById(R.id.txtBarEmailR)).setText(nome);
-        //((TextView)findViewById(R.id.txtBarNomeR)).setText(email);
     }
 
     @Override
@@ -196,4 +195,48 @@ public class ActivityReadingReceita extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    public void promptSpeechInput() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        String languagePref = "pt-BR";//or, whatever iso code...
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, languagePref);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, languagePref);
+        intent.putExtra(RecognizerIntent.EXTRA_ONLY_RETURN_LANGUAGE_PREFERENCE, languagePref);
+
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
+                getString(R.string.speech_prompt));
+        try {
+            startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
+        } catch (ActivityNotFoundException a) {
+            Toast.makeText(getApplicationContext(),
+                    getString(R.string.speech_not_supported),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Receiving speech input
+     * */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.v("result","entrou no activity result" );
+
+        switch (requestCode) {
+            case REQ_CODE_SPEECH_INPUT: {
+                if (resultCode == RESULT_OK && null != data) {
+
+                    ArrayList<String> result = data
+                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    tfr.setResult(result.get(0));
+                    tfr.newResult=true;
+                    Log.v("result","new result");
+                }
+                break;
+            }
+
+        }
+    }
+
+
 }
