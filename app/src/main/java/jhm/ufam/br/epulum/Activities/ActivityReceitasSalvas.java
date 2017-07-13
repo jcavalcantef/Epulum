@@ -157,6 +157,13 @@ public class ActivityReceitasSalvas extends AppCompatActivity
         } else if (id == R.id.nav_site) {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://epulum.000webhostapp.com"));
             startActivity(browserIntent);
+        } else if (id == R.id.nav_lista_compras){
+            Intent intentNewActivity = new Intent(ActivityReceitasSalvas.this,
+                    ActivityListaCompras.class);
+            intentNewActivity.putExtra("nome", nome);
+            intentNewActivity.putExtra("email", email);
+            ActivityReceitasSalvas.this.startActivity(intentNewActivity);
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

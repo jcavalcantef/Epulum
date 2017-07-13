@@ -28,7 +28,7 @@
                 android:layout_toEndOf="@+id/txt_num_passo"
                 android:layout_toRightOf="@+id/txt_num_passo"
                 android:text="TextView"
-                android:textSize="18sp" />
+                android:textSize="24sp" />
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>

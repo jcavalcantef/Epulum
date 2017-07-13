@@ -4,9 +4,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -25,7 +23,6 @@ import android.widget.Toast;
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import jhm.ufam.br.epulum.Classes.LeitorReceita;
 import jhm.ufam.br.epulum.R;
@@ -75,7 +72,7 @@ public class ActivityReadingReceita extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        TextView txt_nome_receita = (TextView) findViewById(R.id.txt_nome_receita);
+        TextView txt_nome_receita = (TextView) findViewById(R.id.txt_lista_compras);
         txt_nome_receita.setText(receita.getName());
 
         rv_ingredientes = (RecyclerView) findViewById(R.id.rv_ingrediente);
@@ -94,7 +91,7 @@ public class ActivityReadingReceita extends AppCompatActivity
         RVPassosAdapter RVPassAdapter = new RVPassosAdapter(receita.getPassos());
         rv_passos.setAdapter(RVPassAdapter);
 
-        Button lerReceita = (Button) findViewById(R.id.btn_reiniciar);
+        Button lerReceita = (Button) findViewById(R.id.btn_nova_lista);
         sh = new SpeechWrapper(getApplicationContext());
         lr = new LeitorReceita(receita, sh);
         Button pararLeitura = (Button) findViewById(R.id.btn_parar_leitura);
@@ -189,6 +186,13 @@ public class ActivityReadingReceita extends AppCompatActivity
         } else if (id == R.id.nav_site) {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://epulum.000webhostapp.com"));
             startActivity(browserIntent);
+        } else if (id == R.id.nav_lista_compras){
+            Intent intentNewActivity = new Intent(ActivityReadingReceita.this,
+                    ActivityListaCompras.class);
+            intentNewActivity.putExtra("nome", nome);
+            intentNewActivity.putExtra("email", email);
+            ActivityReadingReceita.this.startActivity(intentNewActivity);
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

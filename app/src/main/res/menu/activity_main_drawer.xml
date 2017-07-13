@@ -15,6 +15,10 @@
             android:icon="@drawable/ic_receitas_salvas"
             android:title="Receitas salvas" />
         <item
+            android:id="@+id/nav_lista_compras"
+            android:icon="@drawable/ic_receitas_salvas"
+            android:title="Listas de Compras" />
+        <item
             android:id="@+id/nav_perfil"
             android:icon="@drawable/ic_perfil"
             android:title="Ver perfil" />

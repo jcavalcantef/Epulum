@@ -63,8 +63,6 @@ public class ThreadFazerReceita implements Runnable {
 
     @Override
     public void run() {
-        Speak("Vamos começar.");
-
         while (!para) {
             Log.v("result","while loop");
             switch (eAgora) {

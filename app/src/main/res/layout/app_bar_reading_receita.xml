@@ -25,7 +25,7 @@
         android:layout_height="match_parent">
 
         <Button
-            android:id="@+id/btn_reiniciar"
+            android:id="@+id/btn_nova_lista"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="45dp"
@@ -41,21 +41,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/scrollView2"
-            android:layout_toEndOf="@+id/btn_reiniciar"
-            android:layout_toRightOf="@+id/btn_reiniciar"
+            android:layout_toEndOf="@+id/btn_nova_lista"
+            android:layout_toRightOf="@+id/btn_nova_lista"
             android:text="Repetir" />
 
         <Button
             android:id="@+id/btn_parar_leitura"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txt_nome_receita"
+            android:layout_below="@+id/txt_lista_compras"
             android:layout_toEndOf="@+id/btn_repetir"
             android:layout_toRightOf="@+id/btn_repetir"
             android:text="Parar" />
 
         <TextView
-            android:id="@+id/txt_nome_receita"
+            android:id="@+id/txt_lista_compras"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/btn_repetir"
@@ -70,7 +70,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/btn_reiniciar">
+            android:layout_below="@+id/btn_nova_lista">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -78,7 +78,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/btn_reiniciar">
+                android:layout_below="@+id/btn_nova_lista">
 
                 <TextView
                     android:id="@+id/txt_ingrediente"
