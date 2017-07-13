@@ -26,9 +26,9 @@ public class RVIngredienteAdapter extends RecyclerView.Adapter<RVIngredienteAdap
         }
     }
 
-    List<Ingrediente> ingredientes;
+    List<String> ingredientes;
 
-    public RVIngredienteAdapter(List<Ingrediente> ingredien){
+    public RVIngredienteAdapter(List<String> ingredien){
         this.ingredientes = ingredien;
     }
 
@@ -46,12 +46,17 @@ public class RVIngredienteAdapter extends RecyclerView.Adapter<RVIngredienteAdap
 
     @Override
     public void onBindViewHolder(RVIngredienteAdapter.IngredienteViewHolder receitaViewHolder, int i) {
-        receitaViewHolder.txt_ingred.setText("  "+ingredientes.get(i).toString());
+        receitaViewHolder.txt_ingred.setText("  "+ingredientes.get(i));
 
     }
 
     @Override
     public int getItemCount() {
         return ingredientes.size();
+    }
+
+    public void addPasso(String passo){
+        ingredientes.add(passo);
+        notifyDataSetChanged();
     }
 }

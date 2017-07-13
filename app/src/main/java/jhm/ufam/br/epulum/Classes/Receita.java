@@ -1,15 +1,18 @@
 package jhm.ufam.br.epulum.Classes;
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("serial")
 public class Receita implements Serializable{
+    private long _id;
     private String name;
     private String descricao;
     private int photoId;
-    private List<Ingrediente> ingredientes;
+    private List<String> ingredientes;
     private List<String> passos;
 
     public Receita(String name, String descricao, int photoId) {
@@ -23,6 +26,14 @@ public class Receita implements Serializable{
     public Receita() {
         this.ingredientes=new ArrayList<>();
         this.passos=new ArrayList<>();
+    }
+
+    public long get_id() {
+        return _id;
+    }
+
+    public void set_id(long _id) {
+        this._id = _id;
     }
 
     public String getName() {
@@ -49,11 +60,11 @@ public class Receita implements Serializable{
         this.photoId = photoId;
     }
 
-    public List<Ingrediente> getIngredientes() {
+    public List<String> getIngredientes() {
         return ingredientes;
     }
 
-    public void setIngredientes(List<Ingrediente> ingredientes) {
+    public void setIngredientes(List<String> ingredientes) {
         this.ingredientes = ingredientes;
     }
 
@@ -65,12 +76,51 @@ public class Receita implements Serializable{
         this.passos = passos;
     }
 
-    public void addIngrediente(Ingrediente in){
+    public void addIngrediente(String in){
         ingredientes.add(in);
     }
 
     public void addPasso(String pass){
         passos.add(pass);
+    }
+
+    public void modifyIngrediente(int pos, String novo){
+        ingredientes.set(pos, novo);
+    }
+
+    public void modifyPasso(int pos, String novo){
+        passos.set(pos, novo);
+    }
+
+    public void removeIngrediente(int pos){
+        ingredientes.remove(pos);
+    }
+
+    public void removePasso(int pos){
+        passos.remove(pos);
+    }
+
+    public void setAllIngredientes(String all){
+        all=all.replaceAll("\\[","").replaceAll("\\]","");
+        String[] ingredientesNovos= all.split(",");
+        String bleh;
+        for(int i=0;i<ingredientesNovos.length;i++){
+            bleh=ingredientesNovos[i].replaceAll(",", "");
+            ingredientes.add(bleh.trim());
+            //Log.v("receita", bleh.trim());
+        }
+
+    }
+
+    public void setAllPassos(String all){
+        all=all.replaceAll("\\[","").replaceAll("\\]","");
+        String[] ingredientesNovos= all.split(",");
+        String bleh;
+        for(int i=0;i<ingredientesNovos.length;i++){
+            bleh=ingredientesNovos[i].replaceAll(",", "");
+            passos.add(bleh.trim());
+            //Log.v("receita", bleh.trim());
+        }
     }
 
 }

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/txt_dialog_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:text="ingrediente"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/btn_alterar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Alterar"
+        android:layout_below="@+id/et_item"
+        android:layout_alignLeft="@+id/et_item"
+        android:layout_alignStart="@+id/et_item" />
+
+    <Button
+        android:id="@+id/btn_remover"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Remover"
+        android:layout_below="@+id/et_item"
+        android:layout_toRightOf="@+id/btn_alterar"
+        android:layout_toEndOf="@+id/btn_alterar" />
+
+    <Button
+        android:id="@+id/btn_cancelar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancelar"
+        android:layout_alignBaseline="@+id/btn_remover"
+        android:layout_alignBottom="@+id/btn_remover"
+        android:layout_toRightOf="@+id/btn_remover"
+        android:layout_toEndOf="@+id/btn_remover" />
+
+    <EditText
+        android:id="@+id/et_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        android:layout_below="@+id/txt_dialog_title"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+</RelativeLayout>

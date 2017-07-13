@@ -130,28 +130,24 @@ public class ActivityReceitasSalvas extends AppCompatActivity
 
         if (id == R.id.nav_procurar_receita) {
             // Handle the camera action
-            sh.Speak("Procurar receita");
             Intent intentNewActivity = new Intent(ActivityReceitasSalvas.this,
                     ActivityMain.class);
             intentNewActivity.putExtra("nome", nome);
             intentNewActivity.putExtra("email", email);
             ActivityReceitasSalvas.this.startActivity(intentNewActivity);
         } else if (id == R.id.nav_criar_receita) {
-            sh.Speak("Criar receita");
             Intent intentNewActivity = new Intent(ActivityReceitasSalvas.this,
                     ActivityCriarReceita.class);
             intentNewActivity.putExtra("nome", nome);
             intentNewActivity.putExtra("email", email);
             ActivityReceitasSalvas.this.startActivity(intentNewActivity);
         } else if (id == R.id.nav_receitas_salvas) {
-            sh.Speak("Receitas salvas");
             Intent intentNewActivity = new Intent(ActivityReceitasSalvas.this,
                     ActivityReceitasSalvas.class);
             intentNewActivity.putExtra("nome", nome);
             intentNewActivity.putExtra("email", email);
             ActivityReceitasSalvas.this.startActivity(intentNewActivity);
         } else if (id == R.id.nav_perfil) {
-            sh.Speak("Perfil");
             Intent intentNewActivity = new Intent(ActivityReceitasSalvas.this,
                     ActivityPerfil.class);
             intentNewActivity.putExtra("nome", nome);
@@ -170,30 +166,7 @@ public class ActivityReceitasSalvas extends AppCompatActivity
 
     private void initializeData() {
         receitas = new ArrayList<>();
-        Receita torta = new Receita("Torta de Maçã", "Uma Torta de Maçã muito gostosa e simples.", R.drawable.torta_de_maca);
-        torta.addIngrediente(new Ingrediente(100, "gramas", "de manteiga"));
-        torta.addIngrediente(new Ingrediente(2, "gemas", ""));
-        torta.addIngrediente(new Ingrediente(4, "colheres", "de açúcar refinado"));
-        torta.addIngrediente(new Ingrediente(200, "gramas", "de farinha de trigo"));
-        torta.addIngrediente(new Ingrediente(500, "m l", "de leite"));
-        torta.addIngrediente(new Ingrediente(1, "lata", "de leite condensado"));
-        torta.addIngrediente(new Ingrediente(2, "colheres", "de sopa de amido de milho"));
-        torta.addIngrediente(new Ingrediente(3, "maçãs", ""));
-        torta.addPasso("misture a manteiga, as gemas e o açúcar");
-        torta.addPasso("Junte a farinha aos poucos, até formar uma massa que não grude nas mãos.");
-        torta.addPasso("Forre com a massa uma forma de torta redonda untada levemente com manteiga e fure toda a superfície com um garfo e leve ao forno pré-aquecido em temperatura média ou baixa para a massa dourar, aproximadamente 15 minutos");
-        torta.addPasso("numa panela, coloque a água e o açúcar e leve ao fogo");
-        torta.addPasso("Ao ferver, junte as fatias de maçãs para cozinhar levemente sem deixar desmanchar, apenas uns 2 minutos");
-        torta.addPasso("Retire as maçãs com uma escumadeira e acrescente a gelatina à água que sobrou na panela, mexendo bem");
-        torta.addPasso("Deixe esfriar e leve a geladeira por 10 minutos");
-        receitas.add(torta);
-        receitas.add(new Receita("Joelho de Porco", "Joelho de porco com a casca tostada e crocante.", R.drawable.joelho_de_porco));
-        receitas.add(new Receita("Hambúrguer Vegano", "Hambúrguer sem carne para quem quer uma refeição saudável.", R.drawable.hamburguer_vegano));
-        receitas.add(new Receita("Bolinho De Carne Moída", "", R.drawable.bolinho_de_carne_moida));
-        receitas.add(new Receita("Filé À Parmegiana", "", R.drawable.file_parmegiana));
-        receitas.add(new Receita("Costela Na Pressão Com Linguíça", "", R.drawable.costela_na_pressao));
-        receitas.add(new Receita("Camarão com creme de leite", "", R.drawable.camarao_com_creme_de_leite));
-        receitas.add(new Receita("Sopa de abóbora", "", R.drawable.sopa_de_abobora));
+
 
     }
 

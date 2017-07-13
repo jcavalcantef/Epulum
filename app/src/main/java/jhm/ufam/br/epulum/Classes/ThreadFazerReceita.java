@@ -63,16 +63,15 @@ public class ThreadFazerReceita implements Runnable {
 
     @Override
     public void run() {
-        //Speak("Vamos começar.");
-        //waitSpeaking();
+        Speak("Vamos começar.");
 
         while (!para) {
             Log.v("result","while loop");
             switch (eAgora) {
                 case INICIO:
 
-                    //sw.Speak("Você quer separar os ingredientes?");
-                    //waitSpeaking();
+                    Speak("Você quer separar os ingredientes?");
+
                     Log.v("Fazer", "parou de falar");
                     getSpeech();
                     eAgora = estados.I_P;

@@ -170,28 +170,24 @@ public class ActivityReceita extends AppCompatActivity
 
         if (id == R.id.nav_procurar_receita) {
             // Handle the camera action
-            sh.Speak("Procurar receita");
             Intent intentNewActivity = new Intent(ActivityReceita.this,
                     ActivityMain.class);
             intentNewActivity.putExtra("nome", nome);
             intentNewActivity.putExtra("email", email);
             ActivityReceita.this.startActivity(intentNewActivity);
         } else if (id == R.id.nav_criar_receita) {
-            sh.Speak("Criar receita");
             Intent intentNewActivity = new Intent(ActivityReceita.this,
                     ActivityCriarReceita.class);
             intentNewActivity.putExtra("nome", nome);
             intentNewActivity.putExtra("email", email);
             ActivityReceita.this.startActivity(intentNewActivity);
         } else if (id == R.id.nav_receitas_salvas) {
-            sh.Speak("Receitas salvas");
             Intent intentNewActivity = new Intent(ActivityReceita.this,
                     ActivityReceitasSalvas.class);
             intentNewActivity.putExtra("nome", nome);
             intentNewActivity.putExtra("email", email);
             ActivityReceita.this.startActivity(intentNewActivity);
         } else if (id == R.id.nav_perfil) {
-            sh.Speak("Perfil");
             Intent intentNewActivity = new Intent(ActivityReceita.this,
                     ActivityPerfil.class);
             intentNewActivity.putExtra("nome", nome);

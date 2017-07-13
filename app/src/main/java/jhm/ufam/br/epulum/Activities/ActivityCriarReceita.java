@@ -1,8 +1,11 @@
 package jhm.ufam.br.epulum.Activities;
 
+import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -10,13 +13,22 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
+import java.util.ArrayList;
+
+import jhm.ufam.br.epulum.Classes.ItemClickSupport;
 import jhm.ufam.br.epulum.Classes.SpeechWrapper;
+import jhm.ufam.br.epulum.Classes.ThreadCriarReceita;
 import jhm.ufam.br.epulum.R;
 import jhm.ufam.br.epulum.RVAdapter.RVIngredienteAdapter;
 import jhm.ufam.br.epulum.RVAdapter.RVPassosAdapter;
@@ -36,6 +48,12 @@ public class ActivityCriarReceita extends AppCompatActivity
     private TextView txtEmailBar;
     private String nome;
     private String email;
+    private ThreadCriarReceita criarReceita;
+    private Thread cr;
+    private ActivityCriarReceita acr;
+    private final int REQ_CODE_SPEECH_INPUT = 100;
+    private RVIngredienteAdapter RVingradapter;
+    private RVPassosAdapter RVPassAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +74,7 @@ public class ActivityCriarReceita extends AppCompatActivity
 
         sh=new SpeechWrapper(getApplicationContext());
         receita = new Receita();
+        acr=this;
 
 
         rv_ingredientes=(RecyclerView)findViewById(R.id.rv_ingrediente);
@@ -68,9 +87,9 @@ public class ActivityCriarReceita extends AppCompatActivity
         rv_passos.setLayoutManager(llm2);
         rv_passos.setHasFixedSize(true);
 
-        RVIngredienteAdapter RVingradapter = new RVIngredienteAdapter(receita.getIngredientes());
+        RVingradapter = new RVIngredienteAdapter(receita.getIngredientes());
         rv_ingredientes.setAdapter(RVingradapter);
-        RVPassosAdapter RVPassAdapter = new RVPassosAdapter(receita.getPassos());
+        RVPassAdapter = new RVPassosAdapter(receita.getPassos());
         rv_passos.setAdapter(RVPassAdapter);
 
         txtEmailBar=(TextView)findViewById(R.id.txtBarEmail);
@@ -80,6 +99,118 @@ public class ActivityCriarReceita extends AppCompatActivity
         email=in.getStringExtra("email");
         //txtEmailBar.setText(email);
         //txtNomeBar.setText(nome);
+        criarReceita=null;
+        cr=null;
+
+        Button comecar = (Button) findViewById(R.id.btn_comecar);
+        comecar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(cr!=null)
+                cr.interrupt();
+                criarReceita = new ThreadCriarReceita(receita, getApplicationContext(), sh, acr, RVingradapter, RVPassAdapter);
+                    cr= new Thread(criarReceita);
+                if(!criarReceita.para) {
+                    criarReceita.para=false;
+                    cr.start();
+                }
+            }
+        });
+
+        Button pararLeitura = (Button) findViewById(R.id.btn_para);
+        pararLeitura.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                criarReceita.para=true;
+                sh.Stop();
+                cr.interrupt();
+
+            }
+        });
+
+        ItemClickSupport.addTo(rv_ingredientes).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, final int position, View v) {
+                final Dialog alteraReceitaDialog = new Dialog(ActivityCriarReceita.this);
+                alteraReceitaDialog.setContentView(R.layout.dialog_alter_text);
+                alteraReceitaDialog.setTitle("Ingrediente");
+                TextView title =(TextView)alteraReceitaDialog.findViewById(R.id.txt_dialog_title);
+                title.setText("Ingrediente");
+                final EditText ingr = (EditText) alteraReceitaDialog.findViewById(R.id.et_item);
+                ingr.setText(receita.getIngredientes().get(position));
+
+                Button altera = (Button)alteraReceitaDialog.findViewById(R.id.btn_alterar);
+                altera.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        receita.modifyIngrediente(position, ingr.getText().toString());
+                        RVingradapter.notifyDataSetChanged();
+                        alteraReceitaDialog.dismiss();
+                    }
+                });
+
+                Button remover = (Button)alteraReceitaDialog.findViewById(R.id.btn_remover);
+                remover.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        receita.removeIngrediente(position);
+                        RVingradapter.notifyDataSetChanged();
+                        alteraReceitaDialog.dismiss();
+                    }
+                });
+
+                Button cancelar = (Button) alteraReceitaDialog.findViewById(R.id.btn_cancelar);
+                cancelar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alteraReceitaDialog.dismiss();
+                    }
+                });
+                alteraReceitaDialog.show();
+            }
+        });
+
+        ItemClickSupport.addTo(rv_passos).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, final int position, View v) {
+                final Dialog alteraReceitaDialog = new Dialog(ActivityCriarReceita.this);
+                alteraReceitaDialog.setContentView(R.layout.dialog_alter_text);
+                alteraReceitaDialog.setTitle("Passo");
+                TextView title =(TextView)alteraReceitaDialog.findViewById(R.id.txt_dialog_title);
+                title.setText("Passo");
+                final EditText ingr = (EditText) alteraReceitaDialog.findViewById(R.id.et_item);
+                ingr.setText(receita.getPassos().get(position));
+
+                Button altera = (Button)alteraReceitaDialog.findViewById(R.id.btn_alterar);
+                altera.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        receita.modifyPasso(position, ingr.getText().toString());
+                        RVPassAdapter.notifyDataSetChanged();
+                        alteraReceitaDialog.dismiss();
+                    }
+                });
+
+                Button remover = (Button)alteraReceitaDialog.findViewById(R.id.btn_remover);
+                remover.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        receita.removePasso(position);
+                        RVPassAdapter.notifyDataSetChanged();
+                        alteraReceitaDialog.dismiss();
+                    }
+                });
+
+                Button cancelar = (Button) alteraReceitaDialog.findViewById(R.id.btn_cancelar);
+                cancelar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alteraReceitaDialog.dismiss();
+                    }
+                });
+                alteraReceitaDialog.show();
+            }
+        });
 
 
     }
@@ -125,28 +256,24 @@ public class ActivityCriarReceita extends AppCompatActivity
 
         if (id == R.id.nav_procurar_receita) {
             // Handle the camera action
-            sh.Speak("Procurar receita");
             Intent intentNewActivity = new Intent(ActivityCriarReceita.this ,
                     ActivityMain.class);
             intentNewActivity.putExtra("nome",nome);
             intentNewActivity.putExtra("email",email);
             ActivityCriarReceita.this.startActivity(intentNewActivity);
         } else if (id == R.id.nav_criar_receita) {
-            sh.Speak("Criar receita");
             Intent intentNewActivity = new Intent(ActivityCriarReceita.this ,
                     ActivityCriarReceita.class);
             intentNewActivity.putExtra("nome",nome);
             intentNewActivity.putExtra("email",email);
             ActivityCriarReceita.this.startActivity(intentNewActivity);
         } else if (id == R.id.nav_receitas_salvas) {
-            sh.Speak("Receitas salvas");
             Intent intentNewActivity = new Intent(ActivityCriarReceita.this ,
                     ActivityReceitasSalvas.class);
             intentNewActivity.putExtra("nome",nome);
             intentNewActivity.putExtra("email",email);
             ActivityCriarReceita.this.startActivity(intentNewActivity);
         }  else if (id == R.id.nav_perfil) {
-            sh.Speak("Perfil");
             Intent intentNewActivity = new Intent(ActivityCriarReceita.this ,
                     ActivityPerfil.class);
             intentNewActivity.putExtra("nome",nome);
@@ -161,5 +288,54 @@ public class ActivityCriarReceita extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void promptSpeechInput(String prompt) {
+        criarReceita.newResult=false;
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        String languagePref = "pt-BR";//or, whatever iso code...
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, languagePref);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, languagePref);
+        intent.putExtra(RecognizerIntent.EXTRA_ONLY_RETURN_LANGUAGE_PREFERENCE, languagePref);
+        intent.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE,true);
+        if(prompt!=null) {
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
+                    prompt);
+        }
+
+        try {
+            startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
+        } catch (ActivityNotFoundException a) {
+            Toast.makeText(getApplicationContext(),
+                    getString(R.string.speech_not_supported),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Receiving speech input
+     * */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case REQ_CODE_SPEECH_INPUT: {
+                if (resultCode == RESULT_OK && null != data) {
+
+                    ArrayList<String> result = data
+                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    criarReceita.setResult(result.get(0));
+                    criarReceita.newResult=true;
+                    Log.v("result","new result "+result.get(0));
+                }
+                break;
+            }
+        }
+    }
+    public void dataChange(){
+        RVingradapter.notifyDataSetChanged();
+        RVPassAdapter.notifyDataSetChanged();
+
     }
 }

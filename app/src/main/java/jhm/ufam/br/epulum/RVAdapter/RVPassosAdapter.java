@@ -62,5 +62,10 @@ public class RVPassosAdapter extends RecyclerView.Adapter<RVPassosAdapter.Passos
     public int getItemCount() {
         return passos.size();
     }
+
+    public void addPasso(String passo){
+        passos.add(passo);
+        notifyDataSetChanged();
+    }
 }
 
