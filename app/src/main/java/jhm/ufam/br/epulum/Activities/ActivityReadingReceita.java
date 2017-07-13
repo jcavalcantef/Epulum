@@ -73,7 +73,7 @@ public class ActivityReadingReceita extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         TextView txt_nome_receita = (TextView) findViewById(R.id.txt_lista_compras);
-        txt_nome_receita.setText(receita.getName());
+        txt_nome_receita.setText(receita.getNome());
 
         rv_ingredientes = (RecyclerView) findViewById(R.id.rv_ingrediente);
         rv_passos = (RecyclerView) findViewById(R.id.rv_passos);

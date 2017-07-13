@@ -1,10 +1,12 @@
-package jhm.ufam.br.epulum.Classes;
+package jhm.ufam.br.epulum.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import jhm.ufam.br.epulum.Classes.Receita;
 
 /**
  * Created by hendrio on 12/07/17.
@@ -14,18 +16,22 @@ public class MyDBHandler extends SQLiteOpenHelper{
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "recipesDB.db";
-    private static final String TABLE_RECIPES = "recipes";
+    public static final String TABLE_RECIPES = "Receitas";
 
     public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_RECIPENAME = "recipename";
-    public static final String COLUMN_RECIPEDESCRIPTION = "recipedescription";
-    public static final String COLUMN_RECIPEPHOTOID = "recipephotoid";
-    public static final String COLUMN_RECIPEINGREDIENTS = "recipeingredients";
-    public static final String COLUMN_RECIPESTEPS = "recipesteps";
+    public static final String COLUMN_RECIPENAME = "nome";
+    public static final String COLUMN_RECIPEDESCRIPTION = "descricao";
+    public static final String COLUMN_RECIPEPHOTOID = "photoid";
+    public static final String COLUMN_RECIPEINGREDIENTS = "ingredientes";
+    public static final String COLUMN_RECIPESTEPS = "passos";
 
 
     public MyDBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
+    }
+
+    public MyDBHandler(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
@@ -46,7 +52,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECIPES);
         onCreate(db);
     }
-
+/*
     public void addProduct(Receita recipe) {
 
         ContentValues values = new ContentValues();
@@ -108,5 +114,5 @@ public class MyDBHandler extends SQLiteOpenHelper{
         }
         db.close();
         return result;
-    }
+    } */
 }

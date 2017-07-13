@@ -49,7 +49,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ReceitaViewHolder>
 
     @Override
     public void onBindViewHolder(ReceitaViewHolder receitaViewHolder, int i) {
-        receitaViewHolder.receitaNome.setText(receitas.get(i).getName());
+        receitaViewHolder.receitaNome.setText(receitas.get(i).getNome());
         receitaViewHolder.receitaFoto.setImageResource(receitas.get(i).getPhotoId());
     }
 

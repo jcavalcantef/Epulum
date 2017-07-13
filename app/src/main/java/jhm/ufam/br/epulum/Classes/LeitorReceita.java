@@ -43,7 +43,7 @@ public class LeitorReceita implements Runnable {
 
     public void LerReceita() {
         if (!startedReading) {
-            sh.Speak("Para fazer " + receita.getName() + ".");
+            sh.Speak("Para fazer " + receita.getNome() + ".");
             sh.Speak("Você precisa de");
             posIngr = 0;
             posPasso = 0;

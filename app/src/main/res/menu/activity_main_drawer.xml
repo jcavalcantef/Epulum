@@ -16,7 +16,7 @@
             android:title="Receitas salvas" />
         <item
             android:id="@+id/nav_lista_compras"
-            android:icon="@drawable/ic_receitas_salvas"
+            android:icon="@drawable/ic_criar_lista_compras"
             android:title="Listas de Compras" />
         <item
             android:id="@+id/nav_perfil"
@@ -24,7 +24,7 @@
             android:title="Ver perfil" />
         <item
             android:id="@+id/nav_site"
-            android:icon="@drawable/ic_perfil"
+            android:icon="@drawable/ic_sobre"
             android:title="Sobre" />
 
 
