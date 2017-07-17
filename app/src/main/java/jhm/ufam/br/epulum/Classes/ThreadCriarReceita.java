@@ -1,19 +1,9 @@
 package jhm.ufam.br.epulum.Classes;
 
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
-import android.speech.RecognizerIntent;
-import android.util.Log;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import jhm.ufam.br.epulum.Activities.ActivityCriarReceita;
-import jhm.ufam.br.epulum.Activities.ActivityReadingReceita;
-import jhm.ufam.br.epulum.R;
 import jhm.ufam.br.epulum.RVAdapter.RVIngredienteAdapter;
 import jhm.ufam.br.epulum.RVAdapter.RVPassosAdapter;
 
@@ -22,15 +12,6 @@ import jhm.ufam.br.epulum.RVAdapter.RVPassosAdapter;
  */
 
 public class ThreadCriarReceita implements Runnable {
-
-    private enum estados {
-        INICIO,
-        I_P,
-        P_,
-        INGREDIENTES,
-        PASSOS,
-        PAROU
-    }
 
     private final int REQ_CODE_SPEECH_INPUT = 100;
     private final String SIM = "sim";
@@ -46,12 +27,11 @@ public class ThreadCriarReceita implements Runnable {
     private final String prompt_pi= "Diga Ingrediente ou Passo";
     private final String prompt_ingrediente = "Fale o ingrediente";
     private final String prompt_passo = "Fale o passo";
-
     private Receita receita;
     private Context context;
     private String result;
-    public boolean newResult;
-    public boolean para;
+    private boolean newResult;
+    private boolean para;
     private estados eAgora;
     private SpeechWrapper sw;
     private ActivityCriarReceita arr;
@@ -59,9 +39,7 @@ public class ThreadCriarReceita implements Runnable {
     private RVPassosAdapter rv_pass;
     private int ingr;
     private int pass;
-    private boolean primeiro;
-
-
+    private boolean askedResult;
     public ThreadCriarReceita(Receita receita,Context context, SpeechWrapper swr, ActivityCriarReceita arrr, RVIngredienteAdapter ingr, RVPassosAdapter pss) {
         this.receita = receita;
         this.context = context;
@@ -72,62 +50,87 @@ public class ThreadCriarReceita implements Runnable {
         this.pass = 0;
         this.rv_ingr=ingr;
         this.rv_pass=pss;
-        primeiro=true;
         para=false;
+        askedResult = false;
 
     }
 
     @Override
     public void run() {
-
         while (!para) {
-            switch (eAgora){
-                case INICIO:
-                    Speak("adicionar ingrediente ou passo?");
-                    getSpeech(prompt_pi);
-                    if(!para)
-                    if(hasWord(INGREDIENTE)) eAgora=estados.INGREDIENTES;
-                    else if(hasWord(PASSO)) eAgora=estados.PASSOS;
-                    break;
-                case INGREDIENTES:
-                    getSpeech(prompt_ingrediente);
-                    if(!para) {
-                        if (hasWord(ADICIONAR) && hasWord(PASSO)) {
-                            eAgora = estados.PASSOS;
-                        }if(hasWord(PARA) && !hasWord(" "+PARA) && !hasWord(PARA+" ")){
-                            para=true;
-
-                        } else {
-                            receita.addIngrediente(result);
-                            arr.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    rv_ingr.notifyDataSetChanged();
-                                }
-                            });
-                            Speak("próximo");
-                        }
-                    }
-                    break;
-                case PASSOS:
-                    getSpeech(prompt_passo);
-                    if(!para) {
-                        if (hasWord(ADICIONAR) && hasWord(INGREDIENTE)) {
-                            eAgora = estados.INGREDIENTES;
-                        } if(hasWord(PARA) && !hasWord(" "+PARA) && !hasWord(PARA+" ")){
-                            para=true;
-                        } else{
-                            receita.addPasso(result);
-                            arr.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    rv_pass.notifyDataSetChanged();
-                                }
-                            });
-                            Speak("Próximo");
-                        }
-                    }
+            if (newResult) {
+                novoResultado();
+            } else if (!askedResult) {
+                semResultado();
             }
+            sleep(30);
+        }
+    }
+
+    public void novoResultado() {
+        newResult = false;
+        askedResult = false;
+        switch (eAgora) {
+            case INICIO:
+                if (!para) {
+                    if (hasWord(INGREDIENTE)) eAgora = estados.INGREDIENTES;
+                    else if (hasWord(PASSO)) eAgora = estados.PASSOS;
+                }
+                break;
+            case INGREDIENTES:
+                if (!para) {
+                    if (hasWord(ADICIONAR) && hasWord(PASSO)) {
+                        eAgora = estados.PASSOS;
+                    } else if (hasWord(PARA) && !hasWord(" " + PARA) && !hasWord(PARA + " ")) {
+                        para = true;
+
+                    } else {
+                        receita.addIngrediente(result);
+                        arr.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                rv_ingr.notifyItemInserted(receita.getIngredientes().size() - 1);
+                            }
+                        });
+                        Speak("próximo");
+                    }
+                }
+                break;
+            case PASSOS:
+                if (!para) {
+                    if (hasWord(ADICIONAR) && hasWord(INGREDIENTE)) {
+                        eAgora = estados.INGREDIENTES;
+                    } else if (hasWord(PARA) && !hasWord(" " + PARA) && !hasWord(PARA + " ")) {
+                        para = true;
+                    } else {
+                        receita.addPasso(result);
+                        arr.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                rv_pass.notifyItemInserted(receita.getPassos().size() - 1);
+                            }
+                        });
+                        Speak("Próximo");
+                    }
+                }
+                break;
+        }
+    }
+
+    public void semResultado() {
+        switch (eAgora) {
+            case INICIO:
+                Speak("adicionar ingrediente ou passo?");
+                getSpeech(prompt_pi);
+
+                break;
+            case INGREDIENTES:
+                getSpeech(prompt_ingrediente);
+
+                break;
+            case PASSOS:
+                getSpeech(prompt_passo);
+                break;
         }
     }
 
@@ -148,7 +151,7 @@ public class ThreadCriarReceita implements Runnable {
     }
 
     public boolean hasWord(String word) {
-        if(word!=null)
+        if (result != null)
         return result.contains(word);
         else return false;
     }
@@ -160,11 +163,17 @@ public class ThreadCriarReceita implements Runnable {
         }
     }
 
-    public void getSpeech(String prompt) {
+    public void getSpeech(final String prompt) {
         result=null;
         if(!para) {
-            arr.promptSpeechInput(prompt);
-            while (!newResult && !para) Log.i("result", "not done speaking");
+            arr.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    arr.promptSpeechInput(prompt);
+                }
+            });
+
+            askedResult = true;
         }
     }
 
@@ -173,5 +182,38 @@ public class ThreadCriarReceita implements Runnable {
             Thread.sleep(amount);
         } catch (Exception e) {
         }
+    }
+
+    public boolean isNewResult() {
+        return newResult;
+    }
+
+    public void setNewResult(boolean newResult) {
+        this.newResult = newResult;
+    }
+
+    public boolean isPara() {
+        return para;
+    }
+
+    public void setPara(boolean para) {
+        this.para = para;
+    }
+
+    public boolean isAskedResult() {
+        return askedResult;
+    }
+
+    public void setAskedResult(boolean askedResult) {
+        this.askedResult = askedResult;
+    }
+
+    private enum estados {
+        INICIO,
+        I_P,
+        P_,
+        INGREDIENTES,
+        PASSOS,
+        PAROU
     }
 }
