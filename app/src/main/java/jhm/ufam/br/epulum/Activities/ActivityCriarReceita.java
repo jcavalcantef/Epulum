@@ -137,7 +137,6 @@ public class ActivityCriarReceita extends AppCompatActivity
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -190,17 +189,13 @@ public class ActivityCriarReceita extends AppCompatActivity
         return true;
     }
 
-    public void promptSpeechInput(String prompt) {
+    public void promptSpeechInput() {
         criarReceita.setNewResult(false);
         mSpeechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, languagePref);
         mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, languagePref);
         mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_ONLY_RETURN_LANGUAGE_PREFERENCE, languagePref);
         mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true);
-        if(prompt!=null) {
-            mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, prompt);
-        }
-
         try {
             mSpeechRecognizer.startListening(mSpeechRecognizerIntent);
             Log.i("listening", "asked to listen");
@@ -241,7 +236,6 @@ public class ActivityCriarReceita extends AppCompatActivity
     public void onError(int error) {
         Log.i("listening", "Listening error");
         mIslistening = false;
-
     }
 
     @Override
@@ -256,7 +250,6 @@ public class ActivityCriarReceita extends AppCompatActivity
             Log.i("listening", "new result " + criarReceita.getResult());
             mIslistening = false;
         }
-
     }
 
     @Override

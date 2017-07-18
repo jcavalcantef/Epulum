@@ -112,7 +112,7 @@ public class ActivityReceita extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Intent intentMain = new Intent(ActivityReceita.this,
-                        ActivityReadingReceita.class);
+                        ActivityFazerReceita.class);
                 intentMain.putExtra("receita", receita);
                 intentMain.putExtra("nome", nome);
                 intentMain.putExtra("email", email);

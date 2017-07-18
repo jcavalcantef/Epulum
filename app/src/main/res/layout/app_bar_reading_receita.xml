@@ -28,13 +28,13 @@
             android:id="@+id/btn_nova_lista"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:layout_marginLeft="45dp"
             android:layout_marginStart="45dp"
             android:layout_marginTop="117dp"
-            android:text="Reiniciar"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:text="Iniciar" />
 
         <Button
             android:id="@+id/btn_repetir"

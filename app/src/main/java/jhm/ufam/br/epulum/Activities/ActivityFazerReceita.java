@@ -1,7 +1,7 @@
 package jhm.ufam.br.epulum.Activities;
 
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -24,7 +24,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,49 +31,50 @@ import org.solovyev.android.views.llm.LinearLayoutManager;
 
 import java.util.ArrayList;
 
-import jhm.ufam.br.epulum.Classes.ItemClickSupport;
-import jhm.ufam.br.epulum.Classes.ListaCompras;
-import jhm.ufam.br.epulum.Classes.SpeechWrapper;
-import jhm.ufam.br.epulum.Classes.ThreadCriarListaCompras;
-import jhm.ufam.br.epulum.Classes.ThreadCriarReceita;
+import jhm.ufam.br.epulum.Classes.LeitorReceita;
 import jhm.ufam.br.epulum.R;
 import jhm.ufam.br.epulum.RVAdapter.RVIngredienteAdapter;
 import jhm.ufam.br.epulum.RVAdapter.RVPassosAdapter;
-import jhm.ufam.br.epulum.Classes.Receita;
+import jhm.ufam.br.epulum.Classes.*;
 
 /**
  * Created by Mateus on 21/06/2017.
  */
 
-public class ActivityCriarListaCompras extends AppCompatActivity
+public class ActivityFazerReceita extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, RecognitionListener, SensorEventListener {
-    private final int REQ_CODE_SPEECH_INPUT = 100;
-    private final String languagePref = "pt-BR";
-    private ListaCompras receita;
+    private Receita receita;
     private RecyclerView rv_ingredientes;
     private RecyclerView rv_passos;
     private SpeechWrapper sh;
-    private TextView txtNomeBar;
-    private TextView txtEmailBar;
+    private TextView txNomeBar;
+    private TextView txEmailBar;
     private String nome;
     private String email;
-    private ThreadCriarListaCompras criarReceita;
-    private Thread cr;
-    private ActivityCriarListaCompras acr;
-    private RVIngredienteAdapter RVingradapter;
-    private RVPassosAdapter RVPassAdapter;
+    private LeitorReceita lr;
+    private boolean leitorOn;
+    private Thread leitor;
+    private final int REQ_CODE_SPEECH_INPUT = 100;
+    private ThreadFazerReceita tfr;
+    private ActivityFazerReceita acrr;
+    private Thread fazReceita;
     private SpeechRecognizer mSpeechRecognizer;
     private Intent mSpeechRecognizerIntent;
     private boolean mIslistening;
     private SensorManager mSensorManager;
     private Sensor mProximity;
+    private final String languagePref = "pt-BR";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_criar_lista_compras);
+        setContentView(R.layout.activity_reading_receita);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        acrr=this;
+
+        Intent in = getIntent();
+        receita = (Receita) in.getSerializableExtra("receita");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -85,26 +85,16 @@ public class ActivityCriarListaCompras extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        sh=new SpeechWrapper(getApplicationContext());
-        Intent in = getIntent();
-        if(in.hasExtra("receita")){
-            receita = (ListaCompras) in.getSerializableExtra("receita");
-        }else receita = new ListaCompras();
-        acr=this;
+        TextView txt_nome_receita = (TextView) findViewById(R.id.txt_lista_compras);
+        txt_nome_receita.setText(receita.getNome());
 
-        txtEmailBar=(TextView)findViewById(R.id.txtBarEmail);
-        txtNomeBar=(TextView)findViewById(R.id.txtBarNome);
-        nome=in.getStringExtra("nome");
-        email=in.getStringExtra("email");
-        //txtEmailBar.setText(email);
-        //txtNomeBar.setText(nome);
-        criarReceita=null;
-        cr=null;
-
-        doButtons();
         doRecyclerView();
+        doButton();
+        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        mSpeechRecognizer.setRecognitionListener(this);
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
     }
-
 
     @Override
     public void onBackPressed() {
@@ -138,7 +128,6 @@ public class ActivityCriarListaCompras extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -146,39 +135,39 @@ public class ActivityCriarListaCompras extends AppCompatActivity
 
         if (id == R.id.nav_procurar_receita) {
             // Handle the camera action
-            Intent intentNewActivity = new Intent(ActivityCriarListaCompras.this ,
+            Intent intentNewActivity = new Intent(ActivityFazerReceita.this,
                     ActivityMain.class);
-            intentNewActivity.putExtra("nome",nome);
-            intentNewActivity.putExtra("email",email);
-            ActivityCriarListaCompras.this.startActivity(intentNewActivity);
+            intentNewActivity.putExtra("nome", nome);
+            intentNewActivity.putExtra("email", email);
+            ActivityFazerReceita.this.startActivity(intentNewActivity);
         } else if (id == R.id.nav_criar_receita) {
-            Intent intentNewActivity = new Intent(ActivityCriarListaCompras.this ,
+            Intent intentNewActivity = new Intent(ActivityFazerReceita.this,
                     ActivityCriarReceita.class);
-            intentNewActivity.putExtra("nome",nome);
-            intentNewActivity.putExtra("email",email);
-            ActivityCriarListaCompras.this.startActivity(intentNewActivity);
+            intentNewActivity.putExtra("nome", nome);
+            intentNewActivity.putExtra("email", email);
+            ActivityFazerReceita.this.startActivity(intentNewActivity);
         } else if (id == R.id.nav_receitas_salvas) {
-            Intent intentNewActivity = new Intent(ActivityCriarListaCompras.this ,
+            Intent intentNewActivity = new Intent(ActivityFazerReceita.this,
                     ActivityReceitasSalvas.class);
-            intentNewActivity.putExtra("nome",nome);
-            intentNewActivity.putExtra("email",email);
-            ActivityCriarListaCompras.this.startActivity(intentNewActivity);
-        }  else if (id == R.id.nav_perfil) {
-            Intent intentNewActivity = new Intent(ActivityCriarListaCompras.this ,
+            intentNewActivity.putExtra("nome", nome);
+            intentNewActivity.putExtra("email", email);
+            ActivityFazerReceita.this.startActivity(intentNewActivity);
+        } else if (id == R.id.nav_perfil) {
+            Intent intentNewActivity = new Intent(ActivityFazerReceita.this,
                     ActivityPerfil.class);
-            intentNewActivity.putExtra("nome",nome);
-            intentNewActivity.putExtra("email",email);
-            ActivityCriarListaCompras.this.startActivity(intentNewActivity);
+            intentNewActivity.putExtra("nome", nome);
+            intentNewActivity.putExtra("email", email);
+            ActivityFazerReceita.this.startActivity(intentNewActivity);
 
-        }else if(id == R.id.nav_site){
+        } else if (id == R.id.nav_site) {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://epulum.000webhostapp.com"));
             startActivity(browserIntent);
-        }else if (id == R.id.nav_lista_compras){
-            Intent intentNewActivity = new Intent(ActivityCriarListaCompras.this,
+        } else if (id == R.id.nav_lista_compras){
+            Intent intentNewActivity = new Intent(ActivityFazerReceita.this,
                     ActivityListaCompras.class);
             intentNewActivity.putExtra("nome", nome);
             intentNewActivity.putExtra("email", email);
-            ActivityCriarListaCompras.this.startActivity(intentNewActivity);
+            ActivityFazerReceita.this.startActivity(intentNewActivity);
 
         }
 
@@ -188,7 +177,7 @@ public class ActivityCriarListaCompras extends AppCompatActivity
     }
 
     public void promptSpeechInput() {
-        criarReceita.setNewResult(false);
+        tfr.setNewResult(false);
         mSpeechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, languagePref);
         mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, languagePref);
@@ -245,9 +234,9 @@ public class ActivityCriarListaCompras extends AppCompatActivity
             mIslistening = false;
             Log.i("listening", "matches is null");
         } else {
-            criarReceita.setResult(matches.get(0));
-            criarReceita.setNewResult(true);
-            Log.i("listening", "new result " + criarReceita.getResult());
+            tfr.setResult(matches.get(0));
+            tfr.setNewResult(true);
+            Log.i("listening", "new result " + tfr.getResult());
             mIslistening = false;
         }
 
@@ -268,8 +257,8 @@ public class ActivityCriarListaCompras extends AppCompatActivity
         float distance = event.values[0];
         Log.v("sensor", "" + distance);
         if (event.values[0] == 0.0f) {
-            if (criarReceita != null)
-                if (!mIslistening && criarReceita.isAskedResult()) {
+            if (tfr != null)
+                if (!mIslistening && tfr.isAskedResult()) {
                     mSpeechRecognizer.startListening(mSpeechRecognizerIntent);
                 }
         }
@@ -279,6 +268,49 @@ public class ActivityCriarListaCompras extends AppCompatActivity
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    private void doRecyclerView(){
+        rv_ingredientes = (RecyclerView) findViewById(R.id.rv_ingrediente);
+        rv_passos = (RecyclerView) findViewById(R.id.rv_passos);
+
+        LinearLayoutManager llm = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        rv_ingredientes.setLayoutManager(llm);
+        rv_ingredientes.setHasFixedSize(true);
+        LinearLayoutManager llm2 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        rv_passos.setLayoutManager(llm2);
+        rv_passos.setHasFixedSize(true);
+
+        RVIngredienteAdapter RVingradapter = new RVIngredienteAdapter(receita.getIngredientes());
+        rv_ingredientes.setAdapter(RVingradapter);
+        RVPassosAdapter RVPassAdapter = new RVPassosAdapter(receita.getPassos());
+        rv_passos.setAdapter(RVPassAdapter);
+    }
+    private void doButton(){
+        Button lerReceita = (Button) findViewById(R.id.btn_nova_lista);
+        sh = new SpeechWrapper(getApplicationContext());
+        lr = new LeitorReceita(receita, sh);
+        Button pararLeitura = (Button) findViewById(R.id.btn_parar_leitura);
+        pararLeitura.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tfr.setPara(true);
+                sh.Stop();
+                fazReceita.interrupt();
+                if (leitorOn) {
+                    lr.setCanRead(false);
+                    leitorOn = false;
+                }
+            }
+        });
+
+        lerReceita.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                tfr= new ThreadFazerReceita(receita, getApplicationContext(), sh, acrr);
+                fazReceita= new Thread(tfr);
+                fazReceita.start();
+            }
+        });
     }
 
     @Override
@@ -295,83 +327,4 @@ public class ActivityCriarListaCompras extends AppCompatActivity
         mSensorManager.unregisterListener(this);
     }
 
-    private void doRecyclerView(){
-        rv_ingredientes=(RecyclerView)findViewById(R.id.rv_ingrediente);
-
-        LinearLayoutManager llm = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        rv_ingredientes.setLayoutManager(llm);
-        rv_ingredientes.setHasFixedSize(true);
-
-        RVingradapter = new RVIngredienteAdapter(receita.getItens());
-        rv_ingredientes.setAdapter(RVingradapter);
-
-        ItemClickSupport.addTo(rv_ingredientes).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
-            @Override
-            public void onItemClicked(RecyclerView recyclerView, final int position, View v) {
-                final Dialog alteraReceitaDialog = new Dialog(ActivityCriarListaCompras.this);
-                alteraReceitaDialog.setContentView(R.layout.dialog_alter_text);
-                alteraReceitaDialog.setTitle("Item");
-                TextView title =(TextView)alteraReceitaDialog.findViewById(R.id.txt_dialog_title);
-                title.setText("Ingrediente");
-                final EditText ingr = (EditText) alteraReceitaDialog.findViewById(R.id.et_item);
-                ingr.setText(receita.getItens().get(position));
-
-                Button altera = (Button)alteraReceitaDialog.findViewById(R.id.btn_alterar);
-                altera.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        receita.modifyItem(position, ingr.getText().toString());
-                        RVingradapter.notifyDataSetChanged();
-                        alteraReceitaDialog.dismiss();
-                    }
-                });
-
-                Button remover = (Button)alteraReceitaDialog.findViewById(R.id.btn_remover);
-                remover.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        receita.removeItem(position);
-                        RVingradapter.notifyDataSetChanged();
-                        alteraReceitaDialog.dismiss();
-                    }
-                });
-
-                Button cancelar = (Button) alteraReceitaDialog.findViewById(R.id.btn_cancelar);
-                cancelar.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        alteraReceitaDialog.dismiss();
-                    }
-                });
-                alteraReceitaDialog.show();
-            }
-        });
-    }
-    private void doButtons(){
-        Button comecar = (Button) findViewById(R.id.btn_comecar);
-        comecar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(cr!=null)
-                    cr.interrupt();
-                criarReceita = new ThreadCriarListaCompras(receita, getApplicationContext(), sh, acr, RVingradapter);
-                cr= new Thread(criarReceita);
-                if(!criarReceita.isPara()) {
-                    criarReceita.setPara(false);
-                    cr.start();
-                }
-            }
-        });
-
-        Button pararLeitura = (Button) findViewById(R.id.btn_para);
-        pararLeitura.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                criarReceita.setPara(true);
-                sh.Stop();
-                cr.interrupt();
-
-            }
-        });
-    }
 }

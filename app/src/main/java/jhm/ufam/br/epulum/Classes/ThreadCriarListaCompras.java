@@ -1,22 +1,11 @@
 package jhm.ufam.br.epulum.Classes;
 
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
-import android.speech.RecognizerIntent;
 import android.util.Log;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import jhm.ufam.br.epulum.Activities.ActivityCriarListaCompras;
-import jhm.ufam.br.epulum.Activities.ActivityCriarReceita;
-import jhm.ufam.br.epulum.Activities.ActivityReadingReceita;
-import jhm.ufam.br.epulum.R;
 import jhm.ufam.br.epulum.RVAdapter.RVIngredienteAdapter;
-import jhm.ufam.br.epulum.RVAdapter.RVPassosAdapter;
 
 /**
  * Created by Mateus on 11/07/2017.
@@ -52,15 +41,15 @@ public class ThreadCriarListaCompras implements Runnable {
     private ListaCompras receita;
     private Context context;
     private String result;
-    public boolean newResult;
-    public boolean para;
+    private boolean newResult;
+    private boolean para;
+    private boolean askedResult;
     private estados eAgora;
     private SpeechWrapper sw;
     private ActivityCriarListaCompras arr;
     private RVIngredienteAdapter rv_ingr;
     private int ingr;
     private int pass;
-    private boolean primeiro;
 
 
     public ThreadCriarListaCompras(ListaCompras receita,Context context, SpeechWrapper swr, ActivityCriarListaCompras arrr, RVIngredienteAdapter ingr) {
@@ -72,7 +61,6 @@ public class ThreadCriarListaCompras implements Runnable {
         this.ingr = 0;
         this.pass = 0;
         this.rv_ingr=ingr;
-        primeiro=true;
         para=false;
 
     }
@@ -87,7 +75,7 @@ public class ThreadCriarListaCompras implements Runnable {
                     eAgora=estados.INGREDIENTES;
                     break;
                 case INGREDIENTES:
-                    getSpeech(prompt_item_novo);
+                    getSpeech();
                     if(!para) {
                         if(hasWord(PARA) && !hasWord(" "+PARA) && !hasWord(PARA+" ")){
                             para=true;
@@ -129,11 +117,16 @@ public class ThreadCriarListaCompras implements Runnable {
         }
     }
 
-    public void getSpeech(String prompt) {
+    public void getSpeech() {
         result=null;
         if(!para) {
-            arr.promptSpeechInput(prompt);
-            while (!newResult && !para) Log.i("result", "not done speaking");
+            arr.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    arr.promptSpeechInput();
+                }
+            });
+            askedResult = true;
         }
     }
 
@@ -142,5 +135,29 @@ public class ThreadCriarListaCompras implements Runnable {
             Thread.sleep(amount);
         } catch (Exception e) {
         }
+    }
+
+    public boolean isNewResult() {
+        return newResult;
+    }
+
+    public void setNewResult(boolean newResult) {
+        this.newResult = newResult;
+    }
+
+    public boolean isPara() {
+        return para;
+    }
+
+    public void setPara(boolean para) {
+        this.para = para;
+    }
+
+    public boolean isAskedResult() {
+        return askedResult;
+    }
+
+    public void setAskedResult(boolean askedResult) {
+        this.askedResult = askedResult;
     }
 }

@@ -21,7 +21,7 @@ public class ThreadCriarReceita implements Runnable {
     private final String REPETE = "repete";
     private final String ESPERA = "espera";
     private final String ADICIONAR = "adicionar";
-            private final String RECEITA ="receita";
+    private final String RECEITA ="receita";
     private final String INGREDIENTE = "ingrediente";
     private final String PASSO = "passo";
     private final String prompt_pi= "Diga Ingrediente ou Passo";
@@ -121,15 +121,15 @@ public class ThreadCriarReceita implements Runnable {
         switch (eAgora) {
             case INICIO:
                 Speak("adicionar ingrediente ou passo?");
-                getSpeech(prompt_pi);
+                getSpeech();
 
                 break;
             case INGREDIENTES:
-                getSpeech(prompt_ingrediente);
+                getSpeech();
 
                 break;
             case PASSOS:
-                getSpeech(prompt_passo);
+                getSpeech();
                 break;
         }
     }
@@ -163,13 +163,13 @@ public class ThreadCriarReceita implements Runnable {
         }
     }
 
-    public void getSpeech(final String prompt) {
+    public void getSpeech() {
         result=null;
         if(!para) {
             arr.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    arr.promptSpeechInput(prompt);
+                    arr.promptSpeechInput();
                 }
             });
 
