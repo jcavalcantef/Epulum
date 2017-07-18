@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import jhm.ufam.br.epulum.Classes.Receita;
 
@@ -16,15 +17,29 @@ public class MyDBHandler extends SQLiteOpenHelper{
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "recipesDB.db";
-    public static final String TABLE_RECIPES = "Receitas";
+    public static final String TABLE_RECEITAS = "Receitas";
 
-    public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_RECIPENAME = "nome";
-    public static final String COLUMN_RECIPEDESCRIPTION = "descricao";
-    public static final String COLUMN_RECIPEPHOTOID = "photoid";
-    public static final String COLUMN_RECIPEINGREDIENTS = "ingredientes";
-    public static final String COLUMN_RECIPESTEPS = "passos";
-
+    public static final String COLUNA_id="id";
+    public static final String COLUNA_idcategoria="idcategoria";
+    public static final String COLUNA_idusuario="idusuario";
+    public static final String COLUNA_nome="nome";
+    public static final String COLUNA_tempopreparo="tempopreparo";
+    public static final String COLUNA_descricao="descricao";
+    public static final String COLUNA_foto="foto";
+    public static final String COLUNA_ingredientes="ingredientes";
+    public static final String COLUNA_passos="passos";
+    public static final String COLUNA_photoid = "photoid";
+    public static final String TABLE_CREATE = "CREATE TABLE receitas " +
+            "( "+COLUNA_id+" INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUNA_idcategoria+" INT, " +
+            COLUNA_idusuario+" INT, " +
+            COLUNA_nome+" TEXT, " +
+            COLUNA_tempopreparo+" TEXT, " +
+            COLUNA_descricao+" TEXT, " +
+            COLUNA_foto+" TEXT, " +
+            COLUNA_ingredientes+" TEXT, " +
+            COLUNA_passos+" TEXT," +
+            COLUNA_photoid + " INT );";
 
     public MyDBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
@@ -36,20 +51,17 @@ public class MyDBHandler extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_PRODUCTS_TABLE = "CREATE TABLE " +
-                TABLE_RECIPES + "("
-                + COLUMN_ID + " INTEGER PRIMARY KEY," +
-                COLUMN_RECIPENAME + " TEXT," +
-                COLUMN_RECIPEDESCRIPTION + " TEXT" +
-                COLUMN_RECIPEPHOTOID + " INTEGER" +
-                COLUMN_RECIPEINGREDIENTS + "TEXT" +
-                COLUMN_RECIPESTEPS + " TEXT" + ")";
-        db.execSQL(CREATE_PRODUCTS_TABLE);
+        try {
+
+            db.execSQL(TABLE_CREATE);
+        }catch (Exception e) {
+            Log.e("Erro ao criar tabela", e.getMessage());
+        }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECIPES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECEITAS);
         onCreate(db);
     }
 /*

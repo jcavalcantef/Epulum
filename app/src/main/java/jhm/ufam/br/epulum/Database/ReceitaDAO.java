@@ -36,15 +36,15 @@ public class ReceitaDAO {
 *
 * */
     public Receita getReceita(String nome){
-        Receita produto = null;
-        String sqlQuery = "SELECT * FROM " + MyDBHandler.TABLE_RECIPES + " WHERE " +
-                MyDBHandler.COLUMN_RECIPENAME + " LIKE '" + nome + "%'";
+        Receita receita = null;
+        String sqlQuery = "SELECT * FROM " + MyDBHandler.TABLE_RECEITAS + " WHERE " +
+                MyDBHandler.COLUNA_nome + " LIKE '" + nome + "%'";
         Cursor cursor = this.bancoDeDados.rawQuery(sqlQuery,null);
         if(cursor.moveToNext()){
-            produto = new Receita(cursor.getString(0), cursor.getString(1),cursor.getInt(2),cursor.getString(3), cursor.getString(4));
+            receita = new Receita(cursor.getInt(1),cursor.getInt(2),cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8), cursor.getInt(9));
         }
         cursor.close();
-        return produto;
+        return receita;
     }
 /*
 *
@@ -57,11 +57,11 @@ public class ReceitaDAO {
 * */
     public ArrayList<Receita> getAllReceitas(){
         ArrayList<Receita> receitas = new ArrayList<Receita>();
-        String selectQuery = "SELECT * FROM " + MyDBHandler.TABLE_RECIPES;
+        String selectQuery = "SELECT * FROM " + MyDBHandler.TABLE_RECEITAS;
         Cursor cursor = bancoDeDados.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()){
             do{
-                Receita r = new Receita(cursor.getString(0), cursor.getString(1),cursor.getInt(2),cursor.getString(3), cursor.getString(4));
+                Receita r = new Receita(cursor.getInt(1),cursor.getInt(2),cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8), cursor.getInt(9));
                 receitas.add(r);
             } while (cursor.moveToNext());
         }
@@ -80,9 +80,24 @@ public class ReceitaDAO {
 * */
     public boolean addReceita(Receita r){
         try{
-            String sqlCmd = "INSERT INTO " + MyDBHandler.TABLE_RECIPES + " VALUES ('" +
-                    r.getNome() + "', '"+ r.getDescricao() + "', '" +
-                    r.getPhotoId() + "', '" + r.getIngredientesString() + "');";
+            Log.v("ADD RECEITA INGREDIENTE",r.getIngredientes().toString());
+            Log.v("ADD RECEITA PASSOS", r.getPassos().toString());
+            String sqlCmd = "INSERT INTO " + MyDBHandler.TABLE_RECEITAS +
+                    " ( " + MyDBHandler.COLUNA_nome + ", " +
+                            MyDBHandler.COLUNA_tempopreparo + ", " +
+                            MyDBHandler.COLUNA_descricao + ", " +
+                            MyDBHandler.COLUNA_foto + ", " +
+                            MyDBHandler.COLUNA_ingredientes + ", " +
+                            MyDBHandler.COLUNA_passos + ", " +
+                            MyDBHandler.COLUNA_photoid + " ) " +
+                    " VALUES ('" +
+                    r.getNome() + "', '"+
+                    r.getTempopreparo() + "', '"+
+                    r.getDescricao() + "', '" +
+                    r.getFoto() + "', '" +
+                    r.getIngredientes().toString() + "', '" +
+                    r.getPassos().toString() + "', '" +
+                    r.getPhotoId() + "' );";
             this.bancoDeDados.execSQL(sqlCmd);
             return true;
         }catch (Exception e){
@@ -101,7 +116,7 @@ public class ReceitaDAO {
     * */
     public boolean removeReceita(Receita r){
         try{
-            String sqlCmd = "DELETE FROM " + MyDBHandler.TABLE_RECIPES + " WHERE " + MyDBHandler.COLUMN_RECIPENAME + "='" + r.getNome() + "'";
+            String sqlCmd = "DELETE FROM " + MyDBHandler.TABLE_RECEITAS + " WHERE " + MyDBHandler.COLUNA_nome + "='" + r.getNome() + "';";
             this.bancoDeDados.execSQL(sqlCmd);
             return true;
         }catch (Exception e){
@@ -120,13 +135,14 @@ public class ReceitaDAO {
 * */
     public boolean updateReceita(Receita r, String nome){
         try{
-            String sqlCmd = "UPDATE " + MyDBHandler.TABLE_RECIPES + " SET " +
-                    MyDBHandler.COLUMN_RECIPEDESCRIPTION + " ='" + r.getDescricao() + "', " +
-                    MyDBHandler.COLUMN_RECIPEPHOTOID + " ='" + r.getPhotoId() + "', " +
-                    MyDBHandler.COLUMN_RECIPEINGREDIENTS + " ='" + r.getIngredientes() + "', " +
-                    MyDBHandler.COLUMN_RECIPESTEPS + " ='" + r.getPassos() + "', " +
-                    MyDBHandler.COLUMN_RECIPENAME + " ='" + r.getNome() + "' " +
-                    "WHERE " + MyDBHandler.COLUMN_RECIPENAME + " ='" + nome + "';";
+
+            String sqlCmd = "UPDATE " + MyDBHandler.TABLE_RECEITAS + " SET " +
+                    MyDBHandler.COLUNA_nome + " ='" + r.getNome() + "', " +
+                    MyDBHandler.COLUNA_descricao+ " ='" + r.getDescricao() + "', " +
+                    MyDBHandler.COLUNA_foto+ " ='" + r.getFoto() + "', " +
+                    MyDBHandler.COLUNA_ingredientes + " ='" + r.getIngredientes().toString() + "', " +
+                    MyDBHandler.COLUNA_passos + " ='" + r.getPassos().toString() + "' " +
+                    "WHERE " + MyDBHandler.COLUNA_nome + " = '" + nome + "' ;";
             this.bancoDeDados.execSQL(sqlCmd);
             return true;
         }catch (Exception e){

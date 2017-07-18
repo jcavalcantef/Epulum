@@ -9,11 +9,15 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class Receita implements Serializable{
     private long _id;
+    private long _idcategoria;
+    private long _idusuario;
     private String nome;
+    private String tempopreparo;
     private String descricao;
-    private int photoId;
+    private String foto;
     private List<String> ingredientes;
     private List<String> passos;
+    private int photoId;
 
     public Receita(String nome, String descricao, int photoId) {
         this.nome = nome;
@@ -28,15 +32,29 @@ public class Receita implements Serializable{
         this.passos=new ArrayList<>();
     }
 
-    public Receita(String nome, String descricao, int photoId, String ingredientes, String passos){
+    public Receita(String nome, String descricao, String foto, String ingredientes, String passos){
         this.nome = nome;
         this.descricao = descricao;
-        this.photoId = photoId;
+        this.foto = foto;
+        this.ingredientes = new ArrayList<>();
+        this.passos = new ArrayList<>();
         this.setAllIngredientes(ingredientes);
         this.setAllPassos(passos);
     }
 
-
+    public Receita(long _idcategoria, long _idusuario, String nome, String tempopreparo, String descricao, String foto, String ingredientes, String passos, int photoId) {
+        this._idcategoria = _idcategoria;
+        this._idusuario = _idusuario;
+        this.nome = nome;
+        this.tempopreparo = tempopreparo;
+        this.descricao = descricao;
+        this.foto = foto;
+        this.ingredientes = new ArrayList<>();
+        this.passos = new ArrayList<>();
+        this.setAllIngredientes(ingredientes);
+        this.setAllPassos(passos);
+        this.photoId = photoId;
+    }
 
     public long get_id() {
         return _id;
@@ -62,26 +80,16 @@ public class Receita implements Serializable{
         this.descricao = descricao;
     }
 
-    public int getPhotoId() {
-        return photoId;
+    public String getFoto() {
+        return foto;
     }
 
-    public void setPhotoId(int photoId) {
-        this.photoId = photoId;
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 
     public List<String> getIngredientes() {
         return ingredientes;
-    }
-
-    public String getIngredientesString(){
-        String s = "[";
-        int i = 0;
-        for(; i < this.ingredientes.size()-1; i++){
-            s = s + ingredientes.get(i) + ", ";
-        }
-        s = s + ingredientes.get(i) + "]";
-        return s;
     }
 
     public void setIngredientes(List<String> ingredientes) {
@@ -96,16 +104,6 @@ public class Receita implements Serializable{
         return passos;
     }
 
-    public String getPassosString(){
-        String s = "[";
-        int i = 0;
-        for(; i < this.passos.size()-1; i++){
-            s = s + passos.get(i) + ", ";
-        }
-        s = s + passos.get(i) + "]";
-        return s;
-    }
-
     public void setPassos(List<String> passos) {
         this.passos = passos;
     }
@@ -116,6 +114,38 @@ public class Receita implements Serializable{
 
     public void addPasso(String pass){
         passos.add(pass);
+    }
+
+    public long get_idcategoria() {
+        return _idcategoria;
+    }
+
+    public void set_idcategoria(long _idcategoria) {
+        this._idcategoria = _idcategoria;
+    }
+
+    public long get_idusuario() {
+        return _idusuario;
+    }
+
+    public void set_idusuario(long _idusuario) {
+        this._idusuario = _idusuario;
+    }
+
+    public String getTempopreparo() {
+        return tempopreparo;
+    }
+
+    public void setTempopreparo(String tempopreparo) {
+        this.tempopreparo = tempopreparo;
+    }
+
+    public int getPhotoId() {
+        return photoId;
+    }
+
+    public void setPhotoId(int photoId) {
+        this.photoId = photoId;
     }
 
     public void modifyIngrediente(int pos, String novo){
@@ -137,21 +167,37 @@ public class Receita implements Serializable{
     public void setAllIngredientes(String all){
         all = all.replaceAll("\\[","").replaceAll("\\]","");
         String[] ingredientesNovos= all.split(",");
-        String bleh;
-        for(int i = 0; i < ingredientesNovos.length; i++){
+        String bleh = "";
+        for(int i = 0; i < ingredientesNovos.length ; i++){
             bleh = ingredientesNovos[i].replaceAll(",", "");
             ingredientes.add(bleh.trim());
             //Log.v("receita", bleh.trim());
         }
 
     }
-
-    public void setAllPassos(String all){
+/*
+* public void setAllIngredientes(String all){
         all = all.replaceAll("\\[","").replaceAll("\\]","");
-        String[] ingredientesNovos = all.split(",");
-        String bleh;
+        List<String> ingredientesNovos= all.split(",");
+        String bleh = "";
         for(int i = 0; i < ingredientesNovos.length; i++){
             bleh = ingredientesNovos[i].replaceAll(",", "");
+            Log.v("STRING BLEH",bleh);
+            ingredientes.add(bleh.trim());
+            //Log.v("receita", bleh.trim());
+        }
+
+    }
+
+* */
+    public void setAllPassos(String all){
+        all = all.replaceAll("\\[","").replaceAll("\\]","");
+        String[] passosNovos= all.split(",");
+        String bleh = "";
+        Log.v("LENGTH", "" + passosNovos.length);
+        for(int i = 0; i < passosNovos.length ; i++){
+            bleh = passosNovos[i].replaceAll(",", "");
+            Log.v("STRING BLEH",bleh + " " + i);
             passos.add(bleh.trim());
             //Log.v("receita", bleh.trim());
         }
