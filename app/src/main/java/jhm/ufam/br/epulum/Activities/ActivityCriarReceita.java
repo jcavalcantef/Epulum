@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import jhm.ufam.br.epulum.Classes.ItemClickSupport;
 import jhm.ufam.br.epulum.Classes.Receita;
 import jhm.ufam.br.epulum.Classes.SpeechWrapper;
-import jhm.ufam.br.epulum.Classes.ThreadCriarReceita;
+import jhm.ufam.br.epulum.Threads.ThreadCriarReceita;
 import jhm.ufam.br.epulum.R;
 import jhm.ufam.br.epulum.RVAdapter.RVIngredienteAdapter;
 import jhm.ufam.br.epulum.RVAdapter.RVPassosAdapter;

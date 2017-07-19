@@ -1,10 +1,12 @@
-package jhm.ufam.br.epulum.Classes;
+package jhm.ufam.br.epulum.Threads;
 
 
 import android.content.Context;
 import android.util.Log;
 
 import jhm.ufam.br.epulum.Activities.ActivityCriarListaCompras;
+import jhm.ufam.br.epulum.Classes.ListaCompras;
+import jhm.ufam.br.epulum.Classes.SpeechWrapper;
 import jhm.ufam.br.epulum.RVAdapter.RVIngredienteAdapter;
 
 /**

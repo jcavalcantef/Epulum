@@ -36,6 +36,7 @@ import jhm.ufam.br.epulum.R;
 import jhm.ufam.br.epulum.RVAdapter.RVIngredienteAdapter;
 import jhm.ufam.br.epulum.RVAdapter.RVPassosAdapter;
 import jhm.ufam.br.epulum.Classes.*;
+import jhm.ufam.br.epulum.Threads.ThreadFazerReceita;
 
 /**
  * Created by Mateus on 21/06/2017.

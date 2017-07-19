@@ -2,6 +2,7 @@ package jhm.ufam.br.epulum.Activities;
 
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -35,12 +36,10 @@ import java.util.ArrayList;
 import jhm.ufam.br.epulum.Classes.ItemClickSupport;
 import jhm.ufam.br.epulum.Classes.ListaCompras;
 import jhm.ufam.br.epulum.Classes.SpeechWrapper;
-import jhm.ufam.br.epulum.Classes.ThreadCriarListaCompras;
-import jhm.ufam.br.epulum.Classes.ThreadCriarReceita;
+import jhm.ufam.br.epulum.Threads.ThreadCriarListaCompras;
 import jhm.ufam.br.epulum.R;
 import jhm.ufam.br.epulum.RVAdapter.RVIngredienteAdapter;
 import jhm.ufam.br.epulum.RVAdapter.RVPassosAdapter;
-import jhm.ufam.br.epulum.Classes.Receita;
 
 /**
  * Created by Mateus on 21/06/2017.
@@ -103,6 +102,10 @@ public class ActivityCriarListaCompras extends AppCompatActivity
 
         doButtons();
         doRecyclerView();
+        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        mSpeechRecognizer.setRecognitionListener(this);
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
     }
 
 
@@ -235,7 +238,6 @@ public class ActivityCriarListaCompras extends AppCompatActivity
     public void onError(int error) {
         Log.i("listening", "Listening error");
         mIslistening = false;
-
     }
 
     @Override
@@ -250,7 +252,6 @@ public class ActivityCriarListaCompras extends AppCompatActivity
             Log.i("listening", "new result " + criarReceita.getResult());
             mIslistening = false;
         }
-
     }
 
     @Override
@@ -273,7 +274,6 @@ public class ActivityCriarListaCompras extends AppCompatActivity
                     mSpeechRecognizer.startListening(mSpeechRecognizerIntent);
                 }
         }
-
     }
 
     @Override

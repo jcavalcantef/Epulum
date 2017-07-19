@@ -22,28 +22,29 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/colorBackground">
 
         <Button
             android:id="@+id/btn_nova_lista"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="117dp"
-            android:text="Ler Receita"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:layout_marginLeft="30dp"
             android:layout_marginStart="30dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_marginTop="117dp"
+            android:text="Ler Receita" />
 
         <Button
             android:id="@+id/btn_repetir"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fazer Receita"
             android:layout_above="@+id/scrollView2"
+            android:layout_toEndOf="@+id/btn_nova_lista"
             android:layout_toRightOf="@+id/btn_nova_lista"
-            android:layout_toEndOf="@+id/btn_nova_lista" />
+            android:text="Fazer Receita" />
 
         <Button
             android:id="@+id/btn_parar_leitura"
@@ -61,16 +62,17 @@
             android:layout_above="@+id/btn_repetir"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="18dp"
+            android:background="@drawable/grad"
             android:text="Nome da receita"
             android:textSize="24sp" />
 
         <ScrollView
+            android:id="@+id/scrollView2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/btn_nova_lista"
-            android:id="@+id/scrollView2">
+            android:layout_below="@+id/btn_nova_lista">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -84,6 +86,7 @@
                     android:id="@+id/txt_ingrediente"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/grad"
                     android:text="     Ingredientes"
                     android:textSize="24sp" />
 
@@ -104,6 +107,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_below="@+id/rv_ingrediente"
+                    android:background="@drawable/grad"
                     android:text="    Passos"
                     android:textSize="24sp" />
 
@@ -119,8 +123,6 @@
 
             </RelativeLayout>
         </ScrollView>
-
-
 
 
     </RelativeLayout>

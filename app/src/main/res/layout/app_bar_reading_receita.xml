@@ -22,7 +22,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/colorBackground">
 
         <Button
             android:id="@+id/btn_nova_lista"
@@ -61,6 +62,7 @@
             android:layout_above="@+id/btn_repetir"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="18dp"
+            android:background="@drawable/grad"
             android:text="Nome da receita"
             android:textSize="24sp" />
 
@@ -84,6 +86,7 @@
                     android:id="@+id/txt_ingrediente"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/grad"
                     android:text="     Ingredientes"
                     android:textSize="24sp" />
 
@@ -104,6 +107,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_below="@+id/rv_ingrediente"
+                    android:background="@drawable/grad"
                     android:text="    Passos"
                     android:textSize="24sp" />
 

@@ -1,9 +1,11 @@
-package jhm.ufam.br.epulum.Classes;
+package jhm.ufam.br.epulum.Threads;
 
 
 import android.content.Context;
 
 import jhm.ufam.br.epulum.Activities.ActivityCriarReceita;
+import jhm.ufam.br.epulum.Classes.Receita;
+import jhm.ufam.br.epulum.Classes.SpeechWrapper;
 import jhm.ufam.br.epulum.RVAdapter.RVIngredienteAdapter;
 import jhm.ufam.br.epulum.RVAdapter.RVPassosAdapter;
 

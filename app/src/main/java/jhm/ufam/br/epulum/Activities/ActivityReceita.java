@@ -77,6 +77,8 @@ public class ActivityReceita extends AppCompatActivity
 
         RVIngredienteAdapter RVingradapter = new RVIngredienteAdapter(receita.getIngredientes());
         rv_ingredientes.setAdapter(RVingradapter);
+        //rv_passos.addItemDecoration(new DividerItemDecoration(this, android.support.v7.widget.LinearLayoutManager.VERTICAL));
+        rv_ingredientes.addItemDecoration(new DividerItemDecoration(this, android.support.v7.widget.LinearLayoutManager.VERTICAL));
         RVPassosAdapter RVPassAdapter = new RVPassosAdapter(receita.getPassos());
         rv_passos.setAdapter(RVPassAdapter);
 

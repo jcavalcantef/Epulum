@@ -1,10 +1,12 @@
-package jhm.ufam.br.epulum.Classes;
+package jhm.ufam.br.epulum.Threads;
 
 
 import android.content.Context;
 import android.util.Log;
 
 import jhm.ufam.br.epulum.Activities.ActivityFazerReceita;
+import jhm.ufam.br.epulum.Classes.Receita;
+import jhm.ufam.br.epulum.Classes.SpeechWrapper;
 
 /**
  * Created by Mateus on 11/07/2017.

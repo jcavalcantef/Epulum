@@ -22,7 +22,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/colorBackground">
 
         <ImageView
             android:id="@+id/imageView"
@@ -37,12 +38,12 @@
 
         <SearchView
             android:id="@+id/sv_procura"
-            android:queryHint="Procurar Receita"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/imageView"
             android:layout_toEndOf="@+id/imageView"
-            android:layout_toRightOf="@+id/imageView" />
+            android:layout_toRightOf="@+id/imageView"
+            android:queryHint="Procurar Receita" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv"
