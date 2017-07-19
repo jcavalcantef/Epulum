@@ -30,7 +30,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
     public static final String COLUNA_ingredientes="ingredientes";
     public static final String COLUNA_passos="passos";
     public static final String COLUNA_photoid = "photoid";
-    public static final String TABLE_CREATE = "CREATE TABLE IF NOT EXISTS" + TABLE_RECEITAS + " ( " +
+    public static final String TABLE_CREATE = "CREATE TABLE IF NOT EXISTS " + TABLE_RECEITAS + " ( " +
             COLUNA_id + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUNA_idcategoria + " INT, " +
             COLUNA_idusuario + " INT, " +
@@ -117,7 +117,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
         try{
             db.execSQL(POPULATE_CATEGORIAS);
         }catch (Exception e){
-            Log.e("Erro ao criar categorias", e.getMessage());
+            Log.e("Erro categorias", e.getMessage());
         }
     }
 
