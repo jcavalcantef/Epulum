@@ -1,7 +1,6 @@
 package jhm.ufam.br.epulum.Activities;
 
 import android.Manifest;
-import android.app.Application;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -31,7 +30,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.auth.api.Auth;
@@ -46,17 +44,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import jhm.ufam.br.epulum.Classes.CustomVolleyRequest;
 import jhm.ufam.br.epulum.Classes.DividerItemDecoration;
-import jhm.ufam.br.epulum.Classes.Ingrediente;
 import jhm.ufam.br.epulum.Classes.ItemClickSupport;
-import jhm.ufam.br.epulum.Classes.LeitorReceita;
 import jhm.ufam.br.epulum.Classes.SpeechWrapper;
-import jhm.ufam.br.epulum.Database.ReceitaDAO;
 import jhm.ufam.br.epulum.R;
 import jhm.ufam.br.epulum.RVAdapter.RVAdapter;
 import jhm.ufam.br.epulum.Classes.Receita;
@@ -66,8 +59,18 @@ public class ActivityMain extends AppCompatActivity
 
     private static final int RECORD_REQUEST_CODE = 101;
     private static String TAG = "PermissionDemo";
+    private final String server="http://10.208.2.190:8888";
+    private final String url_base="/epulumDev/mainController.php?acao=";
+    private final String url_get_receitas=server+url_base+"readReceitas";
+    private final String url_create_user=server+url_base+"createUsuario";
+    private final String url_server_login=server+url_base+"login";
+    private final String url_criar_receita=server+url_base+"createReceita";
+    private final String em_login="mateus.lucena.work@gmail.com";
+    private final String em_nome="Mateus";
+    private final String em_senha="123";
     private List<Receita> receitas;
     private RecyclerView rv;
+    private RVAdapter adapter;
     private SpeechWrapper sh;
     private GoogleApiClient mGoogleApiClient;
     private ImageLoader imageLoader;
@@ -79,20 +82,12 @@ public class ActivityMain extends AppCompatActivity
     private String nome;
     private String email;
 
-
-
-    /* NOVA CLASSE RECEITADAO, QUE SERVIRÁ DE INTERFACE ENTRE BANCO DE DADOS E A CLASSE RECEITA */
-    public ReceitaDAO receitaDAO;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        /* INICIALIZANDO A CLASSE RECEITADAO, UTILIZADA PARA O BANCO DE DADOS*/
-        receitaDAO = new ReceitaDAO(this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -103,40 +98,20 @@ public class ActivityMain extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
         imgvPerfil = (ImageView) findViewById(R.id.imgvPerfilPhoto);
         txtEmailBar = (TextView) findViewById(R.id.txtBarEmail);
         txtNomeBar = (TextView) findViewById(R.id.txtBarNome);
-
 
         sh = new SpeechWrapper(getApplicationContext());
         doRecyclerView();
         initializeData();
         initializeAdapter();
+        doPermissions();
+        doGoogle();
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
+        signIn();
+        getReceitasFromServer();
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
-        int permission = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.RECORD_AUDIO);
-
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            Log.i(TAG, "Permission to record denied");
-            makeRequest();
-        }
-
-        //volleyTry();
-        try {
-            dealJSON("{\"Sucess\":1,\"Mensagem\":\"A leitura das Receitas foi bem sucedida \",\"Receitas\":[{\"Id\":4,\"Idcategoria\":1,\"Nome\":\"Pudim de Leite\",\"Tempopreparo\":25,\"Descricao\":\"Receita da bisavó\",\"Ingredientes\":\"10 kg de queijo, 20 kg de trigo, 250 ml de leite e 3 kg de acuçar\",\"Passos\":\"1° inserir a camada de doce de leite, 2° inserir a camada de cocholate, 3° Esperar esfriar do forno\"},{\"Id\":5,\"Idcategoria\":1,\"Nome\":\"cocholate del creme\",\"Tempopreparo\":20,\"Descricao\":\"Receita da vovó\",\"Ingredientes\":\"1 kg de queijo, 2 kg de trigo, 500 ml de leite\",\"Passos\":\"1° inserir a camada de queijo, 2° inserir a camada de molho, 3° inserir a lasanha no forno\"},{\"Id\":8,\"Idcategoria\":2,\"Nome\":\"Lazanha Parmegiana\",\"Tempopreparo\":50,\"Descricao\":\"Receita do tio bio\",\"Ingredientes\":\"4 kg de presunto, 3 kg de queijo Ralado, 250 ml de leite e 2 kg de arroz\",\"Passos\":\"1° inserir a camada de presunto, 2° inserir a camada de queijo, 3° Esperar esfriar no forno por 15 minutos\"}]}");
-        }catch(JSONException e){
-            e.printStackTrace();
-        }
     }
 
     protected void makeRequest() {
@@ -144,7 +119,6 @@ public class ActivityMain extends AppCompatActivity
                 new String[]{Manifest.permission.RECORD_AUDIO},
                 RECORD_REQUEST_CODE);
     }
-
 
     @Override
     public void onBackPressed() {
@@ -247,6 +221,7 @@ public class ActivityMain extends AppCompatActivity
         torta.setAllIngredientes("[100 gramas de manteiga, 2 gemas, 4 colheres de açúcar refinado, 200 gramas de farinha de trigo, 500 ml de leite, 1 lata de leite condensado, 2 colheres de sopa de amido de milho, 3 maçãs]");
         Log.v("receita","começa :"+torta.getIngredientes().toString()+": termina");
         receitas.add(torta);
+        criarReceitaServer(torta);
         receitas.add(new Receita("Joelho de Porco", "Joelho de porco com a casca tostada e crocante.", R.drawable.joelho_de_porco));
         receitas.add(new Receita("Hambúrguer Vegano", "Hambúrguer sem carne para quem quer uma refeição saudável.", R.drawable.hamburguer_vegano));
         receitas.add(new Receita("Bolinho De Carne Moída", "", R.drawable.bolinho_de_carne_moida));
@@ -258,7 +233,7 @@ public class ActivityMain extends AppCompatActivity
     }
 
     private void initializeAdapter() {
-        RVAdapter adapter = new RVAdapter(receitas);
+        adapter = new RVAdapter(receitas);
         rv.setAdapter(adapter);
     }
 
@@ -298,6 +273,7 @@ public class ActivityMain extends AppCompatActivity
             email = acct.getEmail();
             ((TextView) findViewById(R.id.txtBarEmail)).setText(nome);
             ((TextView) findViewById(R.id.txtBarNome)).setText(email);
+            createServerUser();
 
             //Initializing image loader
             imageLoader = CustomVolleyRequest.getInstance(this.getApplicationContext())
@@ -353,6 +329,25 @@ public class ActivityMain extends AppCompatActivity
         });
     }
 
+    private void doPermissions(){
+        int permission = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.RECORD_AUDIO);
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            Log.i(TAG, "Permission to record denied");
+            makeRequest();
+        }
+    }
+
+    private void doGoogle(){
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -372,44 +367,18 @@ public class ActivityMain extends AppCompatActivity
         }
     }
 
-    private void volleyTry(){
+    private void getReceitasFromServer(){
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="http://10.224.8.199:8888/epulumDev/mainController.php?acao=readReceitas";
-        //String url ="https://www.google.com";
-
-// Request a string response from the provided URL.
         try {
-            /*JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            JSONArray jsonArray = null;
-                            Log.v("volley","entrou em response");
-                            try {
-                                Log.v("volley",response.toString());
-                                jsonArray = response.getJSONArray("articles");
-                                for(int i=0; i<jsonArray.length(); i++){
-                                    JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-                                    Log.d(TAG, jsonObject.toString());
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                Log.v("volley",e.toString());
-                            }                       }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, "Error: " + error.getMessage());
-                }
-            });*/
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_get_receitas,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             Log.v("volley","Response is: "+ response);
                             // Display the first 500 characters of the response string.
                             try {
-                                dealJSON(response);
+                                addReceitas_JSON(response);
+                                adapter.notifyDataSetChanged();
                             }catch(JSONException e){
                                 e.printStackTrace();
                             }
@@ -420,25 +389,120 @@ public class ActivityMain extends AppCompatActivity
                     Log.v("volley","That didn't work!");
                 }
             });
-// Add the request to the RequestQueue.
             queue.add(stringRequest);
         }catch(NullPointerException e){
             Log.v("volley",e.toString());
         }
     }
 
-    private void dealJSON(String response) throws JSONException{
+    private void addReceitas_JSON(String response) throws JSONException{
         JSONObject f= new JSONObject(response);
-        Log.v("json",f.toString());
+        //Log.v("json",f.toString());
         JSONArray a= f.getJSONArray("Receitas");
-        Log.v("json",a.toString());
+        //Log.v("json",a.toString());
         int i=0;
         while(i<a.length()){
-            Log.v("json",a.get(i).toString());
+            //Log.v("json",a.get(i).toString());
+            f=new JSONObject(a.get(i).toString());
+            /*Log.v("json",f.get("Id").toString());
+            Log.v("json",f.get("Idcategoria").toString());
+            Log.v("json",f.get("Nome").toString());
+            Log.v("json",f.get("Tempopreparo").toString());
+            Log.v("json",f.get("Descricao").toString());
+            Log.v("json",f.get("Ingredientes").toString());
+            Log.v("json",f.get("Passos").toString());*/
+            receitas.add(new Receita(f));
+            Log.v("json",""+(receitas==null));
+
             i++;
         }
 
 
 
+
+    }
+
+    private void createServerUser(){
+        RequestQueue queue = Volley.newRequestQueue(this);
+        try {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_create_user+"&email="+email+"&nome="+nome+"&senha="+em_senha,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.v("volley","Response is: "+ response);
+                            // Display the first 500 characters of the response string.
+                            Log.v("server",url_create_user+"&email="+em_login+"$nome="+em_nome+"&senha="+em_senha);
+
+                                Log.v("server",response);
+
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.v("volley","That didn't work!");
+                }
+            });
+            queue.add(stringRequest);
+        }catch(NullPointerException e){
+            Log.v("volley",e.toString());
+        }
+        serverLogin();
+    }
+
+    private void serverLogin(){
+        RequestQueue queue = Volley.newRequestQueue(this);
+        try {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_server_login+"&email="+email+"&senha="+em_senha,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.v("volley","Response is: "+ response);
+                            // Display the first 500 characters of the response string.
+                            //Log.v("server",url_create_user+"&email="+em_login+"$nome="+em_nome+"&senha="+em_senha);
+
+                            Log.v("server",response);
+
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.v("volley","That didn't work!");
+                }
+            });
+            queue.add(stringRequest);
+        }catch(NullPointerException e){
+            Log.v("volley",e.toString());
+        }
+    }
+
+    private void criarReceitaServer(final Receita receita){
+        RequestQueue queue = Volley.newRequestQueue(this);
+        try {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_criar_receita+
+                    "&nome="+receita.getNome()+"123"+
+                    "&tempopreparo="+receita.getTempoPreparo()+
+                    "&descricao="+receita.getDescricao()+
+                    "&ingredientes="+receita.getIngredientes().toString()+
+                    "&passos="+receita.getPassos().toString()+
+                    "&categoria="+1+
+                    "&idUser="+13,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            //Log.v("receita","Response is: "+ response);
+                            // Display the first 500 characters of the response string.
+                            Log.v("adicionar",response);
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.v("volley","That didn't work!");
+                }
+            });
+            queue.add(stringRequest);
+        }catch(NullPointerException e){
+            Log.v("volley",e.toString());
+        }
+        serverLogin();
     }
 }
