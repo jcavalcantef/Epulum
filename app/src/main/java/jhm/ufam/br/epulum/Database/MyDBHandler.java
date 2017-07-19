@@ -29,17 +29,26 @@ public class MyDBHandler extends SQLiteOpenHelper{
     public static final String COLUNA_ingredientes="ingredientes";
     public static final String COLUNA_passos="passos";
     public static final String COLUNA_photoid = "photoid";
-    public static final String TABLE_CREATE = "CREATE TABLE receitas " +
-            "( "+COLUNA_id+" INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            COLUNA_idcategoria+" INT, " +
-            COLUNA_idusuario+" INT, " +
-            COLUNA_nome+" TEXT, " +
-            COLUNA_tempopreparo+" TEXT, " +
-            COLUNA_descricao+" TEXT, " +
-            COLUNA_foto+" TEXT, " +
-            COLUNA_ingredientes+" TEXT, " +
-            COLUNA_passos+" TEXT," +
+    public static final String TABLE_CREATE = "CREATE TABLE " + TABLE_RECEITAS + " ( " +
+            COLUNA_id + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUNA_idcategoria + " INT, " +
+            COLUNA_idusuario + " INT, " +
+            COLUNA_nome + " TEXT, " +
+            COLUNA_tempopreparo + " TEXT, " +
+            COLUNA_descricao + " TEXT, " +
+            COLUNA_foto + " TEXT, " +
+            COLUNA_ingredientes + " TEXT, " +
+            COLUNA_passos + " TEXT," +
             COLUNA_photoid + " INT );";
+
+    public static final String TABLE_CATEGORIAS = "Categorias";
+    public static final String COLUNA_categoriaid="id";
+    public static final String COLUNA_categorianome="nome";
+    public static final String COLUNA_categoriatipo="tipo";
+    public static final String TABLE_CREATE_CATEGORIA = "CREATE TABLE " + TABLE_CATEGORIAS + " ( " +
+            COLUNA_categoriaid + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUNA_categorianome + " TEXT," +
+            COLUNA_categoriatipo + " TEXT );";
 
     public MyDBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
@@ -54,6 +63,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
         try {
 
             db.execSQL(TABLE_CREATE);
+            db.execSQL(TABLE_CREATE_CATEGORIA);
         }catch (Exception e) {
             Log.e("Erro ao criar tabela", e.getMessage());
         }

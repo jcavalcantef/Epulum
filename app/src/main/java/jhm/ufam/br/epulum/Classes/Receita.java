@@ -19,6 +19,8 @@ public class Receita implements Serializable{
     private List<String> passos;
     private int photoId;
 
+    public static final String TOKEN = "<>";
+
     public Receita(String nome, String descricao, int photoId) {
         this.nome = nome;
         this.descricao = descricao;
@@ -92,6 +94,19 @@ public class Receita implements Serializable{
         return ingredientes;
     }
 
+    public String getIngredientesString() {
+        String s = "[";
+        int i = 0;
+        if(this.ingredientes.size()!=0) {
+            for (; i < this.ingredientes.size() - 1; i++) {
+                s = s + ingredientes.get(i) + TOKEN;
+            }
+            s = s + ingredientes.get(i);
+        }
+        s = s + "]";
+        return s;
+    }
+
     public void setIngredientes(List<String> ingredientes) {
         this.ingredientes = ingredientes;
     }
@@ -102,6 +117,19 @@ public class Receita implements Serializable{
 
     public List<String> getPassos() {
         return passos;
+    }
+
+    public String getPassosString() {
+        String s = "[";
+        int i = 0;
+        if(this.ingredientes.size()!=0) {
+            for(; i < this.passos.size()-1; i++){
+                s = s + passos.get(i) + TOKEN;
+            }
+            s = s + passos.get(i);
+        }
+        s = s + "]";
+        return s;
     }
 
     public void setPassos(List<String> passos) {
@@ -166,10 +194,10 @@ public class Receita implements Serializable{
 
     public void setAllIngredientes(String all){
         all = all.replaceAll("\\[","").replaceAll("\\]","");
-        String[] ingredientesNovos= all.split(",");
+        String[] ingredientesNovos= all.split(TOKEN);
         String bleh = "";
         for(int i = 0; i < ingredientesNovos.length ; i++){
-            bleh = ingredientesNovos[i].replaceAll(",", "");
+            bleh = ingredientesNovos[i].replaceAll(TOKEN, "");
             ingredientes.add(bleh.trim());
             //Log.v("receita", bleh.trim());
         }
@@ -192,12 +220,10 @@ public class Receita implements Serializable{
 * */
     public void setAllPassos(String all){
         all = all.replaceAll("\\[","").replaceAll("\\]","");
-        String[] passosNovos= all.split(",");
+        String[] passosNovos= all.split(TOKEN);
         String bleh = "";
-        Log.v("LENGTH", "" + passosNovos.length);
         for(int i = 0; i < passosNovos.length ; i++){
-            bleh = passosNovos[i].replaceAll(",", "");
-            Log.v("STRING BLEH",bleh + " " + i);
+            bleh = passosNovos[i].replaceAll(TOKEN, "");
             passos.add(bleh.trim());
             //Log.v("receita", bleh.trim());
         }
