@@ -2,9 +2,6 @@ package jhm.ufam.br.epulum.Classes;
 
 import android.util.Log;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,15 +9,17 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class Receita implements Serializable{
     private long _id;
-    private int idCategoria;
-    private int idUsuario;
+    private long _idcategoria;
+    private long _idusuario;
     private String nome;
-    private String tempoPreparo;
+    private String tempopreparo;
     private String descricao;
-    private int photoId;
     private String foto;
     private List<String> ingredientes;
     private List<String> passos;
+    private int photoId;
+
+    public static final String TOKEN = "<>";
 
     public Receita(String nome, String descricao, int photoId) {
         this.nome = nome;
@@ -35,53 +34,29 @@ public class Receita implements Serializable{
         this.passos=new ArrayList<>();
     }
 
-    public Receita(String nome, String descricao, int photoId, String ingredientes, String passos){
-        this.idCategoria=0;
-        this.idUsuario=0;
-        this.nome="";
-        this.tempoPreparo="";
-        this.descricao="";
-        this.photoId=0;
-        this.foto="";
+    public Receita(String nome, String descricao, String foto, String ingredientes, String passos){
         this.nome = nome;
         this.descricao = descricao;
-        this.photoId = photoId;
-        this.ingredientes=new ArrayList<>();
-        this.passos=new ArrayList<>();
+        this.foto = foto;
+        this.ingredientes = new ArrayList<>();
+        this.passos = new ArrayList<>();
         this.setAllIngredientes(ingredientes);
         this.setAllPassos(passos);
     }
 
-    public Receita(long _id, int idCategoria, int idUsuario, String nome, String tempoPreparo, String descricao, String foto, String ingredientes, String passos) {
-        this._id = _id;
-        this.idCategoria = idCategoria;
-        this.idUsuario = idUsuario;
+    public Receita(long _idcategoria, long _idusuario, String nome, String tempopreparo, String descricao, String foto, String ingredientes, String passos, int photoId) {
+        this._idcategoria = _idcategoria;
+        this._idusuario = _idusuario;
         this.nome = nome;
-        this.tempoPreparo = tempoPreparo;
+        this.tempopreparo = tempopreparo;
         this.descricao = descricao;
         this.foto = foto;
-        setAllIngredientes(ingredientes);
-        setAllPassos(passos);
+        this.ingredientes = new ArrayList<>();
+        this.passos = new ArrayList<>();
+        this.setAllIngredientes(ingredientes);
+        this.setAllPassos(passos);
+        this.photoId = photoId;
     }
-
-    public Receita(JSONObject obj){
-        try {
-            this.ingredientes=new ArrayList<>();
-            this.passos=new ArrayList<>();
-            //this._id = Long.parseLong(obj.get("Id").toString());
-            this.nome= obj.get("Nome").toString();
-            this.descricao= obj.get("Descricao").toString();
-            this.idCategoria= Integer.parseInt(obj.get("Idcategoria").toString());
-            this.setAllIngredientes(obj.get("Ingredientes").toString());
-            this.setAllPassos(obj.get("Passos").toString());
-            Log.v("json"," completou receita");
-
-        }catch(JSONException e){
-            e.printStackTrace();
-
-        }
-    }
-
 
     public long get_id() {
         return _id;
@@ -107,25 +82,28 @@ public class Receita implements Serializable{
         this.descricao = descricao;
     }
 
-    public int getPhotoId() {
-        return photoId;
+    public String getFoto() {
+        return foto;
     }
 
-    public void setPhotoId(int photoId) {
-        this.photoId = photoId;
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 
     public List<String> getIngredientes() {
         return ingredientes;
     }
 
-    public String getIngredientesString(){
+    public String getIngredientesString() {
         String s = "[";
         int i = 0;
-        for(; i < this.ingredientes.size()-1; i++){
-            s = s + ingredientes.get(i) + ", ";
+        if(this.ingredientes.size()!=0) {
+            for (; i < this.ingredientes.size() - 1; i++) {
+                s = s + ingredientes.get(i) + TOKEN;
+            }
+            s = s + ingredientes.get(i);
         }
-        s = s + ingredientes.get(i) + "]";
+        s = s + "]";
         return s;
     }
 
@@ -133,8 +111,25 @@ public class Receita implements Serializable{
         this.ingredientes = ingredientes;
     }
 
+    public void setIngredientesString(String ing) {
+        setAllIngredientes(ing);
+    }
+
     public List<String> getPassos() {
         return passos;
+    }
+
+    public String getPassosString() {
+        String s = "[";
+        int i = 0;
+        if(this.ingredientes.size()!=0) {
+            for(; i < this.passos.size()-1; i++){
+                s = s + passos.get(i) + TOKEN;
+            }
+            s = s + passos.get(i);
+        }
+        s = s + "]";
+        return s;
     }
 
     public void setPassos(List<String> passos) {
@@ -147,6 +142,38 @@ public class Receita implements Serializable{
 
     public void addPasso(String pass){
         passos.add(pass);
+    }
+
+    public long get_idcategoria() {
+        return _idcategoria;
+    }
+
+    public void set_idcategoria(long _idcategoria) {
+        this._idcategoria = _idcategoria;
+    }
+
+    public long get_idusuario() {
+        return _idusuario;
+    }
+
+    public void set_idusuario(long _idusuario) {
+        this._idusuario = _idusuario;
+    }
+
+    public String getTempopreparo() {
+        return tempopreparo;
+    }
+
+    public void setTempopreparo(String tempopreparo) {
+        this.tempopreparo = tempopreparo;
+    }
+
+    public int getPhotoId() {
+        return photoId;
+    }
+
+    public void setPhotoId(int photoId) {
+        this.photoId = photoId;
     }
 
     public void modifyIngrediente(int pos, String novo){
@@ -166,64 +193,40 @@ public class Receita implements Serializable{
     }
 
     public void setAllIngredientes(String all){
-        ingredientes= new ArrayList<>();
         all = all.replaceAll("\\[","").replaceAll("\\]","");
-        String[] ingredientesNovos= all.split(",");
-        String bleh;
+        String[] ingredientesNovos= all.split(TOKEN);
+        String bleh = "";
+        for(int i = 0; i < ingredientesNovos.length ; i++){
+            bleh = ingredientesNovos[i].replaceAll(TOKEN, "");
+            ingredientes.add(bleh.trim());
+            //Log.v("receita", bleh.trim());
+        }
+
+    }
+/*
+* public void setAllIngredientes(String all){
+        all = all.replaceAll("\\[","").replaceAll("\\]","");
+        List<String> ingredientesNovos= all.split(",");
+        String bleh = "";
         for(int i = 0; i < ingredientesNovos.length; i++){
             bleh = ingredientesNovos[i].replaceAll(",", "");
+            Log.v("STRING BLEH",bleh);
             ingredientes.add(bleh.trim());
             //Log.v("receita", bleh.trim());
         }
 
     }
 
+* */
     public void setAllPassos(String all){
-        passos= new ArrayList<>();
         all = all.replaceAll("\\[","").replaceAll("\\]","");
-        String[] ingredientesNovos = all.split(",");
-        String bleh;
-        for(int i = 0; i < ingredientesNovos.length; i++){
-            bleh = ingredientesNovos[i].replaceAll(",", "");
+        String[] passosNovos= all.split(TOKEN);
+        String bleh = "";
+        for(int i = 0; i < passosNovos.length ; i++){
+            bleh = passosNovos[i].replaceAll(TOKEN, "");
             passos.add(bleh.trim());
             //Log.v("receita", bleh.trim());
         }
     }
 
-    public int getIdCategoria() {
-        return idCategoria;
-    }
-
-    public void setIdCategoria(int idCategoria) {
-        this.idCategoria = idCategoria;
-    }
-
-    public int getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    public String getTempoPreparo() {
-        return tempoPreparo;
-    }
-
-    public void setTempoPreparo(String tempoPreparo) {
-        this.tempoPreparo = tempoPreparo;
-    }
-
-    public String getFoto() {
-        return foto;
-    }
-
-    public void setFoto(String foto) {
-        this.foto = foto;
-    }
-
-    @Override
-    public String toString(){
-        return null;
-    }
 }
