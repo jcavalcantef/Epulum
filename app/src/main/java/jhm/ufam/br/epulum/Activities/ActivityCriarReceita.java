@@ -32,6 +32,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
 import java.util.ArrayList;
@@ -55,6 +62,19 @@ import jhm.ufam.br.epulum.RVAdapter.RVPassosAdapter;
 public class ActivityCriarReceita extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, RecognitionListener, SensorEventListener {
     private final int REQ_CODE_SPEECH_INPUT = 100;
+
+    private static final int RECORD_REQUEST_CODE = 101;
+    private static String TAG = "PermissionDemo";
+    private final String server="https://epulum.000webhostapp.com";
+    private final String url_base="/epulumDev/mainController.php?acao=";
+    private final String url_get_receitas=server+url_base+"readReceitas";
+    private final String url_create_user=server+url_base+"createUsuario";
+    private final String url_server_login=server+url_base+"login";
+    private final String url_criar_receita=server+url_base+"createReceita";
+    private final String em_login="mateus.lucena.work@gmail.com";
+    private final String em_nome="Mateus";
+    private final String em_senha="123";
+
     private final String languagePref = "pt-BR";
     private Receita receita;
     private RecyclerView rv_ingredientes;
@@ -448,9 +468,11 @@ public class ActivityCriarReceita extends AppCompatActivity
                 salvaReceita.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
                         receita.setNome(text.getText().toString());
                         receita.setPhotoId(R.drawable.torta_de_maca);
-                        receita.set_idcategoria(spnCategoria.getSelectedItemPosition());
+                        receita.set_idcategoria(1);
+                        criarReceitaServer(receita);
                         try {
                             receitaSalvaDAO.addReceita(receita);
                         } catch (Exception e){
@@ -475,5 +497,61 @@ public class ActivityCriarReceita extends AppCompatActivity
         // Be sure to unregister the sensor when the activity pauses.
         super.onPause();
         mSensorManager.unregisterListener(this);
+    }
+
+    private void criarReceitaServer(final Receita receita){
+        RequestQueue queue = Volley.newRequestQueue(this);
+        try {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_criar_receita+
+                    "&nome="+receita.getNome()+
+                    "&tempopreparo="+receita.getTempopreparo()+
+                    "&descricao="+receita.getDescricao()+
+                    "&ingredientes="+receita.getIngredientes().toString()+
+                    "&passos="+receita.getPassos().toString()+
+                    "&categoria="+1+
+                    "&idUser="+52,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            //Log.v("receita","Response is: "+ response);
+                            // Display the first 500 characters of the response string.
+                            Log.v("adicionar",response);
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.v("volley","That didn't work!");
+                }
+            });
+            queue.add(stringRequest);
+        }catch(NullPointerException e){
+            Log.v("volley",e.toString());
+        }
+    }
+
+    private void serverLogin(){
+        RequestQueue queue = Volley.newRequestQueue(this);
+        try {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_server_login+"&email="+email+"&senha="+em_senha,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.v("volley","Response is: "+ response);
+                            // Display the first 500 characters of the response string.
+                            //Log.v("server",url_create_user+"&email="+em_login+"$nome="+em_nome+"&senha="+em_senha);
+
+                            Log.v("server",response);
+
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.v("volley","That didn't work!");
+                }
+            });
+            queue.add(stringRequest);
+        }catch(NullPointerException e){
+            Log.v("volley",e.toString());
+        }
     }
 }
