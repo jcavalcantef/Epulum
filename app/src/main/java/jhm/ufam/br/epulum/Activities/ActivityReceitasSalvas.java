@@ -26,6 +26,7 @@ import jhm.ufam.br.epulum.Classes.ItemClickSupport;
 import jhm.ufam.br.epulum.Classes.LeitorReceita;
 import jhm.ufam.br.epulum.Classes.SpeechWrapper;
 import jhm.ufam.br.epulum.Database.ReceitaDAO;
+import jhm.ufam.br.epulum.Database.ReceitaSalvaDAO;
 import jhm.ufam.br.epulum.R;
 import jhm.ufam.br.epulum.RVAdapter.RVAdapter;
 import jhm.ufam.br.epulum.Classes.Receita;
@@ -41,16 +42,16 @@ public class ActivityReceitasSalvas extends AppCompatActivity
     private String nome;
     private String email;
 
-    public ReceitaDAO receitaDAO;
+    public ReceitaSalvaDAO receitaSalvaDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_receitas_salvas);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        receitaDAO = new ReceitaDAO(this);
+        receitaSalvaDAO = new ReceitaSalvaDAO(this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -176,8 +177,7 @@ public class ActivityReceitasSalvas extends AppCompatActivity
     }
 
     private void initializeData() {
-        long idUsuario = 1;
-        receitas = receitaDAO.getReceitasByUsuario(idUsuario);
+        receitas = receitaSalvaDAO.getAllReceitas();
 
 
     }

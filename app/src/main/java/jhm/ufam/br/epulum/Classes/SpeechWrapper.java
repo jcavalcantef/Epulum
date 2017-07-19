@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.AudioManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.util.Log;
@@ -51,7 +50,7 @@ public class SpeechWrapper implements TextToSpeech.OnUtteranceCompletedListener 
             @Override
             public void onInit(int status) {
                 mTts.setLanguage(new Locale("pt","br"));
-                mTts.setSpeechRate(0.7f);
+                mTts.setSpeechRate(1f);
 
             }
         });

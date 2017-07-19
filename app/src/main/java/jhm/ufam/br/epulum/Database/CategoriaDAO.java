@@ -46,6 +46,19 @@ public class CategoriaDAO {
         return categorias;
     }
 
+    public ArrayList<String> getAllCategoriasByNome(){
+        ArrayList<String> categorias = new ArrayList<String>();
+        String selectQuery = "SELECT * FROM " + MyDBHandler.TABLE_CATEGORIAS;
+        Cursor cursor = bancoDeDados.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()){
+            do{
+                Categoria c = new Categoria(cursor.getInt(0),cursor.getString(1),cursor.getString(2));
+                categorias.add(c.getNome());
+            } while (cursor.moveToNext());
+        }
+        return categorias;
+    }
+
     public boolean addCategoria(Categoria c){
         try{
             String sqlCmd = "INSERT INTO " + MyDBHandler.TABLE_CATEGORIAS + " ( " +

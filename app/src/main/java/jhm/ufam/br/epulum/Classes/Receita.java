@@ -2,8 +2,12 @@ package jhm.ufam.br.epulum.Classes;
 
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("serial")
@@ -19,7 +23,17 @@ public class Receita implements Serializable{
     private List<String> passos;
     private int photoId;
 
-    public static final String TOKEN = "<>";
+    public static enum categoria{
+        DOCE,
+        SALGADO,
+        MASSA,
+        BEBIDA,
+        SOPA,
+        BOLO,
+        TORTA
+    };
+
+    ArrayList<String> categorias;
 
     public Receita(String nome, String descricao, int photoId) {
         this.nome = nome;
@@ -30,6 +44,8 @@ public class Receita implements Serializable{
     }
 
     public Receita() {
+        categorias = new ArrayList<>(Arrays.asList("Doce", "Salgado", "Massa", "Bebida", "Sopa", "Bolo", "Torta"));
+        //categorias.add("Doce", "Salgado", "Massa", "Bebida", "Sopa", "Bolo", "Torta");
         this.ingredientes=new ArrayList<>();
         this.passos=new ArrayList<>();
     }
@@ -56,6 +72,31 @@ public class Receita implements Serializable{
         this.setAllIngredientes(ingredientes);
         this.setAllPassos(passos);
         this.photoId = photoId;
+    }
+
+    public Receita(JSONObject obj){
+        try {
+            this.ingredientes=new ArrayList<>();
+            this.passos=new ArrayList<>();
+            //this._id = Long.parseLong(obj.get("Id").toString());
+            this.nome= obj.get("Nome").toString();
+            this.descricao= obj.get("Descricao").toString();
+            this._idcategoria= Integer.parseInt(obj.get("Idcategoria").toString());
+            this.setAllIngredientes(obj.get("Ingredientes").toString());
+            this.setAllPassos(obj.get("Passos").toString());
+            Log.v("json"," completou receita");
+        }catch(JSONException e){
+            e.printStackTrace();
+
+        }
+    }
+
+    public ArrayList<String> getCategorias() {
+        return categorias;
+    }
+
+    public void setCategorias(ArrayList<String> categorias) {
+        this.categorias = categorias;
     }
 
     public long get_id() {
@@ -95,16 +136,7 @@ public class Receita implements Serializable{
     }
 
     public String getIngredientesString() {
-        String s = "[";
-        int i = 0;
-        if(this.ingredientes.size()!=0) {
-            for (; i < this.ingredientes.size() - 1; i++) {
-                s = s + ingredientes.get(i) + TOKEN;
-            }
-            s = s + ingredientes.get(i);
-        }
-        s = s + "]";
-        return s;
+        return ingredientes.toString();
     }
 
     public void setIngredientes(List<String> ingredientes) {
@@ -120,16 +152,7 @@ public class Receita implements Serializable{
     }
 
     public String getPassosString() {
-        String s = "[";
-        int i = 0;
-        if(this.ingredientes.size()!=0) {
-            for(; i < this.passos.size()-1; i++){
-                s = s + passos.get(i) + TOKEN;
-            }
-            s = s + passos.get(i);
-        }
-        s = s + "]";
-        return s;
+        return passos.toString();
     }
 
     public void setPassos(List<String> passos) {
@@ -194,36 +217,22 @@ public class Receita implements Serializable{
 
     public void setAllIngredientes(String all){
         all = all.replaceAll("\\[","").replaceAll("\\]","");
-        String[] ingredientesNovos= all.split(TOKEN);
+        String[] ingredientesNovos= all.split(",");
         String bleh = "";
         for(int i = 0; i < ingredientesNovos.length ; i++){
-            bleh = ingredientesNovos[i].replaceAll(TOKEN, "");
-            ingredientes.add(bleh.trim());
-            //Log.v("receita", bleh.trim());
-        }
-
-    }
-/*
-* public void setAllIngredientes(String all){
-        all = all.replaceAll("\\[","").replaceAll("\\]","");
-        List<String> ingredientesNovos= all.split(",");
-        String bleh = "";
-        for(int i = 0; i < ingredientesNovos.length; i++){
-            bleh = ingredientesNovos[i].replaceAll(",", "");
-            Log.v("STRING BLEH",bleh);
+            bleh = ingredientesNovos[i];
             ingredientes.add(bleh.trim());
             //Log.v("receita", bleh.trim());
         }
 
     }
 
-* */
     public void setAllPassos(String all){
         all = all.replaceAll("\\[","").replaceAll("\\]","");
-        String[] passosNovos= all.split(TOKEN);
+        String[] passosNovos= all.split(",");
         String bleh = "";
         for(int i = 0; i < passosNovos.length ; i++){
-            bleh = passosNovos[i].replaceAll(TOKEN, "");
+            bleh = passosNovos[i];
             passos.add(bleh.trim());
             //Log.v("receita", bleh.trim());
         }

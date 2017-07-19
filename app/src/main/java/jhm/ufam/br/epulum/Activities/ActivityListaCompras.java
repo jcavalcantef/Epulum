@@ -1,11 +1,8 @@
 package jhm.ufam.br.epulum.Activities;
 
-import android.app.Dialog;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.speech.RecognizerIntent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -18,9 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
@@ -31,12 +26,9 @@ import jhm.ufam.br.epulum.Classes.DividerItemDecoration;
 import jhm.ufam.br.epulum.Classes.ItemClickSupport;
 import jhm.ufam.br.epulum.Classes.ListaCompras;
 import jhm.ufam.br.epulum.Classes.SpeechWrapper;
-import jhm.ufam.br.epulum.Classes.ThreadCriarReceita;
+import jhm.ufam.br.epulum.Threads.ThreadCriarReceita;
 import jhm.ufam.br.epulum.R;
-import jhm.ufam.br.epulum.RVAdapter.RVIngredienteAdapter;
 import jhm.ufam.br.epulum.RVAdapter.RVListaComprasAdapter;
-import jhm.ufam.br.epulum.RVAdapter.RVPassosAdapter;
-import jhm.ufam.br.epulum.Classes.Receita;
 
 /**
  * Created by Mateus on 21/06/2017.
