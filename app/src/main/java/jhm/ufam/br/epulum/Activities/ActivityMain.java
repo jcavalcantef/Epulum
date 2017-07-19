@@ -59,7 +59,7 @@ public class ActivityMain extends AppCompatActivity
 
     private static final int RECORD_REQUEST_CODE = 101;
     private static String TAG = "PermissionDemo";
-    private final String server="http://10.208.2.190:8888";
+    private final String server="https://epulum.000webhostapp.com";
     private final String url_base="/epulumDev/mainController.php?acao=";
     private final String url_get_receitas=server+url_base+"readReceitas";
     private final String url_create_user=server+url_base+"createUsuario";
@@ -150,7 +150,7 @@ public class ActivityMain extends AppCompatActivity
             Intent intentNewActivity = new Intent(ActivityMain.this,
                     ActivityMain.class);
             ActivityMain.this.startActivity(intentNewActivity);
-        } else if (id == R.id.nav_receitas_salvas) {
+        }  else if (id == R.id.nav_receitas_salvas) {
             Intent intentNewActivity = new Intent(ActivityMain.this,
                     ActivityReceitasSalvas.class);
             intentNewActivity.putExtra("nome", nome);
@@ -423,7 +423,7 @@ public class ActivityMain extends AppCompatActivity
                         public void onResponse(String response) {
                             Log.v("volley","Response is: "+ response);
                             // Display the first 500 characters of the response string.
-                            Log.v("server",url_create_user+"&email="+em_login+"$nome="+em_nome+"&senha="+em_senha);
+                            Log.v("server",url_create_user+"&email="+email+"$nome="+nome+"&senha="+em_senha);
 
                             Log.v("server",response);
 
@@ -448,9 +448,9 @@ public class ActivityMain extends AppCompatActivity
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            Log.v("volley","Response is: "+ response);
+                            Log.v("login","Response is: "+ response);
                             // Display the first 500 characters of the response string.
-                            //Log.v("server",url_create_user+"&email="+em_login+"$nome="+em_nome+"&senha="+em_senha);
+                            Log.v("login",url_server_login+"&email="+email+"&senha="+em_senha);
 
                             Log.v("server",response);
 
