@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class ActivityReceitasSalvas extends AppCompatActivity
     private TextView txtEmailBar;
     private String nome;
     private String email;
+    private Button btn_criar_receita;
 
     public ReceitaDAO receitaDAO;
 
@@ -75,7 +77,7 @@ public class ActivityReceitasSalvas extends AppCompatActivity
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 // do it
                 Intent intentMain = new Intent(ActivityReceitasSalvas.this,
-                        ActivityReceita.class);
+                        ActivityCriarReceita.class);
                 intentMain.putExtra("receita", receitas.get(position));
                 intentMain.putExtra("nome", nome);
                 intentMain.putExtra("email", email);
@@ -85,6 +87,17 @@ public class ActivityReceitasSalvas extends AppCompatActivity
         });
         initializeData();
         initializeAdapter();
+        btn_criar_receita= (Button) findViewById(R.id.btn_criar_receita);
+        btn_criar_receita.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    Intent intentNewActivity = new Intent(ActivityReceitasSalvas.this ,
+                            ActivityCriarReceita.class);
+                    intentNewActivity.putExtra("nome",nome);
+                    intentNewActivity.putExtra("email",email);
+                    ActivityReceitasSalvas.this.startActivity(intentNewActivity);
+            }
+        });
         txtEmailBar = (TextView) findViewById(R.id.txtBarEmail);
         txtNomeBar = (TextView) findViewById(R.id.txtBarNome);
         Intent in = getIntent();
@@ -105,23 +118,11 @@ public class ActivityReceitasSalvas extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -136,12 +137,6 @@ public class ActivityReceitasSalvas extends AppCompatActivity
             // Handle the camera action
             Intent intentNewActivity = new Intent(ActivityReceitasSalvas.this,
                     ActivityMain.class);
-            intentNewActivity.putExtra("nome", nome);
-            intentNewActivity.putExtra("email", email);
-            ActivityReceitasSalvas.this.startActivity(intentNewActivity);
-        } else if (id == R.id.nav_criar_receita) {
-            Intent intentNewActivity = new Intent(ActivityReceitasSalvas.this,
-                    ActivityCriarReceita.class);
             intentNewActivity.putExtra("nome", nome);
             intentNewActivity.putExtra("email", email);
             ActivityReceitasSalvas.this.startActivity(intentNewActivity);

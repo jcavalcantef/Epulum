@@ -26,7 +26,7 @@
         android:background="@color/colorBackground">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/img_sync"
             android:layout_width="50dp"
             android:layout_height="50dp"
 
@@ -40,10 +40,12 @@
             android:id="@+id/sv_procura"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/imageView"
-            android:layout_toEndOf="@+id/imageView"
-            android:layout_toRightOf="@+id/imageView"
-            android:queryHint="Procurar Receita" />
+            android:layout_alignTop="@+id/img_sync"
+            android:layout_toEndOf="@+id/img_sync"
+            android:layout_toRightOf="@+id/img_sync"
+            android:queryHint="Procurar Receita"
+            android:visibility="visible"
+            app:iconifiedByDefault="false" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv"
@@ -51,7 +53,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/imageView" />
+            android:layout_below="@+id/img_sync" />
 
     </RelativeLayout>
 

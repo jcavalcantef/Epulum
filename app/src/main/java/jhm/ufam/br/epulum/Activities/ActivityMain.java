@@ -75,6 +75,7 @@ public class ActivityMain extends AppCompatActivity
     private GoogleApiClient mGoogleApiClient;
     private ImageLoader imageLoader;
     private SearchView sv_procura_receita;
+    private ImageView synchronize;
     private int RC_SIGN_IN = 100;
     private ImageView imgvPerfil;
     private TextView txtNomeBar;
@@ -108,10 +109,8 @@ public class ActivityMain extends AppCompatActivity
         initializeAdapter();
         doPermissions();
         doGoogle();
-
+        doButtons();
         signIn();
-        getReceitasFromServer();
-
     }
 
     protected void makeRequest() {
@@ -131,23 +130,11 @@ public class ActivityMain extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -162,12 +149,6 @@ public class ActivityMain extends AppCompatActivity
             // Handle the camera action
             Intent intentNewActivity = new Intent(ActivityMain.this,
                     ActivityMain.class);
-            ActivityMain.this.startActivity(intentNewActivity);
-        } else if (id == R.id.nav_criar_receita) {
-            Intent intentNewActivity = new Intent(ActivityMain.this,
-                    ActivityCriarReceita.class);
-            intentNewActivity.putExtra("nome", nome);
-            intentNewActivity.putExtra("email", email);
             ActivityMain.this.startActivity(intentNewActivity);
         } else if (id == R.id.nav_receitas_salvas) {
             Intent intentNewActivity = new Intent(ActivityMain.this,
@@ -346,6 +327,17 @@ public class ActivityMain extends AppCompatActivity
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+    }
+
+    private void doButtons(){
+        synchronize= (ImageView) findViewById(R.id.img_sync);
+        synchronize.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ActivityMain.this,"Sincronizando", Toast.LENGTH_SHORT).show();
+                getReceitasFromServer();
+            }
+        });
     }
 
     @Override

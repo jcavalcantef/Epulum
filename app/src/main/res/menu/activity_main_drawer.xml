@@ -7,10 +7,6 @@
             android:icon="@drawable/ic_procurar_receita"
             android:title="Procurar receita" />
         <item
-            android:id="@+id/nav_criar_receita"
-            android:icon="@drawable/ic_criar_receita"
-            android:title="Criar receita" />
-        <item
             android:id="@+id/nav_receitas_salvas"
             android:icon="@drawable/ic_receitas_salvas"
             android:title="Receitas salvas" />

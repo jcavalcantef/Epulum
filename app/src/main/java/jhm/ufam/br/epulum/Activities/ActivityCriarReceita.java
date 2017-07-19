@@ -86,12 +86,15 @@ public class ActivityCriarReceita extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         sh=new SpeechWrapper(getApplicationContext());
-        receita = new Receita();
+        Intent in = getIntent();
+        if(in.hasExtra("receita")){
+            receita = (Receita) in.getSerializableExtra("receita");
+
+        }else receita = new Receita();
         acr=this;
 
         txtEmailBar=(TextView)findViewById(R.id.txtBarEmail);
         txtNomeBar=(TextView)findViewById(R.id.txtBarNome);
-        Intent in= getIntent();
         nome=in.getStringExtra("nome");
         email=in.getStringExtra("email");
         //txtEmailBar.setText(email);
@@ -120,23 +123,12 @@ public class ActivityCriarReceita extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -150,12 +142,6 @@ public class ActivityCriarReceita extends AppCompatActivity
             // Handle the camera action
             Intent intentNewActivity = new Intent(ActivityCriarReceita.this ,
                     ActivityMain.class);
-            intentNewActivity.putExtra("nome",nome);
-            intentNewActivity.putExtra("email",email);
-            ActivityCriarReceita.this.startActivity(intentNewActivity);
-        } else if (id == R.id.nav_criar_receita) {
-            Intent intentNewActivity = new Intent(ActivityCriarReceita.this ,
-                    ActivityCriarReceita.class);
             intentNewActivity.putExtra("nome",nome);
             intentNewActivity.putExtra("email",email);
             ActivityCriarReceita.this.startActivity(intentNewActivity);
