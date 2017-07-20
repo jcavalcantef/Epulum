@@ -59,7 +59,7 @@ public class ReceitaDAO {
 *
 * */
     public ArrayList<Receita> getAllReceitas(){
-        ArrayList<Receita> receitas = new ArrayList<Receita>();
+        ArrayList<Receita> receitas = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + MyDBHandler.TABLE_RECEITAS;
         Cursor cursor = bancoDeDados.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()){
@@ -78,7 +78,7 @@ public class ReceitaDAO {
 *
 * */
     public ArrayList<Receita> getReceitasByUsuario(long idUsuario){
-        ArrayList<Receita> receitas = new ArrayList<Receita>();
+        ArrayList<Receita> receitas = new ArrayList<>();
         String sqlQuery = "SELECT * FROM " + MyDBHandler.TABLE_RECEITAS + " WHERE " +
                 MyDBHandler.COLUNA_idusuario + " LIKE '" + idUsuario + "%'";
         Cursor cursor = bancoDeDados.rawQuery(sqlQuery, null);
@@ -234,12 +234,12 @@ public class ReceitaDAO {
         torta.addIngrediente("1 lata de leite condensado");
         torta.addIngrediente("2 colheres de sopa de amido de milho");
         torta.addIngrediente("3 maçãs");
-        torta.addPasso("misture a manteiga, as gemas e o açúcar");
-        torta.addPasso("Junte a farinha aos poucos, até formar uma massa que não grude nas mãos.");
-        torta.addPasso("Forre com a massa uma forma de torta redonda untada levemente com manteiga e fure toda a superfície com um garfo e leve ao forno pré-aquecido em temperatura média ou baixa para a massa dourar, aproximadamente 15 minutos");
-        torta.addPasso("numa panela, coloque a água e o açúcar e leve ao fogo");
-        torta.addPasso("Ao ferver, junte as fatias de maçãs para cozinhar levemente sem deixar desmanchar, apenas uns 2 minutos");
-        torta.addPasso("Retire as maçãs com uma escumadeira e acrescente a gelatina à água que sobrou na panela, mexendo bem");
+        torta.addPasso("misture a manteiga as gemas e o açúcar");
+        torta.addPasso("Junte a farinha aos poucos até formar uma massa que não grude nas mãos.");
+        torta.addPasso("Forre com a massa uma forma de torta redonda untada levemente com manteiga e fure toda a superfície com um garfo e leve ao forno pré-aquecido em temperatura média ou baixa para a massa dourar aproximadamente 15 minutos");
+        torta.addPasso(" coloque a água e o açúcar numa panela e leve ao fogo");
+        torta.addPasso("Ao ferver junte as fatias de maçãs para cozinhar levemente sem deixar desmanchar apenas uns 2 minutos");
+        torta.addPasso("Retire as maçãs com uma escumadeira e acrescente a gelatina à água que sobrou na panela mexendo bem");
         torta.addPasso("Deixe esfriar e leve a geladeira por 10 minutos");
         torta.set_idusuario(1);
         //torta.setAllIngredientes("[100 gramas de manteiga, 2 gemas, 4 colheres de açúcar refinado, 200 gramas de farinha de trigo, 500 ml de leite, 1 lata de leite condensado, 2 colheres de sopa de amido de milho, 3 maçãs]");

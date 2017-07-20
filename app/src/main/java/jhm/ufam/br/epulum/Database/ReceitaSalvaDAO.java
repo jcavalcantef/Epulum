@@ -22,7 +22,6 @@ public class ReceitaSalvaDAO {
     public  ReceitaSalvaDAO(Context context){ // se conecta com o banco // Ex: connect();
         this.bancoDeDados = (new MyDBHandler(context)).getWritableDatabase();
         this.context = context;
-        //initializeDatabase();
     }
     /*
     *
@@ -208,46 +207,6 @@ public class ReceitaSalvaDAO {
             Log.e("Erro ao tentar editar", e.getMessage());
             return false;
         }
-    }
-    /*
-    *
-    *
-    * Função initializeDatabase
-    *
-    * Esta função insere vários valores pré-definidos no nosso recém-criado banco de dados, incluindo uma receita de torta,
-    * joelho de porco, entre outras
-    *
-    * */
-    public void initializeDatabase() {
-        Receita torta = new Receita("Torta de Maçã", "Uma Torta de Maçã muito gostosa e simples.", R.drawable.torta_de_maca);
-        torta.addIngrediente("100 gramas de manteiga");
-        torta.addIngrediente("2 gemas");
-        torta.addIngrediente("4 colheres de açúcar refinado");
-        torta.addIngrediente("200 gramas de farinha de trigo");
-        torta.addIngrediente("500 ml de leite");
-        torta.addIngrediente("1 lata de leite condensado");
-        torta.addIngrediente("2 colheres de sopa de amido de milho");
-        torta.addIngrediente("3 maçãs");
-        torta.addPasso("misture a manteiga, as gemas e o açúcar");
-        torta.addPasso("Junte a farinha aos poucos, até formar uma massa que não grude nas mãos.");
-        torta.addPasso("Forre com a massa uma forma de torta redonda untada levemente com manteiga e fure toda a superfície com um garfo e leve ao forno pré-aquecido em temperatura média ou baixa para a massa dourar, aproximadamente 15 minutos");
-        torta.addPasso("numa panela, coloque a água e o açúcar e leve ao fogo");
-        torta.addPasso("Ao ferver, junte as fatias de maçãs para cozinhar levemente sem deixar desmanchar, apenas uns 2 minutos");
-        torta.addPasso("Retire as maçãs com uma escumadeira e acrescente a gelatina à água que sobrou na panela, mexendo bem");
-        torta.addPasso("Deixe esfriar e leve a geladeira por 10 minutos");
-        torta.set_idusuario(1);
-        //torta.setAllIngredientes("[100 gramas de manteiga, 2 gemas, 4 colheres de açúcar refinado, 200 gramas de farinha de trigo, 500 ml de leite, 1 lata de leite condensado, 2 colheres de sopa de amido de milho, 3 maçãs]");
-        this.addReceita(torta);
-        //Log.v("receita","começa :"+torta.getIngredientes().toString()+": termina");
-        if(!(this.addReceita(new Receita("Joelho de Porco", "Joelho de porco com a casca tostada e crocante.", R.drawable.joelho_de_porco)) ))
-            Log.v("ERRO RECEITA","AAAAAAAAA");
-        this.addReceita(new Receita("Hambúrguer Vegano", "Hambúrguer sem carne para quem quer uma refeição saudável.", R.drawable.hamburguer_vegano));
-        this.addReceita(new Receita("Bolinho De Carne Moída", "", R.drawable.bolinho_de_carne_moida));
-        this.addReceita(new Receita("Filé À Parmegiana", "", R.drawable.file_parmegiana));
-        this.addReceita(new Receita("Costela Na Pressão Com Linguíça", "", R.drawable.costela_na_pressao));
-        this.addReceita(new Receita("Camarão com creme de leite", "", R.drawable.camarao_com_creme_de_leite));
-        this.addReceita(new Receita("Sopa de abóbora", "", R.drawable.sopa_de_abobora));
-
     }
 
 }

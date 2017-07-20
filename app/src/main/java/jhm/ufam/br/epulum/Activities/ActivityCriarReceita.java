@@ -19,16 +19,19 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +42,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
 import java.util.ArrayList;
@@ -94,6 +99,7 @@ public class ActivityCriarReceita extends AppCompatActivity
     private boolean mIslistening;
     private SensorManager mSensorManager;
     private Sensor mProximity;
+    private String user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +139,8 @@ public class ActivityCriarReceita extends AppCompatActivity
         mSpeechRecognizer.setRecognitionListener(this);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+
+        serverLogin();
     }
 
 
@@ -442,6 +450,11 @@ public class ActivityCriarReceita extends AppCompatActivity
                 final Dialog dialog = new Dialog(ActivityCriarReceita.this);
                 dialog.setContentView(R.layout.dialog_salvar_receita);
                 dialog.setTitle("Salvar Receita");
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                lp.copyFrom(dialog.getWindow().getAttributes());
+                lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                dialog.getWindow().setAttributes(lp);
                 ArrayList<String> categorias = new Receita().getCategorias();
 
                 final EditText text = (EditText) dialog.findViewById(R.id.edtNomeReceita);
@@ -449,6 +462,7 @@ public class ActivityCriarReceita extends AppCompatActivity
                 Button salvaReceita = (Button) dialog.findViewById(R.id.btn_salva_receita);
                 Button cancela      = (Button) dialog.findViewById(R.id.btn_cancela);
                 final ImageView img       = (ImageView) dialog.findViewById(R.id.img_receita);
+                final Switch compartilhar=(Switch) dialog.findViewById(R.id.swt_compartilhar);
 
                 /*ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(ActivityCriarReceita.this,
                         R.array.lista_categorias, R.layout.support_simple_spinner_dropdown_item);
@@ -472,7 +486,8 @@ public class ActivityCriarReceita extends AppCompatActivity
                         receita.setNome(text.getText().toString());
                         receita.setPhotoId(R.drawable.torta_de_maca);
                         receita.set_idcategoria(1);
-                        criarReceitaServer(receita);
+                        if(compartilhar.isChecked()) criarReceitaServer(receita);
+                        else Log.v("comp","receita nao compartilhada");
                         try {
                             receitaSalvaDAO.addReceita(receita);
                         } catch (Exception e){
@@ -501,6 +516,7 @@ public class ActivityCriarReceita extends AppCompatActivity
 
     private void criarReceitaServer(final Receita receita){
         RequestQueue queue = Volley.newRequestQueue(this);
+        Log.v("adicionar","Tentou adicionar receita");
         try {
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url_criar_receita+
                     "&nome="+receita.getNome()+
@@ -509,7 +525,7 @@ public class ActivityCriarReceita extends AppCompatActivity
                     "&ingredientes="+receita.getIngredientes().toString()+
                     "&passos="+receita.getPassos().toString()+
                     "&categoria="+1+
-                    "&idUser="+52,
+                    "&idUser="+user_id,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -529,17 +545,18 @@ public class ActivityCriarReceita extends AppCompatActivity
         }
     }
 
-    private void serverLogin(){
+    private void createServerUser(){
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_server_login+"&email="+email+"&senha="+em_senha,
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_create_user+"&email="+email+"&nome="+nome+"&senha="+em_senha,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             Log.v("volley","Response is: "+ response);
                             // Display the first 500 characters of the response string.
-                            //Log.v("server",url_create_user+"&email="+em_login+"$nome="+em_nome+"&senha="+em_senha);
+                            Log.v("server",url_create_user+"&email="+em_login+"$nome="+em_nome+"&senha="+em_senha);
 
+                            JSONDealCreateUser(response);
                             Log.v("server",response);
 
                         }
@@ -552,6 +569,66 @@ public class ActivityCriarReceita extends AppCompatActivity
             queue.add(stringRequest);
         }catch(NullPointerException e){
             Log.v("volley",e.toString());
+        }
+        serverLogin();
+    }
+
+    private void serverLogin(){
+        RequestQueue queue = Volley.newRequestQueue(this);
+        try {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_server_login+"&email="+email+"&senha="+em_senha,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.v("volley","Response is: "+ response);
+                            // Display the first 500 characters of the response string.
+                            //Log.v("server",url_create_user+"&email="+em_login+"$nome="+em_nome+"&senha="+em_senha);
+
+                            JSONdealServerLogin(response);
+                            Log.v("server",response);
+
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.v("volley","That didn't work!");
+                }
+            });
+            queue.add(stringRequest);
+        }catch(NullPointerException e){
+            Log.v("volley",e.toString());
+        }
+    }
+
+    private void JSONDealCreateUser(String jstring){
+        try{
+            JSONObject j= new JSONObject(jstring);
+            if(j.getInt("Sucess")==1){
+                Toast.makeText(this,j.getString("Mensagem"),Toast.LENGTH_SHORT);
+
+            }else{
+                Toast.makeText(this,j.getString("Mensagem"),Toast.LENGTH_SHORT);
+            }
+
+        }catch (JSONException e){
+
+        }
+    }
+
+    private void JSONdealServerLogin(String jstring){
+        try{
+            JSONObject j= new JSONObject(jstring);
+            if(j.getInt("Sucess")==1){
+                Toast.makeText(this,j.getString("Mensagem"),Toast.LENGTH_SHORT);
+                JSONObject m=j.getJSONObject("Usuario");
+                user_id=m.getString("Id");
+
+            }else{
+                Toast.makeText(this,j.getString("Mensagem"),Toast.LENGTH_SHORT);
+            }
+
+        }catch (JSONException e){
+
         }
     }
 }

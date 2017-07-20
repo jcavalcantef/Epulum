@@ -15,7 +15,7 @@ import jhm.ufam.br.epulum.Classes.Receita;
 
 public class MyDBHandler extends SQLiteOpenHelper{
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "recipesDB.db";
     public static final String TABLE_RECEITAS = "Receitas";
     public static final String TABLE_RECEITAS_SALVAS = "ReceitasSalvas";

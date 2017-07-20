@@ -79,11 +79,11 @@ public class Receita implements Serializable{
             this.ingredientes=new ArrayList<>();
             this.passos=new ArrayList<>();
             //this._id = Long.parseLong(obj.get("Id").toString());
-            this.nome= obj.get("Nome").toString();
-            this.descricao= obj.get("Descricao").toString();
-            this._idcategoria= Integer.parseInt(obj.get("Idcategoria").toString());
-            this.setAllIngredientes(obj.get("Ingredientes").toString());
-            this.setAllPassos(obj.get("Passos").toString());
+            this.nome= obj.getString("Nome");
+            this.descricao= obj.getString("Descricao");
+            this._idcategoria= obj.getInt("Idcategoria");
+            this.setAllIngredientes(obj.getString("Ingredientes"));
+            this.setAllPassos(obj.getString("Passos"));
             Log.v("json"," completou receita");
         }catch(JSONException e){
             e.printStackTrace();

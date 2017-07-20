@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/txt_nome_receita"
@@ -12,7 +13,7 @@
         android:text="Nome da receita"
         android:textColor="@android:color/black"
         android:textSize="20dp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/edtNomeReceita"
@@ -28,20 +29,20 @@
         android:id="@+id/btn_tirafoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:text="Tirar foto"
-        android:layout_marginEnd="58dp"
+        android:layout_alignEnd="@+id/txt_categoria"
         android:layout_below="@+id/edtNomeReceita"
-        android:layout_alignEnd="@+id/txt_categoria" />
+        android:layout_marginEnd="58dp"
+        android:layout_marginTop="15dp"
+        android:text="Tirar foto" />
 
     <Spinner
         android:id="@+id/spn_categoria"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="38dp"
+        android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/txt_categoria"
-        android:textSize="20dp"
-        android:layout_alignParentEnd="true" />
+        android:layout_marginTop="38dp"
+        android:textSize="20dp" />
 
     <ImageView
         android:id="@+id/img_receita"
@@ -56,24 +57,23 @@
         android:id="@+id/txt_categoria"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/edtNomeReceita"
+        android:layout_below="@+id/btn_tirafoto"
         android:layout_gravity="center"
-        android:text="Categoria da receita"
-        android:textColor="@android:color/black"
-        android:textSize="20dp"
-        android:textStyle="bold"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="14dp"
-        android:layout_below="@+id/btn_tirafoto"
-        android:layout_alignStart="@+id/edtNomeReceita" />
+        android:text="Categoria da receita"
+        android:textColor="@android:color/black"
+        android:textSize="20dp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/btn_salva_receita"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/img_receita"
-        android:layout_below="@+id/spn_categoria"
-        android:layout_marginTop="25dp"
+        android:layout_centerVertical="true"
         android:text="Salvar" />
 
     <Button
@@ -83,5 +83,14 @@
         android:layout_alignEnd="@+id/btn_tirafoto"
         android:layout_alignTop="@+id/btn_salva_receita"
         android:text="Cancelar" />
+
+    <Switch
+        android:id="@+id/swt_compartilhar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/btn_salva_receita"
+        android:layout_below="@+id/btn_salva_receita"
+        android:layout_marginTop="11dp"
+        android:text="Compartilhar" />
 
 </RelativeLayout>

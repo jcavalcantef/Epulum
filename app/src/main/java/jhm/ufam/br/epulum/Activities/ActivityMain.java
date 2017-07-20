@@ -64,9 +64,10 @@ public class ActivityMain extends AppCompatActivity
     private final String url_create_user=server+url_base+"createUsuario";
     private final String url_server_login=server+url_base+"login";
     private final String url_criar_receita=server+url_base+"createReceita";
-    private final String em_login="mateus.lucena.work@gmail.com";
-    private final String em_nome="Mateus";
+    private final String em_login="hendrio";
+    private final String em_nome="hendrio";
     private final String em_senha="123";
+    private String user_id;
     private List<Receita> receitas;
     private RecyclerView rv;
     private RVAdapter adapter;
@@ -318,13 +319,6 @@ public class ActivityMain extends AppCompatActivity
     }
 
     private void doOptions() {
-        ImageView refresh = (ImageView) findViewById(R.id.img_sync);
-        refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
 
         SearchView search = (SearchView) findViewById(R.id.sv_procura);
         search.setQueryHint("nome da receita");
@@ -342,6 +336,8 @@ public class ActivityMain extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Toast.makeText(ActivityMain.this,"Sincronizando", Toast.LENGTH_SHORT).show();
+                createServerUser();
+                serverLogin();
                 getReceitasFromServer();
             }
         });
@@ -406,13 +402,13 @@ public class ActivityMain extends AppCompatActivity
 
     private void addReceitas_JSON(String response) throws JSONException{
         JSONObject f= new JSONObject(response);
-        //Log.v("json",f.toString());
+        Log.v("json",f.toString());
         JSONArray a= f.getJSONArray("Receitas");
-        //Log.v("json",a.toString());
+        Log.v("json",a.toString());
         int i=0;
         while(i<a.length()){
-            //Log.v("json",a.get(i).toString());
-            f=new JSONObject(a.get(i).toString());
+            Log.v("json",a.get(i).toString());
+            f=a.getJSONObject(i);
             /*Log.v("json",f.get("Id").toString());
             Log.v("json",f.get("Idcategoria").toString());
             Log.v("json",f.get("Nome").toString());
@@ -439,6 +435,7 @@ public class ActivityMain extends AppCompatActivity
                             // Display the first 500 characters of the response string.
                             Log.v("server",url_create_user+"&email="+em_login+"$nome="+em_nome+"&senha="+em_senha);
 
+                            JSONDealCreateUser(response);
                             Log.v("server",response);
 
                         }
@@ -466,6 +463,7 @@ public class ActivityMain extends AppCompatActivity
                             // Display the first 500 characters of the response string.
                             //Log.v("server",url_create_user+"&email="+em_login+"$nome="+em_nome+"&senha="+em_senha);
 
+                            JSONdealServerLogin(response);
                             Log.v("server",response);
 
                         }
@@ -481,34 +479,35 @@ public class ActivityMain extends AppCompatActivity
         }
     }
 
-    private void criarReceitaServer(final Receita receita){
-        RequestQueue queue = Volley.newRequestQueue(this);
-        try {
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_criar_receita+
-                    "&nome="+receita.getNome()+"123"+
-                    "&tempopreparo="+receita.getTempopreparo()+
-                    "&descricao="+receita.getDescricao()+
-                    "&ingredientes="+receita.getIngredientes().toString()+
-                    "&passos="+receita.getPassos().toString()+
-                    "&categoria="+1+
-                    "&idUser="+13,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            //Log.v("receita","Response is: "+ response);
-                            // Display the first 500 characters of the response string.
-                            Log.v("adicionar",response);
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.v("volley","That didn't work!");
-                }
-            });
-            queue.add(stringRequest);
-        }catch(NullPointerException e){
-            Log.v("volley",e.toString());
+    private void JSONDealCreateUser(String jstring){
+        try{
+            JSONObject j= new JSONObject(jstring);
+            if(j.getInt("Sucess")==1){
+                Toast.makeText(this,j.getString("Mensagem"),Toast.LENGTH_SHORT);
+
+            }else{
+                Toast.makeText(this,j.getString("Mensagem"),Toast.LENGTH_SHORT);
+            }
+
+        }catch (JSONException e){
+
         }
-        serverLogin();
+    }
+
+    private void JSONdealServerLogin(String jstring){
+        try{
+            JSONObject j= new JSONObject(jstring);
+            if(j.getInt("Sucess")==1){
+                Toast.makeText(this,j.getString("Mensagem"),Toast.LENGTH_SHORT);
+                JSONObject m=j.getJSONObject("Usuario");
+                user_id=m.getString("Id");
+
+            }else{
+                Toast.makeText(this,j.getString("Mensagem"),Toast.LENGTH_SHORT);
+            }
+
+        }catch (JSONException e){
+
+        }
     }
 }
