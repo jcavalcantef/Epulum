@@ -469,6 +469,7 @@ public class ActivityCriarReceita extends AppCompatActivity
 
                 final EditText text = (EditText) dialog.findViewById(R.id.edtNomeReceita);
                 final Spinner spnCategoria   = (Spinner) dialog.findViewById(R.id.spn_categoria);
+                Button tiraFoto = (Button)dialog.findViewById(R.id.btn_tirafoto);
                 Button salvaReceita = (Button) dialog.findViewById(R.id.btn_salva_receita);
                 Button cancela      = (Button) dialog.findViewById(R.id.btn_cancela);
                 final ImageView img       = (ImageView) dialog.findViewById(R.id.img_receita);
@@ -482,6 +483,13 @@ public class ActivityCriarReceita extends AppCompatActivity
                 Log.v("+++++++",(categorias==null)+"");
 
                 spnCategoria.setAdapter(aa);
+
+                tiraFoto.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
 
                 cancela.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -529,7 +537,7 @@ public class ActivityCriarReceita extends AppCompatActivity
         RequestQueue queue = Volley.newRequestQueue(this);
         Log.v("adicionar","Tentou adicionar receita");
         try {
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_criar_receita+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url_criar_receita+
                     "&nome="+receita.getNome()+
                     "&tempopreparo="+receita.getTempopreparo()+
                     "&descricao="+receita.getDescricao()+
@@ -559,7 +567,7 @@ public class ActivityCriarReceita extends AppCompatActivity
     private void createServerUser(){
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_create_user+"&email="+email+"&nome="+nome+"&senha="+em_senha,
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url_create_user+"&email="+email+"&nome="+nome+"&senha="+em_senha,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -587,7 +595,7 @@ public class ActivityCriarReceita extends AppCompatActivity
     private void serverLogin(){
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_server_login+"&email="+email+"&senha="+em_senha,
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url_server_login+"&email="+email+"&senha="+em_senha,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -614,7 +622,7 @@ public class ActivityCriarReceita extends AppCompatActivity
     private void pegarCategorias(){
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_pegar_categorias,
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url_pegar_categorias,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
