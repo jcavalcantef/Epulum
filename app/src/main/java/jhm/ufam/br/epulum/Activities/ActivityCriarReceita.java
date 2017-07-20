@@ -122,13 +122,17 @@ public class ActivityCriarReceita extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        Intent in= getIntent();
         sh=new SpeechWrapper(getApplicationContext());
-        receita = new Receita();
+        if(in.hasExtra("receita")){
+            receita = (Receita) in.getSerializableExtra("receita");
+        }
+        else receita = new Receita();
         acr=this;
 
         txtEmailBar=(TextView)findViewById(R.id.txtBarEmail);
         txtNomeBar=(TextView)findViewById(R.id.txtBarNome);
-        Intent in= getIntent();
+
         nome=in.getStringExtra("nome");
         email=in.getStringExtra("email");
         //txtEmailBar.setText(email);

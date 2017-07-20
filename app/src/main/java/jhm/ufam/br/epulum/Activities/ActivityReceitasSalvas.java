@@ -3,6 +3,7 @@ package jhm.ufam.br.epulum.Activities;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -77,16 +78,40 @@ public class ActivityReceitasSalvas extends AppCompatActivity
         rv.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         ItemClickSupport.addTo(rv).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
-            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+            public void onItemClicked(RecyclerView recyclerView, final int position, View v) {
                 // do it
-
-                Intent intentMain = new Intent(ActivityReceitasSalvas.this,
-                        ActivityReceita.class);
-                intentMain.putExtra("receita", receitas.get(position));
-                intentMain.putExtra("nome", nome);
-                intentMain.putExtra("email", email);
-                ActivityReceitasSalvas.this.startActivity(intentMain);
-                Log.i("Content ", " Main layout ");
+                AlertDialog dialog = new AlertDialog.Builder(ActivityReceitasSalvas.this).create();
+                dialog.setTitle(receitas.get(position).getNome());
+                //dialog.setMessage("O que desejas fazer?");
+                dialog.setButton(DialogInterface.BUTTON_NEUTRAL, "Ler receita",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intentMain = new Intent(ActivityReceitasSalvas.this,
+                                        ActivityReceita.class);
+                                intentMain.putExtra("receita", receitas.get(position));
+                                intentMain.putExtra("nome", nome);
+                                intentMain.putExtra("email", email);
+                                ActivityReceitasSalvas.this.startActivity(intentMain);
+                                Log.i("Content ", " Main layout ");
+                                dialog.dismiss();
+                            }
+                        });
+                dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Editar receita",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intentMain = new Intent(ActivityReceitasSalvas.this,
+                                        ActivityCriarReceita.class);
+                                intentMain.putExtra("receita", receitas.get(position));
+                                intentMain.putExtra("nome", nome);
+                                intentMain.putExtra("email", email);
+                                ActivityReceitasSalvas.this.startActivity(intentMain);
+                                Log.i("Content ", " Main layout ");
+                                dialog.dismiss();
+                            }
+                        });
+                dialog.show();
+                dialog.getButton(dialog.BUTTON_POSITIVE).setTextColor(Color.rgb(0,100,220));
+                dialog.getButton(dialog.BUTTON_NEUTRAL).setTextColor(Color.rgb(0,100,220));
             }
         });
         ItemClickSupport.addTo(rv).setOnItemLongClickListener(new ItemClickSupport.OnItemLongClickListener() {
@@ -96,7 +121,7 @@ public class ActivityReceitasSalvas extends AppCompatActivity
                 AlertDialog dialog = new AlertDialog.Builder(ActivityReceitasSalvas.this).create();
                 dialog.setTitle("Alerta");
                 dialog.setMessage("Deseja excluir a receita?");
-                dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Excluir",
+                dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Excluir",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 receitaSalvaDAO.removeReceita(receitas.get(position).getNome());
@@ -105,16 +130,33 @@ public class ActivityReceitasSalvas extends AppCompatActivity
                                 dialog.dismiss();
                             }
                         });
-                dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancelar",
+                dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancelar",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
                         });
                 dialog.show();
+                dialog.getButton(dialog.BUTTON_POSITIVE).setTextColor(Color.RED);
+                dialog.getButton(dialog.BUTTON_NEGATIVE).setTextColor(Color.DKGRAY);
                 return false;
             }
-        });
+        });/*
+        ItemClickSupport.addTo(rv).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                AlertDialog dialog = new AlertDialog.Builder(ActivityReceitasSalvas.this).create();
+                dialog.setTitle(receitas.get(position).getNome());
+                dialog.setMessage("O que desejas fazer?");
+                dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Editar receita",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                dialog.dismiss();
+                            }
+                        });
+            }
+        });*/
         initializeData();
         initializeAdapter();
         txtEmailBar = (TextView) findViewById(R.id.txtBarEmail);
