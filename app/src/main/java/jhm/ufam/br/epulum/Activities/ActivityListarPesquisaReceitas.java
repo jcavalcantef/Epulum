@@ -60,11 +60,13 @@ public class ActivityListarPesquisaReceitas extends AppCompatActivity
     private static final int RECORD_REQUEST_CODE = 101;
     private static String TAG = "PermissionDemo";
     private final String server="https://epulum.000webhostapp.com";
-    private final String url_base="/epulumDev/mainController.php?acao=";
-    private final String url_get_receitas=server+url_base+"readReceitas";
-    private final String url_create_user=server+url_base+"createUsuario";
-    private final String url_server_login=server+url_base+"login";
-    private final String url_criar_receita=server+url_base+"createReceita";
+    private final String url_base_get="/epulumDev/getController.php?acao=";
+    private final String url_base_post="/epulumDev/getController.php?acao=";
+    private final String url_get_receitas=server+url_base_get+"readReceitas";
+    private final String url_create_user=server+url_base_get+"createUsuario";
+    private final String url_server_login=server+url_base_post+"login";
+    private final String url_criar_receita=server+url_base_post+"createReceita";
+    private final String url_pegar_categorias=server+url_base_get+"readCategorias";
     private final String em_login="mateus.lucena";
     private final String em_nome="m";
     private final String em_senha="123";

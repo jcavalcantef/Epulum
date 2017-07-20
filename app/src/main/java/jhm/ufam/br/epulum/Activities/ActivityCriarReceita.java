@@ -73,12 +73,13 @@ public class ActivityCriarReceita extends AppCompatActivity
     private static final int RECORD_REQUEST_CODE = 101;
     private static String TAG = "PermissionDemo";
     private final String server="https://epulum.000webhostapp.com";
-    private final String url_base="/epulumDev/mainController.php?acao=";
-    private final String url_get_receitas=server+url_base+"readReceitas";
-    private final String url_create_user=server+url_base+"createUsuario";
-    private final String url_server_login=server+url_base+"login";
-    private final String url_criar_receita=server+url_base+"createReceita";
-    private final String url_pegar_categorias=server+url_base+"readCategorias";
+    private final String url_base_get="/epulumDev/getController.php?acao=";
+    private final String url_base_post="/epulumDev/getController.php?acao=";
+    private final String url_get_receitas=server+url_base_get+"readReceitas";
+    private final String url_create_user=server+url_base_get+"createUsuario";
+    private final String url_server_login=server+url_base_post+"login";
+    private final String url_criar_receita=server+url_base_post+"createReceita";
+    private final String url_pegar_categorias=server+url_base_get+"readCategorias";
     private final String em_login="mateus.lucena.work@gmail.com";
     private final String em_nome="Mateus";
     private final String em_senha="123";
@@ -456,65 +457,67 @@ public class ActivityCriarReceita extends AppCompatActivity
         Button salva = (Button) findViewById(R.id.btn_salva);
         salva.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                final ReceitaSalvaDAO receitaSalvaDAO = new ReceitaSalvaDAO(ActivityCriarReceita.this);
-                final Dialog dialog = new Dialog(ActivityCriarReceita.this);
+                if(categorias!=null) {
+                    final ReceitaSalvaDAO receitaSalvaDAO = new ReceitaSalvaDAO(ActivityCriarReceita.this);
+                    final Dialog dialog = new Dialog(ActivityCriarReceita.this);
 
-                dialog.setContentView(R.layout.dialog_salvar_receita);
-                dialog.setTitle("Salvar Receita");
-                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-                lp.copyFrom(dialog.getWindow().getAttributes());
-                lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
-                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                dialog.getWindow().setAttributes(lp);
+                    dialog.setContentView(R.layout.dialog_salvar_receita);
+                    dialog.setTitle("Salvar Receita");
+                    WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                    lp.copyFrom(dialog.getWindow().getAttributes());
+                    lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+                    lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                    dialog.getWindow().setAttributes(lp);
 
-                final EditText text = (EditText) dialog.findViewById(R.id.edtNomeReceita);
-                final Spinner spnCategoria   = (Spinner) dialog.findViewById(R.id.spn_categoria);
-                Button tiraFoto = (Button)dialog.findViewById(R.id.btn_tirafoto);
-                Button salvaReceita = (Button) dialog.findViewById(R.id.btn_salva_receita);
-                Button cancela      = (Button) dialog.findViewById(R.id.btn_cancela);
-                final ImageView img       = (ImageView) dialog.findViewById(R.id.img_receita);
-                final Switch compartilhar=(Switch) dialog.findViewById(R.id.swt_compartilhar);
+                    final EditText text = (EditText) dialog.findViewById(R.id.edtNomeReceita);
+                    final Spinner spnCategoria = (Spinner) dialog.findViewById(R.id.spn_categoria);
+                    Button tiraFoto = (Button) dialog.findViewById(R.id.btn_tirafoto);
+                    Button salvaReceita = (Button) dialog.findViewById(R.id.btn_salva_receita);
+                    Button cancela = (Button) dialog.findViewById(R.id.btn_cancela);
+                    final ImageView img = (ImageView) dialog.findViewById(R.id.img_receita);
+                    final Switch compartilhar = (Switch) dialog.findViewById(R.id.swt_compartilhar);
 
                 /*ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(ActivityCriarReceita.this,
                         R.array.lista_categorias, R.layout.support_simple_spinner_dropdown_item);
                 adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);*/
-                ArrayAdapter<String> aa = new ArrayAdapter<>(ActivityCriarReceita.this,
-                        R.layout.support_simple_spinner_dropdown_item, ActivityCriarReceita.this.categorias);
-                Log.v("+++++++",(categorias==null)+"");
+                    ArrayAdapter<String> aa = new ArrayAdapter<>(ActivityCriarReceita.this,
+                            R.layout.support_simple_spinner_dropdown_item, ActivityCriarReceita.this.categorias);
+                    Log.v("+++++++", (categorias == null) + "");
 
-                spnCategoria.setAdapter(aa);
+                    spnCategoria.setAdapter(aa);
 
-                tiraFoto.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                    tiraFoto.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
 
-                    }
-                });
-
-                cancela.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
-
-                salvaReceita.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        receita.setNome(text.getText().toString());
-                        receita.setPhotoId(R.drawable.torta_de_maca);
-                        receita.set_idcategoria(categorias_db.get(spnCategoria.getSelectedItemPosition()).getTipo());
-                        if(compartilhar.isChecked()) criarReceitaServer(receita);
-                        else Log.v("comp","receita nao compartilhada");
-                        try {
-                            receitaSalvaDAO.addReceita(receita);
-                        } catch (Exception e){
                         }
-                    dialog.dismiss();
-                    }
-                });
-                dialog.show();
+                    });
+
+                    cancela.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    salvaReceita.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            receita.setNome(text.getText().toString());
+                            receita.setPhotoId(R.drawable.torta_de_maca);
+                            receita.set_idcategoria(categorias_db.get(spnCategoria.getSelectedItemPosition()).getTipo());
+                            if (compartilhar.isChecked()) criarReceitaServer(receita);
+                            else Log.v("comp", "receita nao compartilhada");
+                            try {
+                                receitaSalvaDAO.addReceita(receita);
+                            } catch (Exception e) {
+                            }
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.show();
+                }
             }
         });
     }
@@ -567,7 +570,7 @@ public class ActivityCriarReceita extends AppCompatActivity
     private void createServerUser(){
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, url_create_user+"&email="+email+"&nome="+nome+"&senha="+em_senha,
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_create_user+"&email="+email+"&nome="+nome+"&senha="+em_senha,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
