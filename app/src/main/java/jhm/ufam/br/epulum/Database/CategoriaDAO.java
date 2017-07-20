@@ -103,4 +103,8 @@ public class CategoriaDAO {
     public void initializeDatabase(){
         Categoria massas = new Categoria();
     }
+
+    public void close(){
+        MyDBHandler.closeDatabase(bancoDeDados);
+    }
 }

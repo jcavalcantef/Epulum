@@ -264,4 +264,8 @@ public class ReceitaDAO {
     public boolean existsReceita(String nome){
         return (getReceita(nome)!=null);
     }
+
+    public void close(){
+        MyDBHandler.closeDatabase(bancoDeDados);
+    }
 }

@@ -124,6 +124,10 @@ public class MyDBHandler extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECEITAS);
         onCreate(db);
     }
+
+    public static void closeDatabase(SQLiteDatabase db){
+        db.close();
+    }
 /*
     public void addProduct(Receita recipe) {
 

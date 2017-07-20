@@ -218,4 +218,8 @@ public class ReceitaSalvaDAO {
         return (getReceita(nome)!=null);
     }
 
+    public void close(){
+        MyDBHandler.closeDatabase(bancoDeDados);
+    }
+
 }

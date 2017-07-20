@@ -91,6 +91,7 @@ public class ActivityReceitasSalvas extends AppCompatActivity
                                 intentMain.putExtra("receita", receitas.get(position));
                                 intentMain.putExtra("nome", nome);
                                 intentMain.putExtra("email", email);
+                                receitaSalvaDAO.close();
                                 ActivityReceitasSalvas.this.startActivity(intentMain);
                                 Log.i("Content ", " Main layout ");
                                 dialog.dismiss();
@@ -104,6 +105,7 @@ public class ActivityReceitasSalvas extends AppCompatActivity
                                 intentMain.putExtra("receita", receitas.get(position));
                                 intentMain.putExtra("nome", nome);
                                 intentMain.putExtra("email", email);
+                                receitaSalvaDAO.close();
                                 ActivityReceitasSalvas.this.startActivity(intentMain);
                                 Log.i("Content ", " Main layout ");
                                 dialog.dismiss();
@@ -212,28 +214,33 @@ public class ActivityReceitasSalvas extends AppCompatActivity
                     ActivityMain.class);
             intentNewActivity.putExtra("nome", nome);
             intentNewActivity.putExtra("email", email);
+            receitaSalvaDAO.close();
             ActivityReceitasSalvas.this.startActivity(intentNewActivity);
         } else if (id == R.id.nav_criar_receita) {
             Intent intentNewActivity = new Intent(ActivityReceitasSalvas.this,
                     ActivityCriarReceita.class);
             intentNewActivity.putExtra("nome", nome);
             intentNewActivity.putExtra("email", email);
+            receitaSalvaDAO.close();
             ActivityReceitasSalvas.this.startActivity(intentNewActivity);
         } else if (id == R.id.nav_receitas_salvas) {
             Intent intentNewActivity = new Intent(ActivityReceitasSalvas.this,
                     ActivityReceitasSalvas.class);
             intentNewActivity.putExtra("nome", nome);
             intentNewActivity.putExtra("email", email);
+            receitaSalvaDAO.close();
             ActivityReceitasSalvas.this.startActivity(intentNewActivity);
         } else if (id == R.id.nav_perfil) {
             Intent intentNewActivity = new Intent(ActivityReceitasSalvas.this,
                     ActivityPerfil.class);
             intentNewActivity.putExtra("nome", nome);
             intentNewActivity.putExtra("email", email);
+            receitaSalvaDAO.close();
             ActivityReceitasSalvas.this.startActivity(intentNewActivity);
 
         } else if (id == R.id.nav_site) {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://epulum.000webhostapp.com"));
+            receitaSalvaDAO.close();
             startActivity(browserIntent);
         } else if (id == R.id.nav_lista_compras){
             Intent intentNewActivity = new Intent(ActivityReceitasSalvas.this,

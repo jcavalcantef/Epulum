@@ -304,6 +304,7 @@ public class ActivityMain extends AppCompatActivity
                 intentMain.putExtra("receita", receitas.get(position));
                 intentMain.putExtra("nome", nome);
                 intentMain.putExtra("email", email);
+                receitaDAO.close();
                 ActivityMain.this.startActivity(intentMain);
                 Log.i("Content ", " Main layout ");
             }

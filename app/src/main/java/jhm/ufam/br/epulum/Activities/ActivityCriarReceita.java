@@ -196,6 +196,7 @@ public class ActivityCriarReceita extends AppCompatActivity
                     ActivityMain.class);
             intentNewActivity.putExtra("nome",nome);
             intentNewActivity.putExtra("email",email);
+
             ActivityCriarReceita.this.startActivity(intentNewActivity);
         } else if (id == R.id.nav_criar_receita) {
             Intent intentNewActivity = new Intent(ActivityCriarReceita.this ,
