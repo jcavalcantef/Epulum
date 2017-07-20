@@ -85,6 +85,7 @@ public class ActivityMain extends AppCompatActivity
 
 
 
+
     ReceitaDAO receitaDAO;
 
     @Override
@@ -416,8 +417,10 @@ public class ActivityMain extends AppCompatActivity
             Log.v("json",f.get("Descricao").toString());
             Log.v("json",f.get("Ingredientes").toString());
             Log.v("json",f.get("Passos").toString());*/
-            receitas.add(new Receita(f));
-            Log.v("json",""+(receitas==null));
+            if(receitaDAO.addReceita(new Receita(f))) {
+                receitas.add(new Receita(f));
+            }
+            //Log.v("json",""+(receitas==null));
 
             i++;
         }

@@ -122,7 +122,7 @@ public class ReceitaDAO {
         CategoriaDAO categoriaDAO = new CategoriaDAO(context);
         Categoria c = categoriaDAO.getCategoria(nomeCategoria);
         String sqlQuery = "SELECT * FROM " + MyDBHandler.TABLE_RECEITAS + " WHERE " +
-                MyDBHandler.COLUNA_idcategoria + " LIKE '" + c.get_id() + "%'";
+                MyDBHandler.COLUNA_idcategoria + " LIKE '" + c.getTipo() + "%'";
         Cursor cursor = bancoDeDados.rawQuery(sqlQuery, null);
         if (cursor.moveToFirst()){
             do{
@@ -142,6 +142,8 @@ public class ReceitaDAO {
 *
 * */
     public boolean addReceita(Receita r){
+        if(existsReceita(r.getNome()))
+            return false;
         try{
             Log.v("Valor Ingredientes", r.getIngredientesString());
             String sqlCmd = "INSERT INTO " + MyDBHandler.TABLE_RECEITAS + " ( " +
@@ -180,9 +182,11 @@ public class ReceitaDAO {
     * falso caso contrário.
     *
     * */
-    public boolean removeReceita(Receita r){
+    public boolean removeReceita(String nome){
+        if(!existsReceita(nome))
+            return false;
         try{
-            String sqlCmd = "DELETE FROM " + MyDBHandler.TABLE_RECEITAS + " WHERE " + MyDBHandler.COLUNA_nome + "='" + r.getNome() + "';";
+            String sqlCmd = "DELETE FROM " + MyDBHandler.TABLE_RECEITAS + " WHERE " + MyDBHandler.COLUNA_nome + "='" + nome + "';";
             this.bancoDeDados.execSQL(sqlCmd);
             return true;
         }catch (Exception e){
@@ -256,4 +260,8 @@ public class ReceitaDAO {
 
     }
 
+/* Testa se uma receita já existe no banco de dados com o mesmo nome*/
+    public boolean existsReceita(String nome){
+        return (getReceita(nome)!=null);
+    }
 }

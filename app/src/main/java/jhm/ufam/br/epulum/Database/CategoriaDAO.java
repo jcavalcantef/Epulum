@@ -27,7 +27,7 @@ public class CategoriaDAO {
                 MyDBHandler.COLUNA_categorianome + " LIKE '" + nome + "%'";
         Cursor cursor = this.bancoDeDados.rawQuery(sqlQuery,null);
         if(cursor.moveToNext()){
-            c = new Categoria(cursor.getInt(0),cursor.getString(1),cursor.getString(2));
+            c = new Categoria(cursor.getString(0),cursor.getLong(1));
         }
         cursor.close();
         return c;
@@ -39,7 +39,7 @@ public class CategoriaDAO {
         Cursor cursor = bancoDeDados.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()){
             do{
-                Categoria c = new Categoria(cursor.getInt(0),cursor.getString(1),cursor.getString(2));
+                Categoria c = new Categoria(cursor.getString(0),cursor.getLong(1));
                 categorias.add(c);
             } while (cursor.moveToNext());
         }
@@ -52,7 +52,7 @@ public class CategoriaDAO {
         Cursor cursor = bancoDeDados.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()){
             do{
-                Categoria c = new Categoria(cursor.getInt(0),cursor.getString(1),cursor.getString(2));
+                Categoria c = new Categoria(cursor.getString(0),cursor.getLong(1));
                 categorias.add(c.getNome());
             } while (cursor.moveToNext());
         }

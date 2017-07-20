@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/txt_nome_receita"
         android:layout_below="@+id/txt_nome_receita"
+        android:hint="Nome da receita"
         android:ems="10"
         android:inputType="text|textPersonName"
         android:text="" />
@@ -42,6 +43,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/txt_categoria"
         android:layout_marginTop="38dp"
+        android:spinnerMode="dialog"
         android:textSize="20dp" />
 
     <ImageView
@@ -72,25 +74,29 @@
         android:id="@+id/btn_salva_receita"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/img_receita"
-        android:layout_centerVertical="true"
-        android:text="Salvar" />
+        android:text="Salvar"
+        android:layout_marginTop="58dp"
+        android:layout_marginStart="44dp"
+        android:layout_below="@+id/swt_compartilhar"
+        android:layout_alignStart="@+id/txt_categoria" />
 
     <Button
         android:id="@+id/btn_cancela"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/btn_tirafoto"
-        android:layout_alignTop="@+id/btn_salva_receita"
-        android:text="Cancelar" />
+        android:text="Cancelar"
+        android:layout_alignBaseline="@+id/btn_salva_receita"
+        android:layout_alignBottom="@+id/btn_salva_receita"
+        android:layout_alignStart="@+id/btn_tirafoto" />
 
     <Switch
         android:id="@+id/swt_compartilhar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/btn_salva_receita"
-        android:layout_below="@+id/btn_salva_receita"
-        android:layout_marginTop="11dp"
-        android:text="Compartilhar" />
+        android:text="Compartilhar"
+        android:textSize="10dp"
+        android:layout_marginTop="54dp"
+        android:layout_below="@+id/spn_categoria"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

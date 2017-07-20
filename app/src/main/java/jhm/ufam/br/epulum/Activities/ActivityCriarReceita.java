@@ -42,11 +42,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import jhm.ufam.br.epulum.Classes.Categoria;
 import jhm.ufam.br.epulum.Classes.ItemClickSupport;
@@ -76,6 +78,7 @@ public class ActivityCriarReceita extends AppCompatActivity
     private final String url_create_user=server+url_base+"createUsuario";
     private final String url_server_login=server+url_base+"login";
     private final String url_criar_receita=server+url_base+"createReceita";
+    private final String url_pegar_categorias=server+url_base+"readCategorias";
     private final String em_login="mateus.lucena.work@gmail.com";
     private final String em_nome="Mateus";
     private final String em_senha="123";
@@ -100,6 +103,8 @@ public class ActivityCriarReceita extends AppCompatActivity
     private SensorManager mSensorManager;
     private Sensor mProximity;
     private String user_id;
+    private List<String> categorias;
+    private List<Categoria> categorias_db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,8 +146,8 @@ public class ActivityCriarReceita extends AppCompatActivity
         mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 
         serverLogin();
+        pegarCategorias();
     }
-
 
     @Override
     public void onBackPressed() {
@@ -448,6 +453,7 @@ public class ActivityCriarReceita extends AppCompatActivity
             public void onClick(View v) {
                 final ReceitaSalvaDAO receitaSalvaDAO = new ReceitaSalvaDAO(ActivityCriarReceita.this);
                 final Dialog dialog = new Dialog(ActivityCriarReceita.this);
+
                 dialog.setContentView(R.layout.dialog_salvar_receita);
                 dialog.setTitle("Salvar Receita");
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -455,7 +461,6 @@ public class ActivityCriarReceita extends AppCompatActivity
                 lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
                 lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
                 dialog.getWindow().setAttributes(lp);
-                ArrayList<String> categorias = new Receita().getCategorias();
 
                 final EditText text = (EditText) dialog.findViewById(R.id.edtNomeReceita);
                 final Spinner spnCategoria   = (Spinner) dialog.findViewById(R.id.spn_categoria);
@@ -467,10 +472,11 @@ public class ActivityCriarReceita extends AppCompatActivity
                 /*ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(ActivityCriarReceita.this,
                         R.array.lista_categorias, R.layout.support_simple_spinner_dropdown_item);
                 adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);*/
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(ActivityCriarReceita.this,
-                        R.layout.support_simple_spinner_dropdown_item, categorias);
+                ArrayAdapter<String> aa = new ArrayAdapter<>(ActivityCriarReceita.this,
+                        R.layout.support_simple_spinner_dropdown_item, ActivityCriarReceita.this.categorias);
+                Log.v("+++++++",(categorias==null)+"");
 
-                spnCategoria.setAdapter(adapter);
+                spnCategoria.setAdapter(aa);
 
                 cancela.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -485,7 +491,7 @@ public class ActivityCriarReceita extends AppCompatActivity
 
                         receita.setNome(text.getText().toString());
                         receita.setPhotoId(R.drawable.torta_de_maca);
-                        receita.set_idcategoria(1);
+                        receita.set_idcategoria(categorias_db.get(spnCategoria.getSelectedItemPosition()).getTipo());
                         if(compartilhar.isChecked()) criarReceitaServer(receita);
                         else Log.v("comp","receita nao compartilhada");
                         try {
@@ -524,7 +530,7 @@ public class ActivityCriarReceita extends AppCompatActivity
                     "&descricao="+receita.getDescricao()+
                     "&ingredientes="+receita.getIngredientes().toString()+
                     "&passos="+receita.getPassos().toString()+
-                    "&categoria="+1+
+                    "&categoria="+receita.get_idcategoria()+
                     "&idUser="+user_id,
                     new Response.Listener<String>() {
                         @Override
@@ -597,6 +603,54 @@ public class ActivityCriarReceita extends AppCompatActivity
             queue.add(stringRequest);
         }catch(NullPointerException e){
             Log.v("volley",e.toString());
+        }
+    }
+
+    private void pegarCategorias(){
+        RequestQueue queue = Volley.newRequestQueue(this);
+        try {
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_pegar_categorias,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.v("volley","Response is: "+ response);
+                            // Display the first 500 characters of the response string.
+                            //Log.v("server",url_create_user+"&email="+em_login+"$nome="+em_nome+"&senha="+em_senha);
+                            Log.v("categorias",response);
+                            JSONDealCategorias(response);
+
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.v("volley","That didn't work!");
+                }
+            });
+            queue.add(stringRequest);
+        }catch(NullPointerException e){
+            Log.v("volley",e.toString());
+        }
+    }
+
+    private void JSONDealCategorias(String jstring){
+        try{
+            JSONObject j = new JSONObject(jstring);
+            if(j.getInt("Sucess")==1){
+                categorias_db=new ArrayList<>();
+                categorias=new ArrayList<>();
+                JSONArray ja=j.getJSONArray("Categorias");
+                int i=0;
+                while(i<ja.length()){
+                    j=ja.getJSONObject(i);
+                    categorias.add(j.getString("Nome"));
+                    categorias_db.add(new Categoria(j.getString("Nome"),j.getLong("Id")));
+                    i++;
+                }
+            }
+        }catch(JSONException e){
+            Log.v("categorias","failed");
+            e.printStackTrace();
+
         }
     }
 

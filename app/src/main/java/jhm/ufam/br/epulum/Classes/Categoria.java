@@ -2,22 +2,14 @@ package jhm.ufam.br.epulum.Classes;
 
 
 public class Categoria {
-    private long _id;
     private String nome;
-    private String tipo;
+    private long tipo;
 
   public Categoria() {
     nome = "";
-    tipo = "";
   }
 
-  public Categoria(String nome, String tipo) {
-    this.nome = nome;
-    this.tipo = tipo;
-  }
-
-  public Categoria(long _id, String nome, String tipo) {
-    this._id = _id;
+  public Categoria(String nome, long tipo) {
     this.nome = nome;
     this.tipo = tipo;
   }
@@ -30,19 +22,11 @@ public class Categoria {
     this.nome = nome;
   }
 
-  public String getTipo() {
+  public long getTipo() {
     return tipo;
   }
 
-  public void setTipo(String tipo) {
+  public void setTipo(long tipo) {
     this.tipo = tipo;
-  }
-
-  public long get_id() {
-    return _id;
-  }
-
-  public void set_id(long _id) {
-    this._id = _id;
   }
 }

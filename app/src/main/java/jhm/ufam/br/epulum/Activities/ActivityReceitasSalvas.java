@@ -1,8 +1,11 @@
 package jhm.ufam.br.epulum.Activities;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.design.widget.NavigationView;
@@ -41,6 +44,7 @@ public class ActivityReceitasSalvas extends AppCompatActivity
     private TextView txtEmailBar;
     private String nome;
     private String email;
+    private RVAdapter adapter;
 
     public ReceitaSalvaDAO receitaSalvaDAO;
 
@@ -75,6 +79,7 @@ public class ActivityReceitasSalvas extends AppCompatActivity
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 // do it
+
                 Intent intentMain = new Intent(ActivityReceitasSalvas.this,
                         ActivityReceita.class);
                 intentMain.putExtra("receita", receitas.get(position));
@@ -82,6 +87,32 @@ public class ActivityReceitasSalvas extends AppCompatActivity
                 intentMain.putExtra("email", email);
                 ActivityReceitasSalvas.this.startActivity(intentMain);
                 Log.i("Content ", " Main layout ");
+            }
+        });
+        ItemClickSupport.addTo(rv).setOnItemLongClickListener(new ItemClickSupport.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClicked(RecyclerView recyclerView, final int position, View v) {
+                //receitas.get(position)
+                AlertDialog dialog = new AlertDialog.Builder(ActivityReceitasSalvas.this).create();
+                dialog.setTitle("Alerta");
+                dialog.setMessage("Deseja excluir a receita?");
+                dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Excluir",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                receitaSalvaDAO.removeReceita(receitas.get(position).getNome());
+                                receitas.remove(position);
+                                adapter.notifyItemRemoved(position);
+                                dialog.dismiss();
+                            }
+                        });
+                dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancelar",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                dialog.show();
+                return false;
             }
         });
         initializeData();
@@ -183,7 +214,7 @@ public class ActivityReceitasSalvas extends AppCompatActivity
     }
 
     private void initializeAdapter() {
-        RVAdapter adapter = new RVAdapter(receitas);
+        adapter = new RVAdapter(receitas);
         rv.setAdapter(adapter);
     }
 }

@@ -43,13 +43,11 @@ public class MyDBHandler extends SQLiteOpenHelper{
             COLUNA_photoid + " INT );";
 
     public static final String TABLE_CATEGORIAS = "Categorias";
-    public static final String COLUNA_categoriaid="id";
     public static final String COLUNA_categorianome="nome";
     public static final String COLUNA_categoriatipo="tipo";
     public static final String TABLE_CREATE_CATEGORIA = "CREATE TABLE IF NOT EXISTS " + TABLE_CATEGORIAS + " ( " +
-            COLUNA_categoriaid + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUNA_categorianome + " TEXT," +
-            COLUNA_categoriatipo + " TEXT );";
+            COLUNA_categoriatipo + " LONG );";
 
     public static final String TABLE_CREATE_RECEITAS_SALVAS = "CREATE TABLE IF NOT EXISTS " + TABLE_RECEITAS_SALVAS + " ( " +
             COLUNA_id + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
