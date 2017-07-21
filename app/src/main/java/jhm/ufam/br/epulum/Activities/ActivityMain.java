@@ -63,7 +63,7 @@ public class ActivityMain extends AppCompatActivity
     private static String TAG = "PermissionDemo";
     private final String server="https://epulum.000webhostapp.com";
     private final String url_base_get="/epulumDev/getController.php?acao=";
-    private final String url_base_post="/epulumDev/getController.php?acao=";
+    private final String url_base_post="/epulumDev/mainController.php?acao=";
     private final String url_get_receitas=server+url_base_get+"readReceitas";
     private final String url_create_user=server+url_base_get+"createUsuario";
     private final String url_server_login=server+url_base_post+"login";
@@ -511,7 +511,7 @@ public class ActivityMain extends AppCompatActivity
     private void serverLogin(){
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, url_server_login+"&email="+em_login+"&senha="+em_senha,
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_server_login+"&email="+em_login+"&senha="+em_senha,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {

@@ -25,15 +25,6 @@
         android:layout_height="match_parent"
         android:background="@color/colorBackground">
 
-        <Button
-            android:id="@+id/btn_comecar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/txt_lista_compras"
-            android:text="Começar" />
-
         <TextView
             android:id="@+id/txt_lista_compras"
             android:layout_width="wrap_content"
@@ -45,13 +36,40 @@
             android:text="Criando Receita"
             android:textSize="24sp" />
 
+        <Button
+            android:id="@+id/btn_comecar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/txt_lista_compras"
+            android:text="Começar" />
+
+        <Button
+            android:id="@+id/btn_para"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_lista_compras"
+            android:layout_centerHorizontal="true"
+            android:text="Para" />
+
+        <Button
+            android:id="@+id/btn_salva"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/txt_lista_compras"
+            android:text="Salva" />
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/txt_lista_compras"
-            android:layout_marginTop="50dp">
+            android:layout_marginTop="50dp"
+            android:id="@+id/scrollView3">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -61,16 +79,33 @@
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/btn_nova_lista">
 
+                <EditText
+                    android:id="@+id/edt_descricao"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:text="Descrição"
+                    android:layout_below="@+id/txt_descricao"
+                    android:layout_alignParentStart="true" />
+
+                <TextView
+                    android:id="@+id/txt_descricao"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/grad"
+                    android:text="Descrição"
+                    android:textSize="24sp" />
+
                 <TextView
                     android:id="@+id/txt_ingrediente"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
                     android:background="@drawable/grad"
                     android:text="     Ingredientes"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    android:layout_below="@+id/edt_descricao"
+                    android:layout_alignParentStart="true" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_ingrediente"
@@ -105,23 +140,6 @@
 
             </RelativeLayout>
         </ScrollView>
-
-        <Button
-            android:id="@+id/btn_para"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txt_lista_compras"
-            android:layout_centerHorizontal="true"
-            android:text="Para" />
-
-        <Button
-            android:id="@+id/btn_salva"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/txt_lista_compras"
-            android:text="Salva" />
 
 
     </RelativeLayout>

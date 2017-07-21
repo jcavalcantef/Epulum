@@ -22,6 +22,7 @@ public class ThreadCriarReceita implements Runnable {
     private final String VOLTA = "volta";
     private final String REPETE = "repete";
     private final String ESPERA = "espera";
+    private final String SALVA = "salva";
     private final String ADICIONAR = "adicionar";
     private final String RECEITA ="receita";
     private final String INGREDIENTE = "ingrediente";
@@ -54,7 +55,6 @@ public class ThreadCriarReceita implements Runnable {
         this.rv_pass=pss;
         para=false;
         askedResult = false;
-
     }
 
     @Override
@@ -72,50 +72,59 @@ public class ThreadCriarReceita implements Runnable {
     public void novoResultado() {
         newResult = false;
         askedResult = false;
-        switch (eAgora) {
-            case INICIO:
-                if (!para) {
-                    if (hasWord(INGREDIENTE)) eAgora = estados.INGREDIENTES;
-                    else if (hasWord(PASSO)) eAgora = estados.PASSOS;
-                }
-                break;
-            case INGREDIENTES:
-                if (!para) {
-                    if (hasWord(ADICIONAR) && hasWord(PASSO)) {
-                        eAgora = estados.PASSOS;
-                    } else if (hasWord(PARA) && !hasWord(" " + PARA) && !hasWord(PARA + " ")) {
-                        para = true;
+        if (hasWord(PARA) && !hasWord(" " + PARA) && !hasWord(PARA + " ")) {
+            para = true;
 
-                    } else {
-                        receita.addIngrediente(result);
-                        arr.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                rv_ingr.notifyItemInserted(receita.getIngredientes().size() - 1);
-                            }
-                        });
-                        Speak("próximo");
-                    }
+        } else if(hasWord(SALVA)){
+            arr.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    arr.salva.performClick();
                 }
-                break;
-            case PASSOS:
-                if (!para) {
-                    if (hasWord(ADICIONAR) && hasWord(INGREDIENTE)) {
-                        eAgora = estados.INGREDIENTES;
-                    } else if (hasWord(PARA) && !hasWord(" " + PARA) && !hasWord(PARA + " ")) {
-                        para = true;
-                    } else {
-                        receita.addPasso(result);
-                        arr.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                rv_pass.notifyItemInserted(receita.getPassos().size() - 1);
-                            }
-                        });
-                        Speak("Próximo");
+            });
+
+
+        } else {
+            switch (eAgora) {
+                case INICIO:
+                    if (!para) {
+                        if (hasWord(INGREDIENTE)) eAgora = estados.INGREDIENTES;
+                        else if (hasWord(PASSO)) eAgora = estados.PASSOS;
                     }
-                }
-                break;
+                    break;
+                case INGREDIENTES:
+                    if (!para) {
+                        if (hasWord(ADICIONAR) && hasWord(PASSO)) {
+                            eAgora = estados.PASSOS;
+                        } else {
+                            receita.addIngrediente(result);
+                            arr.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    rv_ingr.notifyItemInserted(receita.getIngredientes().size() - 1);
+                                }
+                            });
+                            Speak("próximo");
+                        }
+                    }
+                    break;
+                case PASSOS:
+                    if (!para) {
+                        if (hasWord(ADICIONAR) && hasWord(INGREDIENTE)) {
+                            eAgora = estados.INGREDIENTES;
+                        } else {
+                            receita.addPasso(result);
+                            arr.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    rv_pass.notifyItemInserted(receita.getPassos().size() - 1);
+                                }
+                            });
+                            Speak("Próximo");
+                        }
+                    }
+                    break;
+            }
         }
     }
 

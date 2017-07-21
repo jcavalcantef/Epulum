@@ -1,9 +1,14 @@
 package jhm.ufam.br.epulum.Activities;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Path;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -13,7 +18,10 @@ import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -34,7 +42,9 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.provider.MediaStore;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -47,8 +57,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import java.io.IOException;
 
 import jhm.ufam.br.epulum.Classes.Categoria;
 import jhm.ufam.br.epulum.Classes.ItemClickSupport;
@@ -62,6 +78,9 @@ import jhm.ufam.br.epulum.R;
 import jhm.ufam.br.epulum.RVAdapter.RVIngredienteAdapter;
 import jhm.ufam.br.epulum.RVAdapter.RVPassosAdapter;
 
+import net.gotev.uploadservice.MultipartUploadRequest;
+import net.gotev.uploadservice.UploadNotificationConfig;
+
 /**
  * Created by Mateus on 21/06/2017.
  */
@@ -74,11 +93,12 @@ public class ActivityCriarReceita extends AppCompatActivity
     private static String TAG = "PermissionDemo";
     private final String server="https://epulum.000webhostapp.com";
     private final String url_base_get="/epulumDev/getController.php?acao=";
-    private final String url_base_post="/epulumDev/getController.php?acao=";
+    private final String url_base_post="/epulumDev/mainController.php?acao=";
+    private final String url_base="/epulumDev/mainController.php?acao=";
     private final String url_get_receitas=server+url_base_get+"readReceitas";
     private final String url_create_user=server+url_base_get+"createUsuario";
     private final String url_server_login=server+url_base_post+"login";
-    private final String url_criar_receita=server+url_base_post+"createReceita";
+    private final String url_criar_receita=server+url_base_get+"createReceita";
     private final String url_pegar_categorias=server+url_base_get+"readCategorias";
     private final String em_login="mateus.lucena.work@gmail.com";
     private final String em_nome="Mateus";
@@ -106,6 +126,22 @@ public class ActivityCriarReceita extends AppCompatActivity
     private String user_id;
     private List<String> categorias;
     private List<Categoria> categorias_db;
+    private Dialog dialog;
+    private ImageView imagem;
+    public Button salva;
+    private EditText edt_descricao;
+
+    //Image request code
+    private int PICK_IMAGE_REQUEST = 1;
+
+    //storage permission code
+    private static final int STORAGE_PERMISSION_CODE = 123;
+
+    //Bitmap to get image from gallery
+    private Bitmap bitmap;
+
+    //Uri to store the image uri
+    private Uri filePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +158,7 @@ public class ActivityCriarReceita extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        edt_descricao =(EditText) findViewById(R.id.edt_descricao);
 
         Intent in= getIntent();
         sh=new SpeechWrapper(getApplicationContext());
@@ -141,7 +178,7 @@ public class ActivityCriarReceita extends AppCompatActivity
         criarReceita=null;
         cr=null;
         //criarReceita.setContext(this);
-
+        //imageView = (ImageView) findViewById(R.id.img_receita);
         doButtons();
         doRecyclerViews();
 
@@ -152,6 +189,98 @@ public class ActivityCriarReceita extends AppCompatActivity
 
         serverLogin();
         pegarCategorias();
+        requestStoragePermission();
+    }
+
+    //method to show file chooser
+    private void showFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+   public void uploadMultipart(String name, Uri caminho_arquivo) {
+        //getting name for the image
+        //String name = editText.getText().toString().trim();
+
+        //getting the actual path of the image
+        String path = getPath(filePath);
+       String up_url=url_criar_receita+
+               "&nome="+receita.getNome()+
+               "&tempopreparo="+receita.getTempopreparo()+
+               "&descricao="+receita.getDescricao()+
+               "&ingredientes="+receita.getIngredientes().toString()+
+               "&passos="+receita.getPassos().toString()+
+               "&categoria="+receita.get_idcategoria()+
+               "&idUser="+user_id;
+
+        //Uploading code
+        try {
+            String uploadId = UUID.randomUUID().toString();
+
+            //Creating a multi part request
+            new MultipartUploadRequest(this, uploadId, up_url)
+                    .addFileToUpload(path, "image") //Adding file
+                    .setNotificationConfig(new UploadNotificationConfig())
+                    .setMaxRetries(2)
+                    .startUpload(); //Starting the upload
+
+        } catch (Exception exc) {
+            Toast.makeText(this, exc.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    //method to get the file path from uri
+    public String getPath(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        String document_id = cursor.getString(0);
+        document_id = document_id.substring(document_id.lastIndexOf(":") + 1);
+        cursor.close();
+
+        cursor = getContentResolver().query(
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
+        cursor.moveToFirst();
+        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+        cursor.close();
+
+        return path;
+    }
+
+
+    //Requesting permission
+    private void requestStoragePermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+            return;
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            //If the user has denied the permission previously your code will come to this block
+            //Here you can explain why you need this permission
+            //Explain here why you need this permission
+        }
+        //And finally ask for the permission
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+    }
+
+
+    //This method will be called when the user will tap on allow or deny
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        //Checking the request code of our request
+        if (requestCode == STORAGE_PERMISSION_CODE) {
+
+            //If permission is granted
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //Displaying a toast
+                Toast.makeText(this, "Permission granted now you can read the storage", Toast.LENGTH_LONG).show();
+            } else {
+                //Displaying another toast if permission is not granted
+                Toast.makeText(this, "Oops you just denied the permission", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     @Override
@@ -178,10 +307,7 @@ public class ActivityCriarReceita extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -454,13 +580,14 @@ public class ActivityCriarReceita extends AppCompatActivity
             }
         });
 
-        Button salva = (Button) findViewById(R.id.btn_salva);
+        salva = (Button) findViewById(R.id.btn_salva);
         salva.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(categorias!=null) {
                     final ReceitaSalvaDAO receitaSalvaDAO = new ReceitaSalvaDAO(ActivityCriarReceita.this);
-                    final Dialog dialog = new Dialog(ActivityCriarReceita.this);
+                    dialog = new Dialog(ActivityCriarReceita.this);
 
+                    boolean flag = false;
                     dialog.setContentView(R.layout.dialog_salvar_receita);
                     dialog.setTitle("Salvar Receita");
                     WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -468,14 +595,18 @@ public class ActivityCriarReceita extends AppCompatActivity
                     lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
                     lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
                     dialog.getWindow().setAttributes(lp);
-
                     final EditText text = (EditText) dialog.findViewById(R.id.edtNomeReceita);
                     final Spinner spnCategoria = (Spinner) dialog.findViewById(R.id.spn_categoria);
+                    if(receita.getNome()!=null) text.setText(receita.getNome());
                     Button tiraFoto = (Button) dialog.findViewById(R.id.btn_tirafoto);
                     Button salvaReceita = (Button) dialog.findViewById(R.id.btn_salva_receita);
                     Button cancela = (Button) dialog.findViewById(R.id.btn_cancela);
-                    final ImageView img = (ImageView) dialog.findViewById(R.id.img_receita);
+                    //final ImageView img = (ImageView) dialog.findViewById(R.id.img_receita);
                     final Switch compartilhar = (Switch) dialog.findViewById(R.id.swt_compartilhar);
+                    imagem = (ImageView) dialog.findViewById(R.id.img_receita);
+                    if(!edt_descricao.getText().equals("Descriçao")){
+                        receita.setDescricao(edt_descricao.getText().toString());
+                    }
 
                 /*ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(ActivityCriarReceita.this,
                         R.array.lista_categorias, R.layout.support_simple_spinner_dropdown_item);
@@ -489,7 +620,7 @@ public class ActivityCriarReceita extends AppCompatActivity
                     tiraFoto.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-
+                            showFileChooser();
                         }
                     });
 
@@ -507,7 +638,10 @@ public class ActivityCriarReceita extends AppCompatActivity
                             receita.setNome(text.getText().toString());
                             receita.setPhotoId(R.drawable.torta_de_maca);
                             receita.set_idcategoria(categorias_db.get(spnCategoria.getSelectedItemPosition()).getTipo());
-                            if (compartilhar.isChecked()) criarReceitaServer(receita);
+                            if (compartilhar.isChecked()){
+                                criarReceitaServer(receita);
+                                //uploadMultipart("img",filePath);
+                            }
                             else Log.v("comp", "receita nao compartilhada");
                             try {
                                 receitaSalvaDAO.addReceita(receita);
@@ -520,6 +654,21 @@ public class ActivityCriarReceita extends AppCompatActivity
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //imageView = (ImageView) findViewById(R.id.img_receita);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            filePath = data.getData();
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                imagem.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -540,7 +689,7 @@ public class ActivityCriarReceita extends AppCompatActivity
         RequestQueue queue = Volley.newRequestQueue(this);
         Log.v("adicionar","Tentou adicionar receita");
         try {
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, url_criar_receita+
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_criar_receita+
                     "&nome="+receita.getNome()+
                     "&tempopreparo="+receita.getTempopreparo()+
                     "&descricao="+receita.getDescricao()+
@@ -598,7 +747,7 @@ public class ActivityCriarReceita extends AppCompatActivity
     private void serverLogin(){
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, url_server_login+"&email="+email+"&senha="+em_senha,
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_server_login+"&email="+email+"&senha="+em_senha,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
