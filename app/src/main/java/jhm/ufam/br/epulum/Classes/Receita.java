@@ -135,7 +135,9 @@ public class Receita implements Serializable{
         return ingredientes;
     }
 
-    public String getIngredientesString() {
+    public String getIngredientesString()
+    {
+        if(ingredientes.size() == 0) return "NULL";
         return ingredientes.toString();
     }
 
@@ -152,6 +154,7 @@ public class Receita implements Serializable{
     }
 
     public String getPassosString() {
+        if(passos.size() == 0) return "NULL";
         return passos.toString();
     }
 

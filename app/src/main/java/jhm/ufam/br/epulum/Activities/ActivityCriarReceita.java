@@ -96,17 +96,37 @@ public class ActivityCriarReceita extends AppCompatActivity
     private static String TAG = "PermissionDemo";
     private final String server="https://epulum.000webhostapp.com";
     private final String url_base_get="/epulumDev/getController.php?acao=";
-    private final String url_base_post="/epulumDev/mainController.php?acao=";
+    private final String url_base_post="/epulumDev/mainController.php";
     private final String url_base="/epulumDev/mainController.php?acao=";
     private final String url_get_receitas=server+url_base_get+"readReceitas";
     private final String url_create_user=server+url_base_get+"createUsuario";
     private final String url_server_login=server+url_base_post+"login";
-    private final String url_criar_receita=server+url_base_get+"createReceita";
+
+    private final String url_criar_receita = server + url_base_post;
+
     private final String url_pegar_categorias=server+url_base_get+"readCategorias";
+    private final String url_campo_nome = "nome";
+    private final String url_campo_tempo = "tempo";
+    private final String url_campo_descricao = "descricao";
+    private final String url_campo_ingredientes = "ingredientes";
+    private final String url_campo_passos = "passos";
+    private final String url_campo_categoria = "idCategoria";
+    private final String url_campo_usuario = "idUser";
+    private final String url_campo_foto = "fileToUpload";
     private final String em_login="mateus.lucena.work@gmail.com";
     private final String em_nome="Mateus";
     private final String em_senha="123";
-
+/*
+    private String returnUrl(Receita rec, String path)
+    {
+        return url_criar_receita + "&" + url_nome + "=" + rec.getNome() +
+                                   "&" + url_tempo + "=" + rec.getTempopreparo() +
+                                   "&" + url_descricao + "=" + rec.getDescricao() +
+                                   "&" + url_ingredientes + "=" + rec.getIngredientesString() +
+                "&" + url_passos + "=" + rec.getPassosString() +
+                "&" + url_descricao + "=" + rec.getDescricao() +"";
+    }
+*/
     private final String languagePref = "pt-BR";
     private Receita receita;
     private RecyclerView rv_ingredientes;
@@ -725,7 +745,17 @@ public class ActivityCriarReceita extends AppCompatActivity
                 try {
                     Log.v("post","entered thread");
                     MultipartUtility multipart = new MultipartUtility(url_criar_receita, "UTF-8");
-                    multipart.addFilePart("filetoupload",
+                    multipart.addFormField("acao","createReceita");
+                    multipart.addFormField(url_campo_nome, receita.getNome());
+                    multipart.addFormField(url_campo_tempo,receita.getTempopreparo());
+                    multipart.addFormField(url_campo_descricao,receita.getDescricao());
+
+                    multipart.addFormField(url_campo_ingredientes,receita.getIngredientesString());
+                    multipart.addFormField(url_campo_passos,receita.getPassosString());
+                    multipart.addFormField(url_campo_categoria,receita.get_idcategoria()+"");
+                    multipart.addFormField(url_campo_usuario,"0");
+
+                    multipart.addFilePart(url_campo_foto,
                             new File(getRealPathFromUri(getApplicationContext(),filePath)));
 
                     List<String> response = multipart.finish();
