@@ -88,15 +88,7 @@ public class ActivityPerfil extends AppCompatActivity
         //txtEmailBar=(TextView)findViewById(R.id.txtBarEmail);
         //txtNomeBar=(TextView)findViewById(R.id.txtBarNome);
         signIn();
-
-
     }
-
-
-
-
-
-
 
     @Override
     public void onBackPressed() {
@@ -167,7 +159,6 @@ public class ActivityPerfil extends AppCompatActivity
             intentNewActivity.putExtra("nome", nome);
             intentNewActivity.putExtra("email", email);
             ActivityPerfil.this.startActivity(intentNewActivity);
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

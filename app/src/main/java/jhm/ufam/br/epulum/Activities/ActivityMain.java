@@ -135,9 +135,6 @@ public class ActivityMain extends AppCompatActivity
         sv_procura_receita= (SearchView) findViewById(R.id.sv_procura);
         sv_procura_receita.setOnQueryTextListener(this);
         pegarCategorias();
-
-
-
     }
 
     protected void makeRequest() {
@@ -174,7 +171,6 @@ public class ActivityMain extends AppCompatActivity
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -217,10 +213,7 @@ public class ActivityMain extends AppCompatActivity
             intentNewActivity.putExtra("nome", nome);
             intentNewActivity.putExtra("email", email);
             ActivityMain.this.startActivity(intentNewActivity);
-
         }
-
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -287,7 +280,6 @@ public class ActivityMain extends AppCompatActivity
                 //imgvPerfil.setImageUrl(acct.getPhotoUrl().toString(), imageLoader);
             } catch (NullPointerException e) {
                 //imgvPerfil.setImageResource(R.drawable.profile_icon);
-
             }
 
         } else {

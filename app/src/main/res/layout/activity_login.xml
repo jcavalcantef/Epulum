@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/edt_usuario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -16,11 +16,11 @@
         android:layout_marginTop="13dp" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/edt_senha"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/editText"
-        android:layout_alignTop="@+id/editText"
+        android:layout_alignStart="@+id/edt_usuario"
+        android:layout_alignTop="@+id/edt_usuario"
         android:layout_marginTop="85dp"
         android:ems="10"
         android:hint="Senha"
@@ -32,11 +32,11 @@
         android:layout_height="180dp"
         app:srcCompat="@mipmap/ic_launcher"
         android:layout_marginTop="21dp"
-        android:layout_below="@+id/textView3"
+        android:layout_below="@+id/txt_epulum"
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/txt_epulum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="29dp"
@@ -49,8 +49,8 @@
         android:id="@+id/btn_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/editText2"
-        android:layout_below="@+id/editText2"
+        android:layout_alignStart="@+id/edt_senha"
+        android:layout_below="@+id/edt_senha"
         android:layout_marginTop="33dp"
         android:text="Entrar" />
 
@@ -58,7 +58,7 @@
         android:id="@+id/btn_novo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/editText2"
+        android:layout_alignEnd="@+id/edt_senha"
         android:layout_alignTop="@+id/btn_login"
         android:text="Novo" />
 </RelativeLayout>
