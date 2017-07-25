@@ -60,6 +60,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
+import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,6 +72,7 @@ import java.io.IOException;
 
 import jhm.ufam.br.epulum.Classes.Categoria;
 import jhm.ufam.br.epulum.Classes.ItemClickSupport;
+import jhm.ufam.br.epulum.Classes.MultipartUtility;
 import jhm.ufam.br.epulum.Classes.Receita;
 import jhm.ufam.br.epulum.Classes.SpeechWrapper;
 import jhm.ufam.br.epulum.Database.CategoriaDAO;
@@ -687,7 +689,7 @@ public class ActivityCriarReceita extends AppCompatActivity
     }
 
     private void criarReceitaServer(final Receita receita){
-        RequestQueue queue = Volley.newRequestQueue(this);
+        /*RequestQueue queue = Volley.newRequestQueue(this);
         Log.v("adicionar","Tentou adicionar receita");
         try {
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url_criar_receita+
@@ -714,7 +716,31 @@ public class ActivityCriarReceita extends AppCompatActivity
             queue.add(stringRequest);
         }catch(NullPointerException e){
             Log.v("volley",e.toString());
-        }
+        }*/
+
+        Log.v("post","strating thread");
+        Thread b= new Thread(){
+            @Override
+            public void run (){
+                try {
+                    Log.v("post","entered thread");
+                    MultipartUtility multipart = new MultipartUtility(url_criar_receita, "UTF-8");
+                    multipart.addFilePart("filetoupload",
+                            new File(getRealPathFromUri(getApplicationContext(),filePath)));
+
+                    List<String> response = multipart.finish();
+
+                    Log.v("post", "SERVER REPLIED:");
+                    for (String line : response) {
+                        Log.v("post", "Upload Files Response:::" + line);
+                    }
+                }catch( Exception e){
+                    e.printStackTrace();
+                    Log.v("post","woops");
+                }
+            }
+        };
+        b.start();
     }
 
     private void createServerUser(){
@@ -849,6 +875,21 @@ public class ActivityCriarReceita extends AppCompatActivity
 
         }catch (JSONException e){
 
+        }
+    }
+
+    public static String getRealPathFromUri(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
     }
 }
