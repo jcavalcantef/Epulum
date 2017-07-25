@@ -52,6 +52,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import net.gotev.uploadservice.MultipartUploadRequest;
+import net.gotev.uploadservice.UploadNotificationConfig;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -78,8 +81,6 @@ import jhm.ufam.br.epulum.R;
 import jhm.ufam.br.epulum.RVAdapter.RVIngredienteAdapter;
 import jhm.ufam.br.epulum.RVAdapter.RVPassosAdapter;
 
-import net.gotev.uploadservice.MultipartUploadRequest;
-import net.gotev.uploadservice.UploadNotificationConfig;
 
 /**
  * Created by Mateus on 21/06/2017.
