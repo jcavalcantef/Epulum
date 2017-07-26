@@ -96,7 +96,7 @@ public class ActivityCriarReceita extends AppCompatActivity
     private static String TAG = "PermissionDemo";
     private final String server="https://epulum.000webhostapp.com";
     private final String url_base_get="/epulumDev/getController.php?acao=";
-    private final String url_base_post="/epulumDev/mainController.php";
+    private final String url_base_post="/epulumDev/postController.php";
     private final String url_base="/epulumDev/mainController.php?acao=";
     private final String url_get_receitas=server+url_base_get+"readReceitas";
     private final String url_create_user=server+url_base_get+"createUsuario";
@@ -659,7 +659,8 @@ public class ActivityCriarReceita extends AppCompatActivity
                         public void onClick(View v) {
 
                             receita.setNome(text.getText().toString());
-                            receita.setPhotoId(R.drawable.torta_de_maca);
+                            receita.setPhotoId(R.mipmap.ic_launcher);
+                            receita.setFoto(getRealPathFromUri(getApplicationContext(),filePath));
                             receita.set_idcategoria(categorias_db.get(spnCategoria.getSelectedItemPosition()).getTipo());
                             if (compartilhar.isChecked()){
                                 criarReceitaServer(receita);
@@ -754,9 +755,8 @@ public class ActivityCriarReceita extends AppCompatActivity
                     multipart.addFormField(url_campo_passos,receita.getPassosString());
                     multipart.addFormField(url_campo_categoria,receita.get_idcategoria()+"");
                     multipart.addFormField(url_campo_usuario,"0");
-
                     multipart.addFilePart(url_campo_foto,
-                            new File(getRealPathFromUri(getApplicationContext(),filePath)));
+                            new File(receita.getFoto()));
 
                     List<String> response = multipart.finish();
 

@@ -1,5 +1,6 @@
 package jhm.ufam.br.epulum.RVAdapter;
 
+import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import jhm.ufam.br.epulum.R;
@@ -50,6 +53,14 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ReceitaViewHolder>
     @Override
     public void onBindViewHolder(ReceitaViewHolder receitaViewHolder, int i) {
         receitaViewHolder.receitaNome.setText(receitas.get(i).getNome());
+        try {
+            File f = new File(receitas.get(i).getFoto());
+            if(f.exists()) {
+                receitaViewHolder.receitaFoto.setImageURI(Uri.fromFile(f));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         try {
             receitaViewHolder.receitaFoto.setImageResource(receitas.get(i).getPhotoId());
         }catch (Exception e){
