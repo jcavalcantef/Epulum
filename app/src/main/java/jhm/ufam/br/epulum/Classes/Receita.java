@@ -19,6 +19,7 @@ public class Receita implements Serializable{
     private String tempopreparo;
     private String descricao;
     private String foto;
+    private String fotoLocal;
     private List<String> ingredientes;
     private List<String> passos;
     private int photoId;
@@ -218,6 +219,14 @@ public class Receita implements Serializable{
         passos.remove(pos);
     }
 
+    public String getFotoLocal() {
+        return fotoLocal;
+    }
+
+    public void setFotoServer(String fotoLocal) {
+        this.fotoLocal = fotoLocal;
+    }
+
     public void setAllIngredientes(String all){
         all = all.replaceAll("\\[","").replaceAll("\\]","");
         String[] ingredientesNovos= all.split(",");
@@ -240,5 +249,7 @@ public class Receita implements Serializable{
             //Log.v("receita", bleh.trim());
         }
     }
+
+
 
 }

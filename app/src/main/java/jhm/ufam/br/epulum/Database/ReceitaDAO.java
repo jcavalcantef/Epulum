@@ -39,6 +39,9 @@ public class ReceitaDAO {
 *
 * */
     public Receita getReceita(String nome){
+        if(!isOpen()){
+            open();
+        };
         Receita receita = null;
         String sqlQuery = "SELECT * FROM " + MyDBHandler.TABLE_RECEITAS + " WHERE " +
                 MyDBHandler.COLUNA_nome + " LIKE '" + nome + "%'";
@@ -267,5 +270,13 @@ public class ReceitaDAO {
 
     public void close(){
         MyDBHandler.closeDatabase(bancoDeDados);
+    }
+
+    public void open(){
+        bancoDeDados = (new MyDBHandler(context)).getWritableDatabase();
+    }
+
+    public boolean isOpen(){
+        return MyDBHandler.isOpen(bancoDeDados);
     }
 }

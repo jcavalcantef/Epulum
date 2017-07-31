@@ -128,6 +128,10 @@ public class MyDBHandler extends SQLiteOpenHelper{
     public static void closeDatabase(SQLiteDatabase db){
         db.close();
     }
+
+    public static boolean isOpen(SQLiteDatabase db){
+        return db.isOpen();
+    }
 /*
     public void addProduct(Receita recipe) {
 

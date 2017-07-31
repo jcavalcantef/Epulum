@@ -59,7 +59,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ReceitaViewHolder>
             e1.printStackTrace();
         }
         try {
-            File f = new File(receitas.get(i).getFoto());
+            File f = new File(receitas.get(i).getFotoLocal());
             if(f.exists()) {
                 receitaViewHolder.receitaFoto.setImageURI(Uri.fromFile(f));
             }
