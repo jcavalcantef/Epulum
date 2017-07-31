@@ -103,8 +103,8 @@ public class ActivityListarPesquisaReceitas extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         imgvPerfil = (ImageView) findViewById(R.id.imgvPerfilPhoto);
-        txtEmailBar = (TextView) findViewById(R.id.txtBarEmail);
-        txtNomeBar = (TextView) findViewById(R.id.txtBarNome);
+        /*txtEmailBar = (TextView) findViewById(R.id.txtBarEmail);
+        txtNomeBar = (TextView) findViewById(R.id.txtBarNome);*/
 
         sh = new SpeechWrapper(getApplicationContext());
         Intent in= getIntent();

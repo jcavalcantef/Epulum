@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="jhm.ufam.br.epulum.Activities.ActivityCreateUser">
+
+
+    <ProgressBar
+        android:id="@+id/create_progress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.07"
+        tools:visibility="gone" />
+
+    <ScrollView
+        android:id="@+id/create_form"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.07"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:id="@+id/user_create_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <EditText
+                    android:id="@+id/novoEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint=" Email" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <EditText
+                    android:id="@+id/novoNome"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint=" Nome Completo" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <EditText
+                    android:id="@+id/novaSenha"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint=" Senha" />
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/btn_cadastrar_usuario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cadastrar" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
+

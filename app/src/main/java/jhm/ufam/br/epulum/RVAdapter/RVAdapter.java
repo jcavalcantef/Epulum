@@ -69,7 +69,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ReceitaViewHolder>
             }
         }catch (Exception e){
             e.printStackTrace();
-
         }
 
     }

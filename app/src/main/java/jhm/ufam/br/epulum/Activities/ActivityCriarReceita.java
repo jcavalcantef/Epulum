@@ -114,7 +114,7 @@ public class ActivityCriarReceita extends AppCompatActivity
     private final String url_campo_usuario = "idUser";
     private final String url_campo_foto = "fileToUpload";
     private final String em_login="mateus.lucena.work@gmail.com";
-    private final String em_nome="Mateus";
+    private final String em_nome="mateus.lucena";
     private final String em_senha="123";
 /*
     private String returnUrl(Receita rec, String path)
@@ -191,11 +191,11 @@ public class ActivityCriarReceita extends AppCompatActivity
         else receita = new Receita();
         acr=this;
 
-        txtEmailBar=(TextView)findViewById(R.id.txtBarEmail);
+        /*txtEmailBar=(TextView)findViewById(R.id.txtBarEmail);
         txtNomeBar=(TextView)findViewById(R.id.txtBarNome);
 
         nome=in.getStringExtra("nome");
-        email=in.getStringExtra("email");
+        email=in.getStringExtra("email");*/
         //txtEmailBar.setText(email);
         //txtNomeBar.setText(nome);
         criarReceita=null;

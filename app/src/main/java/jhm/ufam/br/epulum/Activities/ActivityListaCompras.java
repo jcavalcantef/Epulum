@@ -146,11 +146,11 @@ public class ActivityListaCompras extends AppCompatActivity
             }
         });
 
-        txtEmailBar=(TextView)findViewById(R.id.txtBarEmail);
+        /*txtEmailBar=(TextView)findViewById(R.id.txtBarEmail);
         txtNomeBar=(TextView)findViewById(R.id.txtBarNome);
         Intent in= getIntent();
         nome=in.getStringExtra("nome");
-        email=in.getStringExtra("email");
+        email=in.getStringExtra("email");*/
         //txtEmailBar.setText(email);
         //txtNomeBar.setText(nome);
         criarReceita=null;

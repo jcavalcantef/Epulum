@@ -161,8 +161,8 @@ public class ActivityReceitasSalvas extends AppCompatActivity
         });*/
         initializeData();
         initializeAdapter();
-        txtEmailBar = (TextView) findViewById(R.id.txtBarEmail);
-        txtNomeBar = (TextView) findViewById(R.id.txtBarNome);
+        /*txtEmailBar = (TextView) findViewById(R.id.txtBarEmail);
+        txtNomeBar = (TextView) findViewById(R.id.txtBarNome);*/
         Intent in = getIntent();
         nome = in.getStringExtra("nome");
         email = in.getStringExtra("email");

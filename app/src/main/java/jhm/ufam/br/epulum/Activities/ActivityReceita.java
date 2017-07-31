@@ -125,8 +125,8 @@ public class ActivityReceita extends AppCompatActivity
 
         nome = in.getStringExtra("nome");
         email = in.getStringExtra("email");
-        txEmailBar = (TextView) findViewById(R.id.txtBarEmail);
-        txNomeBar = (TextView) findViewById(R.id.txtBarNome);
+        /*txEmailBar = (TextView) findViewById(R.id.txtBarEmail);
+        txNomeBar = (TextView) findViewById(R.id.txtBarNome);*/
 
 
         //((TextView)findViewById(R.id.txtBarEmailR)).setText(nome);

@@ -201,8 +201,8 @@ public class ActivityPerfil extends AppCompatActivity
             //Displaying name and email
             txtName.setText(acct.getDisplayName());
             txtEmail.setText(acct.getEmail());
-            ((TextView)findViewById(R.id.txtBarEmail)).setText(acct.getEmail());
-            ((TextView)findViewById(R.id.txtBarNome)).setText(acct.getDisplayName());
+            /*((TextView)findViewById(R.id.txtBarEmail)).setText(acct.getEmail());
+            ((TextView)findViewById(R.id.txtBarNome)).setText(acct.getDisplayName());*/
 
             //Initializing image loader
             imageLoader = CustomVolleyRequest.getInstance(this.getApplicationContext())

@@ -113,8 +113,8 @@ public class ActivityMain extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         imgvPerfil = (ImageView) findViewById(R.id.imgvPerfilPhoto);
-        txtEmailBar = (TextView) findViewById(R.id.txtBarEmail);
-        txtNomeBar = (TextView) findViewById(R.id.txtBarNome);
+        /*txtEmailBar = (TextView) findViewById(R.id.txtBarEmail);
+        txtNomeBar = (TextView) findViewById(R.id.txtBarNome);*/
 
         sh = new SpeechWrapper(getApplicationContext());
         doRecyclerView();
@@ -262,8 +262,8 @@ public class ActivityMain extends AppCompatActivity
             //Displaying name and email
             nome = acct.getDisplayName();
             email = acct.getEmail();
-            ((TextView) findViewById(R.id.txtBarEmail)).setText(nome);
-            ((TextView) findViewById(R.id.txtBarNome)).setText(email);
+            /*((TextView) findViewById(R.id.txtBarEmail)).setText(nome);
+            ((TextView) findViewById(R.id.txtBarNome)).setText(email);*/
             createServerUser();
 
             //Initializing image loader
