@@ -111,7 +111,7 @@ public class ActivityListaCompras extends AppCompatActivity
                 //receitas.get(position)
                 AlertDialog dialog = new AlertDialog.Builder(ActivityListaCompras.this).create();
                 dialog.setTitle("Alerta");
-                dialog.setMessage("Deseja excluir a receita?");
+                dialog.setMessage("Deseja excluir a lista?");
                 dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Excluir",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
