@@ -77,13 +77,14 @@ public class ThreadCriarListaCompras implements Runnable {
                     eAgora=estados.INGREDIENTES;
                     break;
                 case INGREDIENTES:
-                    getSpeech();
+                    if(!askedResult) getSpeech();
                     if(!para) {
                         if(hasWord(PARA) && !hasWord(" "+PARA) && !hasWord(PARA+" ")){
                             para=true;
 
                         } else if(result!=null){
                             receita.addItem(result);
+                            result=null;
                             arr.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
