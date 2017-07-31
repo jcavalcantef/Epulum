@@ -1,12 +1,15 @@
 package jhm.ufam.br.epulum.Activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -100,6 +103,34 @@ public class ActivityListaCompras extends AppCompatActivity
                 intentMain.putExtra("email", email);
                 ActivityListaCompras.this.startActivity(intentMain);
                 Log.i("Content ", " Main layout ");
+            }
+        });
+        ItemClickSupport.addTo(rv_ingredientes).setOnItemLongClickListener(new ItemClickSupport.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClicked(RecyclerView recyclerView, final int position, View v) {
+                //receitas.get(position)
+                AlertDialog dialog = new AlertDialog.Builder(ActivityListaCompras.this).create();
+                dialog.setTitle("Alerta");
+                dialog.setMessage("Deseja excluir a receita?");
+                dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Excluir",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                listaComprasDAO.removeListaCompras(lista.get(position).getNome());
+                                lista.remove(position);
+                                RVingradapter.notifyItemRemoved(position);
+                                dialog.dismiss();
+                            }
+                        });
+                dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancelar",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                dialog.show();
+                dialog.getButton(dialog.BUTTON_POSITIVE).setTextColor(Color.RED);
+                dialog.getButton(dialog.BUTTON_NEGATIVE).setTextColor(Color.DKGRAY);
+                return false;
             }
         });
 

@@ -311,8 +311,8 @@ public class ActivityCriarListaCompras extends AppCompatActivity
                 final Dialog alteraReceitaDialog = new Dialog(ActivityCriarListaCompras.this);
                 alteraReceitaDialog.setContentView(R.layout.dialog_alter_text);
                 alteraReceitaDialog.setTitle("Item");
-                TextView title =(TextView)alteraReceitaDialog.findViewById(R.id.txt_dialog_title);
-                title.setText("Ingrediente");
+                //TextView title =(TextView)alteraReceitaDialog.findViewById(R.id.txt_dialog_title);
+               // title.setText("");
                 final EditText ingr = (EditText) alteraReceitaDialog.findViewById(R.id.et_item);
                 ingr.setText(receita.getItens().get(position));
 

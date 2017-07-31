@@ -1,5 +1,7 @@
 package jhm.ufam.br.epulum.RVAdapter;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -61,7 +63,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ReceitaViewHolder>
         try {
             File f = new File(receitas.get(i).getFotoLocal());
             if(f.exists()) {
-                receitaViewHolder.receitaFoto.setImageURI(Uri.fromFile(f));
+                //receitaViewHolder.receitaFoto.setImageURI(Uri.fromFile(f));
+                Bitmap myBitmap = BitmapFactory.decodeFile(f.getAbsolutePath());
+                receitaViewHolder.receitaFoto.setImageBitmap(myBitmap);
             }
         }catch (Exception e){
             e.printStackTrace();

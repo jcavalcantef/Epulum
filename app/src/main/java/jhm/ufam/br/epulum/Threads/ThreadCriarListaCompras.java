@@ -85,6 +85,7 @@ public class ThreadCriarListaCompras implements Runnable {
                         } else if(result!=null){
                             receita.addItem(result);
                             result=null;
+                            askedResult = false;
                             arr.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
