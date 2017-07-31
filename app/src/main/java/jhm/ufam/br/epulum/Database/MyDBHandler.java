@@ -61,6 +61,13 @@ public class MyDBHandler extends SQLiteOpenHelper{
             COLUNA_passos + " TEXT," +
             COLUNA_photoid + " INT );";
 
+    public static final String TABLE_LISTACOMPRAS = "ListaCompras";
+    public static final String COLUNA_listanome="nome";
+    public static final String COLUNA_listaitens="itens";
+    public static final String TABLE_CREATE_LISTACOMPRAS="CREATE TABLE IF NOT EXISTS " + TABLE_LISTACOMPRAS + " ( " +
+            COLUNA_listanome + " TEXT," +
+            COLUNA_listaitens + " TEXT );";
+
     private static final String INSERIR_CATEGORIA_DOCE = "INSERT INTO " + TABLE_CATEGORIAS + "(" +
             COLUNA_categorianome + ", " + COLUNA_categoriatipo+ ")" +
             "VALUES ('Doce', 'Sobremesa');";
@@ -109,6 +116,11 @@ public class MyDBHandler extends SQLiteOpenHelper{
         }
         try {
             db.execSQL(TABLE_CREATE_RECEITAS_SALVAS);
+        }catch (Exception e) {
+            Log.e("Erro ao criar tabela", e.getMessage());
+        }
+        try {
+            db.execSQL(TABLE_CREATE_LISTACOMPRAS);
         }catch (Exception e) {
             Log.e("Erro ao criar tabela", e.getMessage());
         }

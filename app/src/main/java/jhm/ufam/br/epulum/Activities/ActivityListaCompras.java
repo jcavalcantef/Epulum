@@ -26,6 +26,7 @@ import jhm.ufam.br.epulum.Classes.DividerItemDecoration;
 import jhm.ufam.br.epulum.Classes.ItemClickSupport;
 import jhm.ufam.br.epulum.Classes.ListaCompras;
 import jhm.ufam.br.epulum.Classes.SpeechWrapper;
+import jhm.ufam.br.epulum.Database.ListaComprasDAO;
 import jhm.ufam.br.epulum.Threads.ThreadCriarReceita;
 import jhm.ufam.br.epulum.R;
 import jhm.ufam.br.epulum.RVAdapter.RVListaComprasAdapter;
@@ -49,6 +50,8 @@ public class ActivityListaCompras extends AppCompatActivity
     private final int REQ_CODE_SPEECH_INPUT = 100;
     private RVListaComprasAdapter RVingradapter;
 
+    private ListaComprasDAO listaComprasDAO;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,8 @@ public class ActivityListaCompras extends AppCompatActivity
         setContentView(R.layout.activity_lista_compras);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        listaComprasDAO = new ListaComprasDAO(this);
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -199,7 +204,9 @@ public class ActivityListaCompras extends AppCompatActivity
 
 
     public void populateListas(){
-        ListaCompras a= new ListaCompras();
+        listaComprasDAO.initializeDatabase();
+        lista = listaComprasDAO.getAllListasCompras();
+/*        ListaCompras a= new ListaCompras();
         a.setNome("Mercado semanal");
         a.addItem("Batata");
         a.addItem("cebola");
@@ -219,7 +226,7 @@ public class ActivityListaCompras extends AppCompatActivity
         lista.add(a);
         lista.add(b);
         lista.add(c);
-
+*/
     }
 }
 

@@ -237,14 +237,14 @@ public class ActivityCriarListaCompras extends AppCompatActivity
     @Override
     public void onError(int error) {
         Log.i("listening", "Listening error");
-        mIslistening = false;
+        //mIslistening = false;
     }
 
     @Override
     public void onResults(Bundle results) {
         ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         if (matches == null) {
-            mIslistening = false;
+            //mIslistening = false;
             Log.i("listening", "matches is null");
         } else {
             criarReceita.setResult(matches.get(0));

@@ -82,7 +82,7 @@ public class ThreadCriarListaCompras implements Runnable {
                         if(hasWord(PARA) && !hasWord(" "+PARA) && !hasWord(PARA+" ")){
                             para=true;
 
-                        } else {
+                        } else if(result!=null){
                             receita.addItem(result);
                             arr.runOnUiThread(new Runnable() {
                                 @Override
@@ -107,7 +107,7 @@ public class ThreadCriarListaCompras implements Runnable {
     }
 
     public boolean hasWord(String word) {
-        if(word!=null)
+        if (result != null)
             return result.contains(word);
         else return false;
     }
