@@ -155,7 +155,7 @@ public class ReceitaSalvaDAO {
                     r.getNome() + "', '"+
                     r.getTempopreparo() + "', '"+
                     r.getDescricao() + "', '" +
-                    r.getFoto() + "', '" +
+                    r.getFotoLocal() + "', '" +
                     r.getIngredientesString() + "', '" +
                     r.getPassosString() + "', '" +
                     r.getPhotoId() + "' );";

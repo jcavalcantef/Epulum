@@ -772,6 +772,7 @@ public class ActivityCriarReceita extends AppCompatActivity
                     multipart.addFormField(url_campo_usuario,em_id);
                     multipart.addFilePart(url_campo_foto,
                             new File(receita.getFotoLocal()));
+                    //Log.v("URL ->",multipart.getUrl());
 
                     List<String> response = multipart.finish();
 

@@ -2,6 +2,7 @@ package jhm.ufam.br.epulum.RVAdapter;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -76,7 +77,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ReceitaViewHolder>
             if(f.exists()) {
                 Log.v("fotoLocal","existe");
                 //receitaViewHolder.receitaFoto.setImageURI(Uri.fromFile(f));
-                Bitmap myBitmap = BitmapFactory.decodeFile(f.getAbsolutePath());
+                //((BitmapDrawable)receitaViewHolder.receitaFoto.getDrawable()).getBitmap().recycle();
+                //Bitmap myBitmap = BitmapFactory.decodeFile(f.getAbsolutePath());
+                Bitmap myBitmap = ShrinkBitmap(f.getAbsolutePath(), 300, 300);
                 Log.v("fotoLocal",myBitmap.toString());
                 receitaViewHolder.receitaFoto.setImageBitmap(myBitmap);
             }
@@ -88,6 +91,29 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ReceitaViewHolder>
 
     }
 
+    Bitmap ShrinkBitmap(String file, int width, int height){
+
+        BitmapFactory.Options bmpFactoryOptions = new BitmapFactory.Options();
+        bmpFactoryOptions.inJustDecodeBounds = true;
+        Bitmap bitmap = BitmapFactory.decodeFile(file, bmpFactoryOptions);
+
+        int heightRatio = (int)Math.ceil(bmpFactoryOptions.outHeight/(float)height);
+        int widthRatio = (int)Math.ceil(bmpFactoryOptions.outWidth/(float)width);
+
+        if (heightRatio > 1 || widthRatio > 1)
+        {
+            if (heightRatio > widthRatio)
+            {
+                bmpFactoryOptions.inSampleSize = heightRatio;
+            } else {
+                bmpFactoryOptions.inSampleSize = widthRatio;
+            }
+        }
+
+        bmpFactoryOptions.inJustDecodeBounds = false;
+        bitmap = BitmapFactory.decodeFile(file, bmpFactoryOptions);
+        return bitmap;
+    }
     @Override
     public int getItemCount() {
         return receitas.size();
