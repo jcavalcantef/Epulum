@@ -180,15 +180,7 @@ public class ActivityMain extends AppCompatActivity
         });
 
         Intent in= getIntent();
-        if(!in.hasExtra("email")){
-            doPermissions();
-
-            doGoogle();
-            //createServerUser();
-            //serverLogin();
-            //signIn();
-            //getReceitasFromServer();
-        }
+        doPermissions();
 
         doButtons();
         sv_procura_receita= (SearchView) findViewById(R.id.sv_procura);
