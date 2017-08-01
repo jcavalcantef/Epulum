@@ -562,8 +562,8 @@ public class ActivityMain extends AppCompatActivity
             request.setAllowedNetworkTypes(
                     DownloadManager.Request.NETWORK_WIFI
                             | DownloadManager.Request.NETWORK_MOBILE)
-                    .setAllowedOverRoaming(false).setTitle("Epulum")
-                    .setDescription("Sincronizando arquivos")
+                    .setAllowedOverRoaming(false).setTitle("Demo")
+                    .setDescription("Something useful. No, really.")
                     .setDestinationInExternalPublicDir("/Epulum", uRl.substring(uRl.lastIndexOf("/")));
 
             mgr.enqueue(request);
