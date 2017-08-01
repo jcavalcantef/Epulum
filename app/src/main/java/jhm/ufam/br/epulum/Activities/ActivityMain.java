@@ -543,6 +543,9 @@ public class ActivityMain extends AppCompatActivity
             if (!direct.exists()) {
                 direct.mkdirs();
             }
+            if (new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Epulum"+
+                    uRl.substring(uRl.lastIndexOf("/"))).exists() )
+                return;
 
             DownloadManager mgr = (DownloadManager) ActivityMain.this.getSystemService(Context.DOWNLOAD_SERVICE);
 
@@ -553,8 +556,8 @@ public class ActivityMain extends AppCompatActivity
             request.setAllowedNetworkTypes(
                     DownloadManager.Request.NETWORK_WIFI
                             | DownloadManager.Request.NETWORK_MOBILE)
-                    .setAllowedOverRoaming(false).setTitle("Demo")
-                    .setDescription("Something useful. No, really.")
+                    .setAllowedOverRoaming(false).setTitle("Epulum")
+                    .setDescription("Sincronizando arquivos.")
                     .setDestinationInExternalPublicDir("/Epulum", uRl.substring(uRl.lastIndexOf("/")));
 
             mgr.enqueue(request);
