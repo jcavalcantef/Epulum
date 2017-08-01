@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,6 +27,11 @@ import jhm.ufam.br.epulum.R;
 
 
 public class ActivityLogin extends AppCompatActivity {
+
+    public static final String APP_PREFS = "Epulum_prefs";
+    private final String key_EMAIL = "email";
+    private final String key_NOME = "nome";
+    private final String key_UID = "Id";
 
     private UserLoginTask mAuthTask = null; // Acompanhe a tarefa de login para garantir que possamos cancelá-la, se solicitado
 
@@ -50,10 +56,11 @@ public class ActivityLogin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
         // Set up the login form.
         inputEmail = (AutoCompleteTextView) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
+        SharedPreferences settings = getSharedPreferences(APP_PREFS, 0);
+        inputEmail.setText(settings.getString(key_EMAIL,""));
 
         Button btn_login = (Button) findViewById(R.id.bnt_entrar);
         btn_login.setOnClickListener(new View.OnClickListener() {
@@ -186,6 +193,12 @@ public class ActivityLogin extends AppCompatActivity {
                 Log.d("debug", "Deveria abrir o actiity fake");
                 final Intent it = new Intent(ActivityLogin.this,ActivityMain.class);
                 it.putExtra("Usuario", user);
+                SharedPreferences settings = getSharedPreferences(APP_PREFS, 0);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString(key_EMAIL,email);
+                editor.putString(key_UID,id);
+                editor.putString(key_NOME,nome);
+                editor.commit();
                 startActivity(it);
             }else{
                 Intent novaView = new Intent(ActivityLogin.this,ActivityLogin.class);

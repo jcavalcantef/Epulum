@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -92,6 +93,11 @@ public class ActivityCriarReceita extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, RecognitionListener, SensorEventListener {
     private final int REQ_CODE_SPEECH_INPUT = 100;
 
+    public static final String APP_PREFS = "Epulum_prefs";
+    private final String key_EMAIL = "email";
+    private final String key_NOME = "nome";
+    private final String key_UID = "Id";
+
     private static final int RECORD_REQUEST_CODE = 101;
     private static String TAG = "PermissionDemo";
     private final String server="https://epulum.000webhostapp.com";
@@ -113,9 +119,9 @@ public class ActivityCriarReceita extends AppCompatActivity
     private final String url_campo_categoria = "idCategoria";
     private final String url_campo_usuario = "idUser";
     private final String url_campo_foto = "fileToUpload";
-    private final String em_login="mateus.lucena.work@gmail.com";
-    private final String em_nome="mateus.lucena";
-    private final String em_senha="123";
+    private String em_email;
+    private String em_nome;
+    private String em_id;
 /*
     private String returnUrl(Receita rec, String path)
     {
@@ -183,6 +189,11 @@ public class ActivityCriarReceita extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         edt_descricao =(EditText) findViewById(R.id.edt_descricao);
 
+        SharedPreferences settings = getSharedPreferences(APP_PREFS, 0);
+        em_email = settings.getString(key_EMAIL,"");
+        em_nome = settings.getString(key_NOME,"");
+        em_id = settings.getString(key_UID,"");
+
         Intent in= getIntent();
         sh=new SpeechWrapper(getApplicationContext());
         if(in.hasExtra("receita")){
@@ -210,17 +221,20 @@ public class ActivityCriarReceita extends AppCompatActivity
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 
-        serverLogin();
+        //serverLogin();
         pegarCategorias();
         requestStoragePermission();
     }
 
     //method to show file chooser
     private void showFileChooser() {
-        Intent intent = new Intent();
+        Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        //startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+
     }
 
    public void uploadMultipart(String name, Uri caminho_arquivo) {
@@ -660,8 +674,9 @@ public class ActivityCriarReceita extends AppCompatActivity
 
                             receita.setNome(text.getText().toString());
                             receita.setPhotoId(R.mipmap.ic_launcher);
-                            receita.setFoto(getRealPathFromUri(getApplicationContext(),filePath));
+                            receita.setFoto(getPath(getApplicationContext(),filePath));
                             receita.set_idcategoria(categorias_db.get(spnCategoria.getSelectedItemPosition()).getTipo());
+                            Log.v("foto",""+receita.getFoto());
                             if (compartilhar.isChecked()){
                                 criarReceitaServer(receita);
                                 //uploadMultipart("img",filePath);
@@ -773,7 +788,7 @@ public class ActivityCriarReceita extends AppCompatActivity
         b.start();
     }
 
-    private void createServerUser(){
+    /*private void createServerUser(){
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url_create_user+"&email="+email+"&nome="+nome+"&senha="+em_senha,
@@ -782,7 +797,7 @@ public class ActivityCriarReceita extends AppCompatActivity
                         public void onResponse(String response) {
                             Log.v("volley","Response is: "+ response);
                             // Display the first 500 characters of the response string.
-                            Log.v("server",url_create_user+"&email="+em_login+"$nome="+em_nome+"&senha="+em_senha);
+                            Log.v("server",url_create_user+"&email="+em_email+"$nome="+em_nome+"&senha="+em_senha);
 
                             JSONDealCreateUser(response);
                             Log.v("server",response);
@@ -799,9 +814,9 @@ public class ActivityCriarReceita extends AppCompatActivity
             Log.v("volley",e.toString());
         }
         serverLogin();
-    }
+    }*/
 
-    private void serverLogin(){
+    /*private void serverLogin(){
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url_server_login+"&email="+email+"&senha="+em_senha,
@@ -810,7 +825,7 @@ public class ActivityCriarReceita extends AppCompatActivity
                         public void onResponse(String response) {
                             Log.v("volley","Response is: "+ response);
                             // Display the first 500 characters of the response string.
-                            //Log.v("server",url_create_user+"&email="+em_login+"$nome="+em_nome+"&senha="+em_senha);
+                            //Log.v("server",url_create_user+"&email="+em_email+"$nome="+em_nome+"&senha="+em_senha);
 
                             JSONdealServerLogin(response);
                             Log.v("server",response);
@@ -826,7 +841,7 @@ public class ActivityCriarReceita extends AppCompatActivity
         }catch(NullPointerException e){
             Log.v("volley",e.toString());
         }
-    }
+    }*/
 
     private void pegarCategorias(){
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -837,7 +852,7 @@ public class ActivityCriarReceita extends AppCompatActivity
                         public void onResponse(String response) {
                             Log.v("volley","Response is: "+ response);
                             // Display the first 500 characters of the response string.
-                            //Log.v("server",url_create_user+"&email="+em_login+"$nome="+em_nome+"&senha="+em_senha);
+                            //Log.v("server",url_create_user+"&email="+em_email+"$nome="+em_nome+"&senha="+em_senha);
                             Log.v("categorias",response);
                             JSONDealCategorias(response);
 
@@ -910,6 +925,7 @@ public class ActivityCriarReceita extends AppCompatActivity
 
     public static String getRealPathFromUri(Context context, Uri contentUri) {
         Cursor cursor = null;
+        Log.v("foto",""+contentUri.getPath());
         try {
             String[] proj = { MediaStore.Images.Media.DATA };
             cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
@@ -922,4 +938,72 @@ public class ActivityCriarReceita extends AppCompatActivity
             }
         }
     }
+
+    public static String getPath(final Context context, final Uri uri) {
+
+        Log.i("URI",uri+"");
+        String result = uri+"";
+        // DocumentProvider
+        //  if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+        if ((result.contains("media.documents"))) {
+
+            String[] ary = result.split("/");
+            int length = ary.length;
+            String imgary = ary[length-1];
+            final String[] dat = imgary.split("%3A");
+
+            final String docId = dat[1];
+            final String type = dat[0];
+
+            Uri contentUri = null;
+            if ("image".equals(type)) {
+                contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            } else if ("video".equals(type)) {
+
+            } else if ("audio".equals(type)) {
+            }
+
+            final String selection = "_id=?";
+            final String[] selectionArgs = new String[] {
+                    dat[1]
+            };
+
+            return getDataColumn(context, contentUri, selection, selectionArgs);
+        }
+        else
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+            return getDataColumn(context, uri, null, null);
+        }
+        // File
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+
+        return null;
+    }
+
+
+    public static String getDataColumn(Context context, Uri uri, String selection,
+                                       String[] selectionArgs) {
+
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {
+                column
+        };
+
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int column_index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(column_index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
+    }
+
 }

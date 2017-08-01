@@ -1,6 +1,7 @@
 package jhm.ufam.br.epulum.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -33,6 +34,12 @@ import jhm.ufam.br.epulum.Classes.*;
 
 public class ActivityPerfil extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener {
+
+    public static final String APP_PREFS = "Epulum_prefs";
+    private final String key_EMAIL = "email";
+    private final String key_NOME = "nome";
+    private final String key_UID = "Id";
+
     private Receita receita;
     private RecyclerView rv_ingredientes;
     private RecyclerView rv_passos;
@@ -47,6 +54,9 @@ public class ActivityPerfil extends AppCompatActivity
     private TextView txtEmailBar;
     private String nome;
     private String email;
+    private String em_email;
+    private String em_nome;
+    private String em_id;
 
 
     @Override
@@ -73,6 +83,14 @@ public class ActivityPerfil extends AppCompatActivity
 
         sh=new SpeechWrapper(getApplicationContext());
 
+        SharedPreferences settings = getSharedPreferences(APP_PREFS, 0);
+        em_email = settings.getString(key_EMAIL,"");
+        em_nome = settings.getString(key_NOME,"");
+        em_nome = settings.getString(key_UID,"");
+
+        txtEmail.setText(em_email);
+        txtName.setText(em_nome);
+
 
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -87,7 +105,7 @@ public class ActivityPerfil extends AppCompatActivity
 
         //txtEmailBar=(TextView)findViewById(R.id.txtBarEmail);
         //txtNomeBar=(TextView)findViewById(R.id.txtBarNome);
-        signIn();
+        //signIn();
     }
 
     @Override

@@ -30,11 +30,11 @@
         android:id="@+id/btn_tirafoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/txt_categoria"
+        android:layout_below="@+id/edtNomeReceita"
         android:layout_marginEnd="43dp"
         android:layout_marginTop="16dp"
-        android:text="Tirar foto"
-        android:layout_below="@+id/edtNomeReceita"
-        android:layout_alignEnd="@+id/txt_categoria" />
+        android:text="Escolher foto" />
 
     <Spinner
         android:id="@+id/spn_categoria"

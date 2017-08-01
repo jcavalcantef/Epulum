@@ -4,6 +4,7 @@ package jhm.ufam.br.epulum.Activities;
         import android.animation.AnimatorListenerAdapter;
         import android.annotation.TargetApi;
         import android.content.Intent;
+        import android.content.SharedPreferences;
         import android.os.AsyncTask;
         import android.os.Build;
         import android.support.design.widget.TextInputEditText;
@@ -23,6 +24,11 @@ package jhm.ufam.br.epulum.Activities;
         import jhm.ufam.br.epulum.R;
 
 public class ActivityCreateUser extends AppCompatActivity {
+    public static final String APP_PREFS = "Epulum_prefs";
+    private final String key_EMAIL = "email";
+    private final String key_NOME = "nome";
+    private final String key_UID = "Id";
+
     private UserCreateTask mAuthTask = null; // Acompanhe a tarefa de login para garantir que possamos cancelá-la, se solicitado
     // interface de usuário (UI) references.
     private EditText inputEmail;
@@ -51,6 +57,10 @@ public class ActivityCreateUser extends AppCompatActivity {
         mLoginFormView = findViewById(R.id.create_form);
         mProgressView = findViewById(R.id.create_progress);
         showProgress(false);
+
+
+
+
     }
 
     private void attemptLogin() {
@@ -155,7 +165,7 @@ public class ActivityCreateUser extends AppCompatActivity {
             Log.d("debug "," go: " + jsonResponse);
             if(objectJson(jsonResponse)){
                 Log.d("debug", "Deveria abrir o actiity login");
-                final Intent it = new Intent(ActivityCreateUser.this,ActivityLogin.class);
+                final Intent it = new Intent(ActivityCreateUser.this,ActivityMain.class);
                 startActivity(it);
             }else{
                 final Intent it = new Intent(ActivityCreateUser.this,ActivityCreateUser.class);
@@ -184,6 +194,15 @@ public class ActivityCreateUser extends AppCompatActivity {
                     String nome = usuario.getString("Nome");
                     String senha = usuario.getString("Senha");
                     String foto = usuario.getString("Foto");
+
+                    SharedPreferences settings = getSharedPreferences(APP_PREFS, 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString(key_EMAIL,email);
+                    editor.putString(key_UID,id);
+                    editor.putString(key_NOME,nome);
+                    editor.commit();
+
+
                     user = new Usuario(id,email,nome,senha,foto);
                     runOnUiThread(new Runnable() {
                         @Override

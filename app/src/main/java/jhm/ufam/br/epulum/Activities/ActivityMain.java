@@ -2,6 +2,7 @@ package jhm.ufam.br.epulum.Activities;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -59,6 +60,11 @@ import jhm.ufam.br.epulum.Classes.Receita;
 public class ActivityMain extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.OnConnectionFailedListener, SearchView.OnQueryTextListener {
 
+    public static final String APP_PREFS = "Epulum_prefs";
+    private final String key_EMAIL = "email";
+    private final String key_NOME = "nome";
+    private final String key_UID = "Id";
+
     private static final int RECORD_REQUEST_CODE = 101;
     private static String TAG = "PermissionDemo";
     private final String server="https://epulum.000webhostapp.com";
@@ -69,9 +75,11 @@ public class ActivityMain extends AppCompatActivity
     private final String url_server_login=server+url_base_post+"login";
     private final String url_criar_receita=server+url_base_post+"createReceita";
     private final String url_pegar_categorias=server+url_base_get+"readCategorias";
-    private final String em_login="mateus.lucena";
-    private final String em_nome="m";
-    private final String em_senha="123";
+
+    private String em_email;
+    private String em_nome;
+    private String em_senha;
+    private String em_id;
     private String user_id;
     private List<Receita> receitas;
     private RecyclerView rv;
@@ -89,9 +97,6 @@ public class ActivityMain extends AppCompatActivity
     private String email;
     private List<Categoria> categorias_db;
 
-
-
-
     ReceitaDAO receitaDAO;
 
     @Override
@@ -102,6 +107,10 @@ public class ActivityMain extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         receitaDAO = new ReceitaDAO(this);
+        SharedPreferences settings = getSharedPreferences(APP_PREFS, 0);
+        em_email = settings.getString(key_EMAIL,"");
+        em_nome = settings.getString(key_NOME,"");
+        em_id = settings.getString(key_UID,"");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -125,8 +134,8 @@ public class ActivityMain extends AppCompatActivity
         if(!in.hasExtra("email")){
             doPermissions();
             doGoogle();
-            createServerUser();
-            serverLogin();
+            //createServerUser();
+            //serverLogin();
             //signIn();
             getReceitasFromServer();
         }
@@ -347,8 +356,6 @@ public class ActivityMain extends AppCompatActivity
                 Intent intentMain = new Intent(ActivityMain.this,
                         ActivityReceita.class);
                 intentMain.putExtra("receita", receitas.get(position));
-                intentMain.putExtra("nome", nome);
-                intentMain.putExtra("email", email);
                 receitaDAO.close();
                 ActivityMain.this.startActivity(intentMain);
                 Log.i("Content ", " Main layout ");
@@ -476,13 +483,13 @@ public class ActivityMain extends AppCompatActivity
     private void createServerUser(){
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_create_user+"&email="+em_login+"&nome="+em_nome+"&senha="+em_senha,
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_create_user+"&email="+em_email+"&nome="+em_nome+"&senha="+em_senha,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             Log.v("volley","Response is: "+ response);
                             // Display the first 500 characters of the response string.
-                            //Log.v("server",url_create_user+"&email="+em_login+"$nome="+em_nome+"&senha="+em_senha);
+                            //Log.v("server",url_create_user+"&email="+em_email+"$nome="+em_nome+"&senha="+em_senha);
 
                             JSONDealCreateUser(response);
                             Log.v("server",response);
@@ -503,13 +510,13 @@ public class ActivityMain extends AppCompatActivity
     private void serverLogin(){
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_server_login+"&email="+em_login+"&senha="+em_senha,
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url_server_login+"&email="+em_email+"&senha="+em_senha,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             Log.v("volley","Response is: "+ response);
                             // Display the first 500 characters of the response string.
-                            //Log.v("server",url_create_user+"&email="+em_login+"$nome="+em_nome+"&senha="+em_senha);
+                            //Log.v("server",url_create_user+"&email="+em_email+"$nome="+em_nome+"&senha="+em_senha);
 
                             JSONdealServerLogin(response);
                             Log.v("server",response);
@@ -536,7 +543,7 @@ public class ActivityMain extends AppCompatActivity
                         public void onResponse(String response) {
                             Log.v("volley","Response is: "+ response);
                             // Display the first 500 characters of the response string.
-                            //Log.v("server",url_create_user+"&email="+em_login+"$nome="+em_nome+"&senha="+em_senha);
+                            //Log.v("server",url_create_user+"&email="+em_email+"$nome="+em_nome+"&senha="+em_senha);
                             Log.v("categorias",response);
                             JSONDealCategorias(response);
 
