@@ -674,9 +674,9 @@ public class ActivityCriarReceita extends AppCompatActivity
 
                             receita.setNome(text.getText().toString());
                             receita.setPhotoId(R.mipmap.ic_launcher);
-                            receita.setFoto(getPath(getApplicationContext(),filePath));
+                            receita.setFotoLocal(getPath(getApplicationContext(),filePath));
                             receita.set_idcategoria(categorias_db.get(spnCategoria.getSelectedItemPosition()).getTipo());
-                            Log.v("foto",""+receita.getFoto());
+                            Log.v("foto",""+receita.getFotoLocal());
                             if (compartilhar.isChecked()){
                                 criarReceitaServer(receita);
                                 //uploadMultipart("img",filePath);
@@ -771,7 +771,7 @@ public class ActivityCriarReceita extends AppCompatActivity
                     multipart.addFormField(url_campo_categoria,receita.get_idcategoria()+"");
                     multipart.addFormField(url_campo_usuario,"0");
                     multipart.addFilePart(url_campo_foto,
-                            new File(receita.getFoto()));
+                            new File(receita.getFotoLocal()));
 
                     List<String> response = multipart.finish();
 

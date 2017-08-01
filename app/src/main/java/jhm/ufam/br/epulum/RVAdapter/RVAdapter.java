@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+import jhm.ufam.br.epulum.Classes.BasicImageDownloader;
 import jhm.ufam.br.epulum.Classes.CustomVolleyRequest;
 import jhm.ufam.br.epulum.R;
 import jhm.ufam.br.epulum.Classes.Receita;
@@ -41,6 +42,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ReceitaViewHolder>
 
     public RVAdapter(List<Receita> receitas){
         this.receitas = receitas;
+
     }
 
     @Override
@@ -56,7 +58,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ReceitaViewHolder>
     }
 
     @Override
-    public void onBindViewHolder(ReceitaViewHolder receitaViewHolder, int i) {
+    public void onBindViewHolder(final ReceitaViewHolder receitaViewHolder, int i) {
         receitaViewHolder.receitaNome.setText(receitas.get(i).getNome());
         /*try {
             receitaViewHolder.receitaFoto.setImageResource(receitas.get(i).getPhotoId());
@@ -73,6 +75,11 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ReceitaViewHolder>
         }catch (Exception e){
             e.printStackTrace();
         }*/
+        try {
+            receitaViewHolder.receitaFoto.setImageResource(receitas.get(i).getPhotoId());
+        }catch (Exception e1){
+            e1.printStackTrace();
+        }
 
         if(receitas.get(i).getFotoLocal()!=null && !receitas.get(i).getFotoLocal().equals("")){
             try {
@@ -86,21 +93,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ReceitaViewHolder>
                 e.printStackTrace();
             }
         } else if(receitas.get(i).getFoto()!=null && !receitas.get(i).getFoto().equals("")){
-            ImageLoader imageLoader;
-            imageLoader = CustomVolleyRequest.getInstance(this.getApplicationContext())
-                    .getImageLoader();
 
-            try {
-                imageLoader.get(receitas.get(i).getFoto().toString(),
-                        ImageLoader.getImageListener(receitaViewHolder.receitaFoto,
-                                R.mipmap.ic_launcher,
-                                R.mipmap.ic_launcher));
 
-                //Loading image
-
-            } catch (NullPointerException e) {
-                //imgvPerfil.setImageResource(R.drawable.profile_icon);
-            }
         }
 
 

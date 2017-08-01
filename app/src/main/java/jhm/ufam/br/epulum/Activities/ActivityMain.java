@@ -4,11 +4,14 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.os.EnvironmentCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.design.widget.NavigationView;
@@ -44,10 +47,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import jhm.ufam.br.epulum.Classes.BasicImageDownloader;
 import jhm.ufam.br.epulum.Classes.Categoria;
 import jhm.ufam.br.epulum.Classes.CustomVolleyRequest;
 import jhm.ufam.br.epulum.Classes.ItemClickSupport;
@@ -470,8 +475,92 @@ public class ActivityMain extends AppCompatActivity
             Log.v("json",f.get("Descricao").toString());
             Log.v("json",f.get("Ingredientes").toString());
             Log.v("json",f.get("Passos").toString());*/
-            if(receitaDAO.addReceita(new Receita(f))) {
-                receitas.add(new Receita(f));
+            final Receita novaReceita=new Receita(f);
+            Log.v("fotoServer",""+novaReceita.getFoto());
+            BasicImageDownloader bid = new BasicImageDownloader(new BasicImageDownloader.OnImageLoaderListener() {
+                @Override
+                public void onError(BasicImageDownloader.ImageError error) {
+                    Log.v("FotoServer","deuruim "+novaReceita.getNome());
+                    error.printStackTrace();
+
+                }
+
+                @Override
+                public void onProgressChange(int percent) {
+
+                }
+
+                @Override
+                public void onComplete(Bitmap result) {
+                    final Bitmap.CompressFormat mFormat =Bitmap.CompressFormat.JPEG;
+
+                    final File image =new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+                            +File.separator+"Epulum_images"
+                            +File.separator+novaReceita.getFoto().substring(novaReceita.getFoto().lastIndexOf("/"))
+                            +mFormat.name().toLowerCase());
+                    BasicImageDownloader.writeToDisk(image, result, new BasicImageDownloader.OnBitmapSaveListener() {
+                        @Override
+                        public void onBitmapSaved() {
+
+                            Toast.makeText(ActivityMain.this, "Image saved as: " + image.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onBitmapSaveError(BasicImageDownloader.ImageError error) {
+                            Toast.makeText(ActivityMain.this, "Error code " + error.getErrorCode() + ": " +
+                                    error.getMessage(), Toast.LENGTH_LONG).show();
+                            error.printStackTrace();
+
+                        }
+                    },mFormat,false);
+
+                }
+            });
+
+            bid.download(receitas.get(i).getFoto(), true);
+            if(receitaDAO.addReceita(novaReceita)) {
+                receitas.add(novaReceita);
+                 bid = new BasicImageDownloader(new BasicImageDownloader.OnImageLoaderListener() {
+                    @Override
+                    public void onError(BasicImageDownloader.ImageError error) {
+                        Log.v("FotoServer","deuruim "+novaReceita.getNome());
+                        error.printStackTrace();
+
+                    }
+
+                    @Override
+                    public void onProgressChange(int percent) {
+
+                    }
+
+                    @Override
+                    public void onComplete(Bitmap result) {
+                        final Bitmap.CompressFormat mFormat =Bitmap.CompressFormat.JPEG;
+
+                        final File image =new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+                                +File.separator+"Epulum_images"
+                                +File.separator+novaReceita.getFoto().substring(novaReceita.getFoto().lastIndexOf("/"))
+                                +mFormat.name().toLowerCase());
+                        BasicImageDownloader.writeToDisk(image, result, new BasicImageDownloader.OnBitmapSaveListener() {
+                            @Override
+                            public void onBitmapSaved() {
+
+                                Toast.makeText(ActivityMain.this, "Image saved as: " + image.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onBitmapSaveError(BasicImageDownloader.ImageError error) {
+                                Toast.makeText(ActivityMain.this, "Error code " + error.getErrorCode() + ": " +
+                                        error.getMessage(), Toast.LENGTH_LONG).show();
+                                error.printStackTrace();
+
+                            }
+                        },mFormat,false);
+
+                    }
+                });
+
+                bid.download(receitas.get(i).getFoto(), true);
             }
             //Log.v("json",""+(receitas==null));
 

@@ -83,8 +83,11 @@ public class Receita implements Serializable{
             this.nome= obj.getString("Nome");
             this.descricao= obj.getString("Descricao");
             this._idcategoria= obj.getInt("Idcategoria");
+            this.foto = obj.getString("Foto");
             this.setAllIngredientes(obj.getString("Ingredientes"));
             this.setAllPassos(obj.getString("Passos"));
+            this.tempopreparo = obj.getString("Tempopreparo");
+
             Log.v("json"," completou receita");
         }catch(JSONException e){
             e.printStackTrace();
@@ -223,7 +226,7 @@ public class Receita implements Serializable{
         return fotoLocal;
     }
 
-    public void setFotoServer(String fotoLocal) {
+    public void setFotoLocal(String fotoLocal) {
         this.fotoLocal = fotoLocal;
     }
 

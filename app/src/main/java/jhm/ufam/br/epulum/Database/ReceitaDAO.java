@@ -260,7 +260,6 @@ public class ReceitaDAO {
         this.addReceita(new Receita("Costela Na Pressão Com Linguíça", "", R.drawable.costela_na_pressao));
         this.addReceita(new Receita("Camarão com creme de leite", "", R.drawable.camarao_com_creme_de_leite));
         this.addReceita(new Receita("Sopa de abóbora", "", R.drawable.sopa_de_abobora));
-
     }
 
 /* Testa se uma receita já existe no banco de dados com o mesmo nome*/
