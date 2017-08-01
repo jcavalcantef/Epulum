@@ -67,7 +67,22 @@ public class Receita implements Serializable{
         this.nome = nome;
         this.tempopreparo = tempopreparo;
         this.descricao = descricao;
-        this.fotoLocal = foto;
+        this.foto = foto;
+        this.ingredientes = new ArrayList<>();
+        this.passos = new ArrayList<>();
+        this.setAllIngredientes(ingredientes);
+        this.setAllPassos(passos);
+        this.photoId = photoId;
+    }
+
+    public Receita(long _idcategoria, long _idusuario, String nome, String tempopreparo, String descricao, String foto, String fotoLocal, String ingredientes, String passos, int photoId) {
+        this._idcategoria = _idcategoria;
+        this._idusuario = _idusuario;
+        this.nome = nome;
+        this.tempopreparo = tempopreparo;
+        this.descricao = descricao;
+        this.foto = foto;
+        this.fotoLocal = fotoLocal;
         this.ingredientes = new ArrayList<>();
         this.passos = new ArrayList<>();
         this.setAllIngredientes(ingredientes);

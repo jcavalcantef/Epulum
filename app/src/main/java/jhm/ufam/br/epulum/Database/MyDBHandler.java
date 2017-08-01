@@ -27,6 +27,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
     public static final String COLUNA_tempopreparo="tempopreparo";
     public static final String COLUNA_descricao="descricao";
     public static final String COLUNA_foto="foto";
+    public static final String COLUNA_fotolocal="fotolocal";
     public static final String COLUNA_ingredientes="ingredientes";
     public static final String COLUNA_passos="passos";
     public static final String COLUNA_photoid = "photoid";
@@ -38,6 +39,7 @@ public class MyDBHandler extends SQLiteOpenHelper{
             COLUNA_tempopreparo + " TEXT, " +
             COLUNA_descricao + " TEXT, " +
             COLUNA_foto + " TEXT, " +
+            COLUNA_fotolocal + " TEXT, " +
             COLUNA_ingredientes + " TEXT, " +
             COLUNA_passos + " TEXT," +
             COLUNA_photoid + " INT );";

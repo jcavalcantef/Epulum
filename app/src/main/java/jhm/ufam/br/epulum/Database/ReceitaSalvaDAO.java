@@ -57,7 +57,10 @@ public class ReceitaSalvaDAO {
         Cursor cursor = bancoDeDados.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()){
             do{
-                Receita r = new Receita(cursor.getInt(1),cursor.getInt(2),cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8), cursor.getInt(9));
+                Receita r = new Receita(cursor.getInt(1),cursor.getInt(2),
+                        cursor.getString(3), cursor.getString(4),
+                        cursor.getString(5), cursor.getString(6),
+                        cursor.getString(7), cursor.getString(8), cursor.getInt(9));
                 receitas.add(r);
             } while (cursor.moveToNext());
         }

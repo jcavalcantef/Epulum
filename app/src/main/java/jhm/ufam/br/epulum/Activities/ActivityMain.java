@@ -533,7 +533,6 @@ public class ActivityMain extends AppCompatActivity
 
             } else{
                 receitaDAO.updateReceita(novaReceita,novaReceita.getNome());
-                adapter.notifyDataSetChanged();
             }
             adapter.notifyDataSetChanged();
             //Log.v("json",""+(receitas==null));

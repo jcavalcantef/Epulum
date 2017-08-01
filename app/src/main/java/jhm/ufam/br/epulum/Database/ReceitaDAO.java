@@ -47,7 +47,17 @@ public class ReceitaDAO {
                 MyDBHandler.COLUNA_nome + " LIKE '" + nome + "%'";
         Cursor cursor = this.bancoDeDados.rawQuery(sqlQuery,null);
         if(cursor.moveToNext()){
-            receita = new Receita(cursor.getInt(1),cursor.getInt(2),cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8), cursor.getInt(9));
+            receita = new Receita();
+            receita.set_idcategoria(cursor.getInt(1));
+            receita.set_idusuario(cursor.getInt(2));
+            receita.setNome(cursor.getString(3));
+            receita.setTempopreparo(cursor.getString(4));
+            receita.setDescricao(cursor.getString(5));
+            receita.setFoto(cursor.getString(6));
+            receita.setFotoLocal(cursor.getString(7));
+            receita.setAllIngredientes(cursor.getString(8));
+            receita.setAllPassos(cursor.getString(9));
+            receita.setPhotoId(cursor.getInt(10));
         }
         cursor.close();
         return receita;
@@ -67,8 +77,18 @@ public class ReceitaDAO {
         Cursor cursor = bancoDeDados.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()){
             do{
-                Receita r = new Receita(cursor.getInt(1),cursor.getInt(2),cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8), cursor.getInt(9));
-                receitas.add(r);
+                Receita receita = new Receita();
+                receita.set_idcategoria(cursor.getInt(1));
+                receita.set_idusuario(cursor.getInt(2));
+                receita.setNome(cursor.getString(3));
+                receita.setTempopreparo(cursor.getString(4));
+                receita.setDescricao(cursor.getString(5));
+                receita.setFoto(cursor.getString(6));
+                receita.setFotoLocal(cursor.getString(7));
+                receita.setAllIngredientes(cursor.getString(8));
+                receita.setAllPassos(cursor.getString(9));
+                receita.setPhotoId(cursor.getInt(10));
+                receitas.add(receita);
             } while (cursor.moveToNext());
         }
         return receitas;
@@ -87,8 +107,18 @@ public class ReceitaDAO {
         Cursor cursor = bancoDeDados.rawQuery(sqlQuery, null);
         if (cursor.moveToFirst()){
             do{
-                Receita r = new Receita(cursor.getInt(1),cursor.getInt(2),cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8), cursor.getInt(9));
-                receitas.add(r);
+                Receita receita = new Receita();
+                receita.set_idcategoria(cursor.getInt(1));
+                receita.set_idusuario(cursor.getInt(2));
+                receita.setNome(cursor.getString(3));
+                receita.setTempopreparo(cursor.getString(4));
+                receita.setDescricao(cursor.getString(5));
+                receita.setFoto(cursor.getString(6));
+                receita.setFotoLocal(cursor.getString(7));
+                receita.setAllIngredientes(cursor.getString(8));
+                receita.setAllPassos(cursor.getString(9));
+                receita.setPhotoId(cursor.getInt(10));
+                receitas.add(receita);
             } while (cursor.moveToNext());
         }
         return receitas;
@@ -107,8 +137,18 @@ public class ReceitaDAO {
         Cursor cursor = bancoDeDados.rawQuery(sqlQuery, null);
         if (cursor.moveToFirst()){
             do{
-                Receita r = new Receita(cursor.getInt(1),cursor.getInt(2),cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8), cursor.getInt(9));
-                receitas.add(r);
+                Receita receita = new Receita();
+                receita.set_idcategoria(cursor.getInt(1));
+                receita.set_idusuario(cursor.getInt(2));
+                receita.setNome(cursor.getString(3));
+                receita.setTempopreparo(cursor.getString(4));
+                receita.setDescricao(cursor.getString(5));
+                receita.setFoto(cursor.getString(6));
+                receita.setFotoLocal(cursor.getString(7));
+                receita.setAllIngredientes(cursor.getString(8));
+                receita.setAllPassos(cursor.getString(9));
+                receita.setPhotoId(cursor.getInt(10));
+                receitas.add(receita);
             } while (cursor.moveToNext());
         }
         return receitas;
@@ -129,8 +169,18 @@ public class ReceitaDAO {
         Cursor cursor = bancoDeDados.rawQuery(sqlQuery, null);
         if (cursor.moveToFirst()){
             do{
-                Receita r = new Receita(cursor.getInt(1),cursor.getInt(2),cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8), cursor.getInt(9));
-                receitas.add(r);
+                Receita receita = new Receita();
+                receita.set_idcategoria(cursor.getInt(1));
+                receita.set_idusuario(cursor.getInt(2));
+                receita.setNome(cursor.getString(3));
+                receita.setTempopreparo(cursor.getString(4));
+                receita.setDescricao(cursor.getString(5));
+                receita.setFoto(cursor.getString(6));
+                receita.setFotoLocal(cursor.getString(7));
+                receita.setAllIngredientes(cursor.getString(8));
+                receita.setAllPassos(cursor.getString(9));
+                receita.setPhotoId(cursor.getInt(10));
+                receitas.add(receita);
             } while (cursor.moveToNext());
         }
         return receitas;
@@ -156,6 +206,7 @@ public class ReceitaDAO {
                     MyDBHandler.COLUNA_tempopreparo + ", " +
                     MyDBHandler.COLUNA_descricao + ", " +
                     MyDBHandler.COLUNA_foto + ", " +
+                    MyDBHandler.COLUNA_fotolocal + ", " +
                     MyDBHandler.COLUNA_ingredientes + ", " +
                     MyDBHandler.COLUNA_passos + ", " +
                     MyDBHandler.COLUNA_photoid + " ) " +
@@ -166,6 +217,7 @@ public class ReceitaDAO {
                     r.getTempopreparo() + "', '"+
                     r.getDescricao() + "', '" +
                     r.getFoto() + "', '" +
+                    r.getFotoLocal() + "', '" +
                     r.getIngredientesString() + "', '" +
                     r.getPassosString() + "', '" +
                     r.getPhotoId() + "' );";
@@ -212,6 +264,7 @@ public class ReceitaDAO {
                     MyDBHandler.COLUNA_nome + " ='" + r.getNome() + "', " +
                     MyDBHandler.COLUNA_descricao+ " ='" + r.getDescricao() + "', " +
                     MyDBHandler.COLUNA_foto+ " ='" + r.getFoto() + "', " +
+                    MyDBHandler.COLUNA_fotolocal+" ='" +r.getFotoLocal() + "', " +
                     MyDBHandler.COLUNA_ingredientes + " ='" + r.getIngredientesString() + "', " +
                     MyDBHandler.COLUNA_passos + " ='" + r.getPassosString() + "' " +
                     "WHERE " + MyDBHandler.COLUNA_nome + " = '" + nome + "' ;";

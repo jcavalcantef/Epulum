@@ -75,11 +75,11 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ReceitaViewHolder>
             File f = new File(receitas.get(i).getFotoLocal());
             Log.v("fotoLocal",f.getAbsolutePath());
             if(f.exists()) {
-                Log.v("fotoLocal","existe");
+                Log.v("fotoLocal","local: "+receitas.get(i).getFotoLocal());
                 //receitaViewHolder.receitaFoto.setImageURI(Uri.fromFile(f));
                 //((BitmapDrawable)receitaViewHolder.receitaFoto.getDrawable()).getBitmap().recycle();
-                Bitmap myBitmap = BitmapFactory.decodeFile(f.getAbsolutePath());
-                //Bitmap myBitmap = ShrinkBitmap(f.getAbsolutePath(), 300, 300);
+                //Bitmap myBitmap = BitmapFactory.decodeFile(f.getAbsolutePath());
+                Bitmap myBitmap = ShrinkBitmap(f.getAbsolutePath(), 300, 300);
                 Log.v("fotoLocal",myBitmap.toString());
                 receitaViewHolder.receitaFoto.setImageBitmap(myBitmap);
             }
