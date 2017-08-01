@@ -182,11 +182,12 @@ public class ActivityMain extends AppCompatActivity
         Intent in= getIntent();
         if(!in.hasExtra("email")){
             doPermissions();
+
             doGoogle();
             //createServerUser();
             //serverLogin();
             //signIn();
-            getReceitasFromServer();
+            //getReceitasFromServer();
         }
 
         doButtons();
@@ -197,7 +198,7 @@ public class ActivityMain extends AppCompatActivity
 
     protected void makeRequest() {
         ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.RECORD_AUDIO},
+                new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_EXTERNAL_STORAGE},
                 RECORD_REQUEST_CODE);
     }
 
@@ -419,8 +420,6 @@ public class ActivityMain extends AppCompatActivity
             Log.i(TAG, "Permission to record denied");
             makeRequest();
         }
-
-        requestStoragePermission();
     }
 
     private void doOptions() {
@@ -475,6 +474,7 @@ public class ActivityMain extends AppCompatActivity
                 return;
             }
         }
+        //requestStoragePermission();
     }
 
     private void getReceitasFromServer(){
@@ -534,15 +534,15 @@ public class ActivityMain extends AppCompatActivity
 
 
             downloadFile(novaReceita.getFoto());
-            receitas.add(novaReceita);
             //bid.download(receitas.get(i).getFoto(), true);
             if(receitaDAO.addReceita(novaReceita)) {
                 receitas.add(novaReceita);
                 //bid.download(receitas.get(i).getFoto(), true);
-                adapter.notifyDataSetChanged();
+
             } else{
                 receitaDAO.updateReceita(novaReceita,novaReceita.getNome());
             }
+            adapter.notifyDataSetChanged();
             //Log.v("json",""+(receitas==null));
 
             i++;
@@ -553,40 +553,27 @@ public class ActivityMain extends AppCompatActivity
     public void downloadFile(String uRl) {
         try {
 
-            DownloadManager mgr = (DownloadManager) ActivityMain.this.getSystemService(Context.DOWNLOAD_SERVICE);
+            File direct = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+                    + "/Epulum"+uRl.substring(uRl.lastIndexOf("/")));
+            if(!direct.exists()) {
+                DownloadManager mgr = (DownloadManager) ActivityMain.this.getSystemService(Context.DOWNLOAD_SERVICE);
+                Uri downloadUri = Uri.parse(uRl);
+                DownloadManager.Request request = new DownloadManager.Request(
+                        downloadUri);
+                request.setAllowedNetworkTypes(
+                        DownloadManager.Request.NETWORK_WIFI
+                                | DownloadManager.Request.NETWORK_MOBILE)
+                        .setAllowedOverRoaming(false).setTitle("Demo")
+                        .setDescription("Something useful. No, really.")
+                        .setDestinationInExternalPublicDir("/Epulum", uRl.substring(uRl.lastIndexOf("/")));
 
-            Uri downloadUri = Uri.parse(uRl);
-            DownloadManager.Request request = new DownloadManager.Request(
-                    downloadUri);
-
-            request.setAllowedNetworkTypes(
-                    DownloadManager.Request.NETWORK_WIFI
-                            | DownloadManager.Request.NETWORK_MOBILE)
-                    .setAllowedOverRoaming(false).setTitle("Demo")
-                    .setDescription("Something useful. No, really.")
-                    .setDestinationInExternalPublicDir("/Epulum", uRl.substring(uRl.lastIndexOf("/")));
-
-            mgr.enqueue(request);
+                mgr.enqueue(request);
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
 
     }
-
-    //Requesting permission
-    private void requestStoragePermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-            return;
-
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            //If the user has denied the permission previously your code will come to this block
-            //Here you can explain why you need this permission
-            //Explain here why you need this permission
-        }
-        //And finally ask for the permission
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
-    }
-
 
     private void createServerUser(){
         RequestQueue queue = Volley.newRequestQueue(this);
