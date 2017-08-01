@@ -34,7 +34,7 @@ public class BasicImageDownloader {
     public interface OnImageLoaderListener {
         void onError(ImageError error);
         void onProgressChange(int percent);
-        void onComplete(Bitmap result);
+        void onComplete(Bitmap result, String nome);
     }
 
 
@@ -128,7 +128,7 @@ public class BasicImageDownloader {
                 } else {
                     Log.d(TAG, "download complete, " + result.getByteCount() +
                             " bytes transferred");
-                    mImageLoaderListener.onComplete(result);
+                    mImageLoaderListener.onComplete(result, imageUrl.substring(imageUrl.lastIndexOf("/")));
                 }
                 mUrlsInProgress.remove(imageUrl);
                 System.gc();

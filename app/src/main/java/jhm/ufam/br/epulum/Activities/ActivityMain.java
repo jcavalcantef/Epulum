@@ -1,6 +1,8 @@
 package jhm.ufam.br.epulum.Activities;
 
 import android.Manifest;
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -101,6 +103,7 @@ public class ActivityMain extends AppCompatActivity
     private String nome;
     private String email;
     private List<Categoria> categorias_db;
+    private BasicImageDownloader bid;
 
     ReceitaDAO receitaDAO;
 
@@ -134,6 +137,46 @@ public class ActivityMain extends AppCompatActivity
         doRecyclerView();
         initializeData();
         initializeAdapter();
+
+        bid = new BasicImageDownloader(new BasicImageDownloader.OnImageLoaderListener() {
+            @Override
+            public void onError(BasicImageDownloader.ImageError error) {
+                Log.v("FotoServer","deuruim ");
+                error.printStackTrace();
+
+            }
+
+            @Override
+            public void onProgressChange(int percent) {
+
+            }
+
+            @Override
+            public void onComplete(Bitmap result, String nome) {
+                final Bitmap.CompressFormat mFormat =Bitmap.CompressFormat.JPEG;
+
+                final File image =new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+                        +File.separator+"Epulum_images"
+                        +File.separator+nome
+                        +mFormat.name().toLowerCase());
+                BasicImageDownloader.writeToDisk(image, result, new BasicImageDownloader.OnBitmapSaveListener() {
+                    @Override
+                    public void onBitmapSaved() {
+
+                        Toast.makeText(ActivityMain.this, "Image saved as: " + image.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onBitmapSaveError(BasicImageDownloader.ImageError error) {
+                        Toast.makeText(ActivityMain.this, "Error code " + error.getErrorCode() + ": " +
+                                error.getMessage(), Toast.LENGTH_LONG).show();
+                        error.printStackTrace();
+
+                    }
+                },mFormat,false);
+
+            }
+        });
 
         Intent in= getIntent();
         if(!in.hasExtra("email")){
@@ -477,94 +520,46 @@ public class ActivityMain extends AppCompatActivity
             Log.v("json",f.get("Passos").toString());*/
             final Receita novaReceita=new Receita(f);
             Log.v("fotoServer",""+novaReceita.getFoto());
-            BasicImageDownloader bid = new BasicImageDownloader(new BasicImageDownloader.OnImageLoaderListener() {
-                @Override
-                public void onError(BasicImageDownloader.ImageError error) {
-                    Log.v("FotoServer","deuruim "+novaReceita.getNome());
-                    error.printStackTrace();
 
-                }
 
-                @Override
-                public void onProgressChange(int percent) {
-
-                }
-
-                @Override
-                public void onComplete(Bitmap result) {
-                    final Bitmap.CompressFormat mFormat =Bitmap.CompressFormat.JPEG;
-
-                    final File image =new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                            +File.separator+"Epulum_images"
-                            +File.separator+novaReceita.getFoto().substring(novaReceita.getFoto().lastIndexOf("/"))
-                            +mFormat.name().toLowerCase());
-                    BasicImageDownloader.writeToDisk(image, result, new BasicImageDownloader.OnBitmapSaveListener() {
-                        @Override
-                        public void onBitmapSaved() {
-
-                            Toast.makeText(ActivityMain.this, "Image saved as: " + image.getAbsolutePath(), Toast.LENGTH_LONG).show();
-                        }
-
-                        @Override
-                        public void onBitmapSaveError(BasicImageDownloader.ImageError error) {
-                            Toast.makeText(ActivityMain.this, "Error code " + error.getErrorCode() + ": " +
-                                    error.getMessage(), Toast.LENGTH_LONG).show();
-                            error.printStackTrace();
-
-                        }
-                    },mFormat,false);
-
-                }
-            });
-
-            bid.download(receitas.get(i).getFoto(), true);
+            downloadFile(novaReceita.getFoto());
+            //bid.download(receitas.get(i).getFoto(), true);
             if(receitaDAO.addReceita(novaReceita)) {
                 receitas.add(novaReceita);
-                 bid = new BasicImageDownloader(new BasicImageDownloader.OnImageLoaderListener() {
-                    @Override
-                    public void onError(BasicImageDownloader.ImageError error) {
-                        Log.v("FotoServer","deuruim "+novaReceita.getNome());
-                        error.printStackTrace();
-
-                    }
-
-                    @Override
-                    public void onProgressChange(int percent) {
-
-                    }
-
-                    @Override
-                    public void onComplete(Bitmap result) {
-                        final Bitmap.CompressFormat mFormat =Bitmap.CompressFormat.JPEG;
-
-                        final File image =new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                                +File.separator+"Epulum_images"
-                                +File.separator+novaReceita.getFoto().substring(novaReceita.getFoto().lastIndexOf("/"))
-                                +mFormat.name().toLowerCase());
-                        BasicImageDownloader.writeToDisk(image, result, new BasicImageDownloader.OnBitmapSaveListener() {
-                            @Override
-                            public void onBitmapSaved() {
-
-                                Toast.makeText(ActivityMain.this, "Image saved as: " + image.getAbsolutePath(), Toast.LENGTH_LONG).show();
-                            }
-
-                            @Override
-                            public void onBitmapSaveError(BasicImageDownloader.ImageError error) {
-                                Toast.makeText(ActivityMain.this, "Error code " + error.getErrorCode() + ": " +
-                                        error.getMessage(), Toast.LENGTH_LONG).show();
-                                error.printStackTrace();
-
-                            }
-                        },mFormat,false);
-
-                    }
-                });
-
-                bid.download(receitas.get(i).getFoto(), true);
+                //bid.download(receitas.get(i).getFoto(), true);
             }
             //Log.v("json",""+(receitas==null));
 
             i++;
+        }
+
+    }
+
+    public void downloadFile(String uRl) {
+        try {
+            File direct = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+                    + "/Epulum");
+
+            if (!direct.exists()) {
+                direct.mkdirs();
+            }
+
+            DownloadManager mgr = (DownloadManager) ActivityMain.this.getSystemService(Context.DOWNLOAD_SERVICE);
+
+            Uri downloadUri = Uri.parse(uRl);
+            DownloadManager.Request request = new DownloadManager.Request(
+                    downloadUri);
+
+            request.setAllowedNetworkTypes(
+                    DownloadManager.Request.NETWORK_WIFI
+                            | DownloadManager.Request.NETWORK_MOBILE)
+                    .setAllowedOverRoaming(false).setTitle("Demo")
+                    .setDescription("Something useful. No, really.")
+                    .setDestinationInExternalPublicDir("/Epulum", uRl.substring(uRl.lastIndexOf("/")));
+
+            mgr.enqueue(request);
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
     }
