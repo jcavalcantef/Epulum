@@ -70,7 +70,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ReceitaViewHolder>
         try {
 
             Log.v("fotoLocal","existe?");
-            Log.v("fotoLocal",""+receitas.get(i).getFotoLocal());
+            Log.v("fotoLocal","local:"+receitas.get(i).getFotoLocal());
             //File f = new File("/My Device/Epulum/img_2017-07-31_16:59:17:000000.jpg");
             File f = new File(receitas.get(i).getFotoLocal());
             Log.v("fotoLocal",f.getAbsolutePath());
@@ -78,8 +78,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ReceitaViewHolder>
                 Log.v("fotoLocal","existe");
                 //receitaViewHolder.receitaFoto.setImageURI(Uri.fromFile(f));
                 //((BitmapDrawable)receitaViewHolder.receitaFoto.getDrawable()).getBitmap().recycle();
-                //Bitmap myBitmap = BitmapFactory.decodeFile(f.getAbsolutePath());
-                Bitmap myBitmap = ShrinkBitmap(f.getAbsolutePath(), 300, 300);
+                Bitmap myBitmap = BitmapFactory.decodeFile(f.getAbsolutePath());
+                //Bitmap myBitmap = ShrinkBitmap(f.getAbsolutePath(), 300, 300);
                 Log.v("fotoLocal",myBitmap.toString());
                 receitaViewHolder.receitaFoto.setImageBitmap(myBitmap);
             }
@@ -114,6 +114,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ReceitaViewHolder>
         bitmap = BitmapFactory.decodeFile(file, bmpFactoryOptions);
         return bitmap;
     }
+
     @Override
     public int getItemCount() {
         return receitas.size();

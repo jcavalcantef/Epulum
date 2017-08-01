@@ -61,6 +61,10 @@ public class ActivityLogin extends AppCompatActivity {
         inputPassword = (EditText) findViewById(R.id.password);
         SharedPreferences settings = getSharedPreferences(APP_PREFS, 0);
         inputEmail.setText(settings.getString(key_EMAIL,""));
+        if(!inputEmail.getText().equals(null)){
+            final Intent it = new Intent(ActivityLogin.this,ActivityMain.class);
+            startActivity(it);
+        }
 
         Button btn_login = (Button) findViewById(R.id.bnt_entrar);
         btn_login.setOnClickListener(new View.OnClickListener() {
