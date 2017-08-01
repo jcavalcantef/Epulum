@@ -765,11 +765,11 @@ public class ActivityCriarReceita extends AppCompatActivity
                     multipart.addFormField(url_campo_nome, receita.getNome());
                     multipart.addFormField(url_campo_tempo,receita.getTempopreparo());
                     multipart.addFormField(url_campo_descricao,receita.getDescricao());
-
                     multipart.addFormField(url_campo_ingredientes,receita.getIngredientesString());
                     multipart.addFormField(url_campo_passos,receita.getPassosString());
                     multipart.addFormField(url_campo_categoria,receita.get_idcategoria()+"");
-                    multipart.addFormField(url_campo_usuario,"0");
+                    Log.v("post","em_id="+em_id);
+                    multipart.addFormField(url_campo_usuario,em_id);
                     multipart.addFilePart(url_campo_foto,
                             new File(receita.getFotoLocal()));
 

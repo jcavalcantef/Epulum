@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,42 +61,29 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ReceitaViewHolder>
     @Override
     public void onBindViewHolder(final ReceitaViewHolder receitaViewHolder, int i) {
         receitaViewHolder.receitaNome.setText(receitas.get(i).getNome());
-        /*try {
+        try {
             receitaViewHolder.receitaFoto.setImageResource(receitas.get(i).getPhotoId());
         }catch (Exception e1){
             e1.printStackTrace();
         }
         try {
+
+            Log.v("fotoLocal","existe?");
+            Log.v("fotoLocal",""+receitas.get(i).getFotoLocal());
+            //File f = new File("/My Device/Epulum/img_2017-07-31_16:59:17:000000.jpg");
             File f = new File(receitas.get(i).getFotoLocal());
+            Log.v("fotoLocal",f.getAbsolutePath());
             if(f.exists()) {
+                Log.v("fotoLocal","existe");
                 //receitaViewHolder.receitaFoto.setImageURI(Uri.fromFile(f));
                 Bitmap myBitmap = BitmapFactory.decodeFile(f.getAbsolutePath());
+                Log.v("fotoLocal",myBitmap.toString());
                 receitaViewHolder.receitaFoto.setImageBitmap(myBitmap);
             }
         }catch (Exception e){
             e.printStackTrace();
-        }*/
-        try {
-            receitaViewHolder.receitaFoto.setImageResource(receitas.get(i).getPhotoId());
-        }catch (Exception e1){
-            e1.printStackTrace();
         }
 
-        if(receitas.get(i).getFotoLocal()!=null && !receitas.get(i).getFotoLocal().equals("")){
-            try {
-                File f = new File(receitas.get(i).getFotoLocal());
-                if(f.exists()) {
-                    //receitaViewHolder.receitaFoto.setImageURI(Uri.fromFile(f));
-                    Bitmap myBitmap = BitmapFactory.decodeFile(f.getAbsolutePath());
-                    receitaViewHolder.receitaFoto.setImageBitmap(myBitmap);
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        } else if(receitas.get(i).getFoto()!=null && !receitas.get(i).getFoto().equals("")){
-
-
-        }
 
 
     }

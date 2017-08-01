@@ -195,9 +195,9 @@ public class ActivityLogin extends AppCompatActivity {
                 it.putExtra("Usuario", user);
                 SharedPreferences settings = getSharedPreferences(APP_PREFS, 0);
                 SharedPreferences.Editor editor = settings.edit();
-                editor.putString(key_EMAIL,email);
-                editor.putString(key_UID,id);
-                editor.putString(key_NOME,nome);
+                editor.putString(key_EMAIL,user.getEmail());
+                editor.putString(key_UID,user.getId());
+                editor.putString(key_NOME,user.getNome());
                 editor.commit();
                 startActivity(it);
             }else{
