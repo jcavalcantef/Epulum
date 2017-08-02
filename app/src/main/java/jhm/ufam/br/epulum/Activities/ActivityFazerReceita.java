@@ -237,7 +237,7 @@ public class ActivityFazerReceita extends AppCompatActivity
         } else {
             tfr.setResult(matches.get(0));
             tfr.setNewResult(true);
-            Log.i("listening", "new result " + tfr.getResult());
+            Log.i("listeningResult", "new result " + tfr.getResult());
             mIslistening = false;
         }
 

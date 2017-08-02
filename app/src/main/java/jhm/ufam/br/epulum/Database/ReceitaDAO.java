@@ -322,7 +322,7 @@ public class ReceitaDAO {
         this.addReceita(joelho);
         //if(!(this.addReceita(new Receita("Joelho de Porco", "Joelho de porco com a casca tostada e crocante.", R.drawable.joelho_de_porco)) ))
           //  Log.v("ERRO RECEITA","AAAAAAAAA");
-        Receita ovo = new Receita("Ovo cozido","Aprenda a cozinhar um ovo",R.drawable.ovo_cozido);
+        Receita ovo = new Receita("Ovo cozido","Aprenda a cozinhar um ovo",R.drawable.camarao_com_creme_de_leite);
         ovo.addIngrediente("Um ovo");
         ovo.addIngrediente("300 ml de água");
         ovo.addPasso("Ferva a água");

@@ -79,7 +79,7 @@ public class ThreadCriarListaCompras implements Runnable {
                 case INGREDIENTES:
                     if(!askedResult) getSpeech();
                     if(!para) {
-                        if(hasWord(PARA) && !hasWord(" "+PARA) && !hasWord(PARA+" ")){
+                        if(temPara()){
                             para=true;
 
                         } else if(result!=null){
@@ -98,6 +98,10 @@ public class ThreadCriarListaCompras implements Runnable {
                     break;
             }
         }
+    }
+
+    private boolean temPara(){
+        return hasWord(PARA) && !hasWord(" "+PARA) && !hasWord(PARA+" ");
     }
 
     public String getResult() {
