@@ -305,8 +305,30 @@ public class ReceitaDAO {
         //torta.setAllIngredientes("[100 gramas de manteiga, 2 gemas, 4 colheres de açúcar refinado, 200 gramas de farinha de trigo, 500 ml de leite, 1 lata de leite condensado, 2 colheres de sopa de amido de milho, 3 maçãs]");
         this.addReceita(torta);
         //Log.v("receita","começa :"+torta.getIngredientes().toString()+": termina");
-        if(!(this.addReceita(new Receita("Joelho de Porco", "Joelho de porco com a casca tostada e crocante.", R.drawable.joelho_de_porco)) ))
-            Log.v("ERRO RECEITA","AAAAAAAAA");
+        Receita joelho = new Receita("Joelho de Porco", "Joelho de porco com a casca tostada e crocante.", R.drawable.joelho_de_porco);
+        joelho.addIngrediente("500 gramas de joelho de porco");
+        joelho.addIngrediente("1 cebola picada");
+        joelho.addIngrediente("3 dentes de alho picado");
+        joelho.addIngrediente("2 colheres de sopa de mistura de ervas aromáticas secas (pode ser: tomilho; manjerona; alecrim)");
+        joelho.addIngrediente("meia xícara de suco de limão");
+        joelho.addIngrediente("2 folhas de louro");
+        joelho.addIngrediente("1 pitada de sal");
+        joelho.addIngrediente("1 pitada de pimenta do reino");
+        joelho.addPasso("Deixe o joelho de porco marinando num refratário com todos os ingredientes por 12 horas");
+        joelho.addPasso("Dê início colocando o joelho de porco e todos os ingredientes da marinada a cozinhar durante 30 a 40 minutos numa panela de pressão até soltar a carne do osso");
+        joelho.addPasso("Você pode conferir um aspeto dourado e mais apetitoso se o levar a assar no forno a 200ºC durante cerca de 30 minutos.");
+        joelho.addPasso("Sirva o joelho de porco com chucrute e batatas cozidas");
+        joelho.addPasso("Bom apetite!");
+        this.addReceita(joelho);
+        //if(!(this.addReceita(new Receita("Joelho de Porco", "Joelho de porco com a casca tostada e crocante.", R.drawable.joelho_de_porco)) ))
+          //  Log.v("ERRO RECEITA","AAAAAAAAA");
+        Receita ovo = new Receita("Ovo cozido","Aprenda a cozinhar um ovo",R.drawable.ovo_cozido);
+        ovo.addIngrediente("Um ovo");
+        ovo.addIngrediente("300 ml de água");
+        ovo.addPasso("Ferva a água");
+        ovo.addPasso("Cozinhe o ovo por 7 minutos");
+        ovo.addPasso("Retire o ovo e descasque-o");
+        this.addReceita(ovo);
         this.addReceita(new Receita("Hambúrguer Vegano", "Hambúrguer sem carne para quem quer uma refeição saudável.", R.drawable.hamburguer_vegano));
         this.addReceita(new Receita("Bolinho De Carne Moída", "", R.drawable.bolinho_de_carne_moida));
         this.addReceita(new Receita("Filé À Parmegiana", "", R.drawable.file_parmegiana));

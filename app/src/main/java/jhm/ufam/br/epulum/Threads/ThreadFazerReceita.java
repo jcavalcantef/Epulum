@@ -82,19 +82,19 @@ public class ThreadFazerReceita implements Runnable {
             eAgora=estados.PAROU;
             para=true;
         }
-        else if(hasWord(INGREDIENTE))
+        else //if(hasWord(INGREDIENTE))
         switch(eAgora){
             case INICIO:
                 if (hasWord(INGREDIENTE) || hasWord(INGREDIENTES)) {
                     eAgora = estados.INGREDIENTES;
                     Log.v("result", "passou para ingredientes");
                 } else if (hasWord(PREPARAR)) {
-                    eAgora = estados.P_;
+                    eAgora = estados.PASSOS;
                     Log.v("result", "passou para passos");
                 }
                 Log.v("result", result);
                 break;
-            case P_:
+            /*case P_:
                 if (hasWord(SIM)) {
                     eAgora = estados.PASSOS;
                     Log.v("result", "passou para passos");
@@ -102,7 +102,7 @@ public class ThreadFazerReceita implements Runnable {
                     eAgora = estados.I_P;
                     Log.v("result", "passou para I_P");
                 }
-                break;
+                break;*/
             case INGREDIENTES:
                 if (hasWord(SIM)) {
                     ingr++;
@@ -142,8 +142,13 @@ public class ThreadFazerReceita implements Runnable {
                 if (ingr < receita.getIngredientes().size()) {
                     Speak("Separe " + receita.getIngredientes().get(ingr));
                     sleep(2000);
-                    Speak("Próximo ingrediente?");
-                    getSpeech();
+                    if(ingr < receita.getIngredientes().size()-1) {
+                        Speak("Próximo ingrediente?");
+                        getSpeech();
+                    }else {
+                        Speak("Agora vamos para os passos.");
+                        eAgora=estados.PASSOS;
+                    }
                 } else {
                     Speak("Agora vamos para os passos.");
                     eAgora=estados.PASSOS;
