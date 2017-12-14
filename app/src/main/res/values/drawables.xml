@@ -1,6 +1,0 @@
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <item name="ic_procurar_receita" type="drawable">@android:drawable/ic_menu_camera</item>
-    <item name="ic_criar_receita" type="drawable">@android:drawable/ic_menu_gallery</item>
-    <item name="ic_receitas_salvas" type="drawable">@android:drawable/ic_menu_slideshow</item>
-    <item name="ic_perfil" type="drawable">@android:drawable/ic_menu_share</item>
-</resources>
